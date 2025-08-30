@@ -13,26 +13,13 @@ import { sendToken } from "../utils/jwt";
 
 const __dirname = path.resolve();
 
-interface IRegistrationBody {
-  name: string;
-  email: string;
-  password: string;
-  avatar?: string;
-}
-
+// create activation token
 interface IActivationToken {
   token: string;
   activationCode: string;
 }
 
-interface IActivationRequest {
-  activationToken: string;
-  activationCode: string;
-}
-
-export const createActivationToken = (
-  user: IRegistrationBody
-): IActivationToken => {
+export const createActivationToken = (user: any): IActivationToken => {
   const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
 
   const token = jwt.sign(
@@ -49,7 +36,15 @@ export const createActivationToken = (
   return { token, activationCode };
 };
 
-export const registrationUser = asyncHandler(
+// registration user
+interface IRegistrationBody {
+  name: string;
+  email: string;
+  password: string;
+  avatar?: string;
+}
+
+export const registerUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password } = req.body;
     const isEmailExist = await userModel.findOne({ email });
@@ -95,6 +90,11 @@ export const registrationUser = asyncHandler(
 );
 
 // activate user
+interface IActivationRequest {
+  activationToken: string;
+  activationCode: string;
+}
+
 export const activateUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { activationToken, activationCode } = req.body as IActivationRequest;
