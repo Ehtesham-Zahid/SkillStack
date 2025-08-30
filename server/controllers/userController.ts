@@ -9,6 +9,7 @@ import path from "path";
 import userModel from "../models/userModel";
 import ErrorHandler from "../utils/ErrorHandler";
 import { sendMail } from "../utils/email";
+import { sendToken } from "../utils/jwt";
 
 const __dirname = path.resolve();
 
@@ -121,5 +122,45 @@ export const activateUser = asyncHandler(
     res
       .status(201)
       .json({ success: true, message: "User created successfully" });
+  }
+);
+
+// login user
+interface ILoginRequest {
+  email: string;
+  password: string;
+}
+
+export const loginUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password } = req.body as ILoginRequest;
+
+    if (!email || !password) {
+      return next(new ErrorHandler("Please enter email and password", 400));
+    }
+
+    const user = await userModel.findOne({ email }).select("+password");
+
+    if (!user) {
+      return next(new ErrorHandler("User not found", 400));
+    }
+
+    const isPasswordCorrect = await user.comparePassword(password);
+    if (!isPasswordCorrect) {
+      return next(new ErrorHandler("Invalid credentials", 400));
+    }
+
+    sendToken(user, 200, res);
+  }
+);
+
+// logout user
+export const logoutUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.cookie("accessToken", "", { maxAge: 1 });
+    res.cookie("refreshToken", "", { maxAge: 1 });
+    res
+      .status(200)
+      .json({ success: true, message: "User logged out successfully" });
   }
 );
