@@ -94,9 +94,32 @@ export const registrationUser = asyncHandler(
 );
 
 // activate user
-
 export const activateUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { activationToken, activationCode } = req.body;
+    const { activationToken, activationCode } = req.body as IActivationRequest;
+
+    const newUser: { user: IRegistrationBody; activationCode: string } =
+      jwt.verify(activationToken, process.env.ACTIVATION_SECRET as Secret) as {
+        user: IRegistrationBody;
+        activationCode: string;
+      };
+
+    if (newUser.activationCode !== activationCode) {
+      return next(new ErrorHandler("Invalid activation code", 400));
+    }
+
+    const { name, email, password } = newUser.user;
+
+    const userExist = await userModel.findOne({ email });
+
+    if (userExist) {
+      return next(new ErrorHandler("User already exist", 400));
+    }
+
+    const user = await userModel.create({ name, email, password });
+
+    res
+      .status(201)
+      .json({ success: true, message: "User created successfully" });
   }
 );
