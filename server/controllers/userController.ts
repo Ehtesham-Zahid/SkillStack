@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import asyncHandler from "express-async-handler";
-import jwt, { Secret } from "jsonwebtoken";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 
@@ -10,6 +10,8 @@ import userModel from "../models/userModel";
 import ErrorHandler from "../utils/ErrorHandler";
 import { sendMail } from "../utils/email";
 import { sendToken } from "../utils/jwt";
+import { redis } from "../utils/redis";
+import { getUserById } from "../services/userService";
 
 const __dirname = path.resolve();
 
@@ -142,7 +144,7 @@ export const loginUser = asyncHandler(
     const user = await userModel.findOne({ email }).select("+password");
 
     if (!user) {
-      return next(new ErrorHandler("User not found", 400));
+      return next(new ErrorHandler("Invalid credentials", 400));
     }
 
     const isPasswordCorrect = await user.comparePassword(password);
@@ -159,8 +161,66 @@ export const logoutUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     res.cookie("accessToken", "", { maxAge: 1 });
     res.cookie("refreshToken", "", { maxAge: 1 });
+    redis.del(req.user?._id as string);
     res
       .status(200)
       .json({ success: true, message: "User logged out successfully" });
+  }
+);
+
+// update access token
+export const updateAccessToken = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken as string;
+
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET as Secret
+    ) as JwtPayload;
+
+    const message = "Could not refresh token";
+    if (!decoded) {
+      return next(new ErrorHandler(message, 400));
+    }
+
+    const session = await redis.get(decoded.id as string);
+    if (!session) {
+      return next(new ErrorHandler(message, 400));
+    }
+
+    const user = JSON.parse(session);
+
+    sendToken(user, 200, res);
+  }
+);
+
+// get user info
+export const getUserInfo = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user?._id;
+    getUserById(userId as string, res);
+  }
+);
+
+// social auth
+
+interface ISocialAuthBody {
+  email: string;
+  name: string;
+  avatar: string;
+}
+
+export const socialAuth = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email, name, avatar } = req.body as ISocialAuthBody;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      const newUser = await userModel.create({ email, name, avatar });
+      sendToken(newUser, 201, res);
+    } else {
+      sendToken(user, 200, res);
+    }
   }
 );
