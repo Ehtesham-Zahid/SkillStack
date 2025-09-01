@@ -1,7 +1,8 @@
-import CourseModel, { ICourse } from "../models/courseModel";
+import CourseModel, { ICourse, ICourseData } from "../models/courseModel";
 import cloudinary from "cloudinary";
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
+import { IUser } from "../models/userModel";
 
 // Create Course
 export const createCourse = async (data: any): Promise<ICourse> => {
@@ -70,4 +71,24 @@ export const getAllCourses = async (): Promise<ICourse[]> => {
   }
 
   return courses;
+};
+
+// Get Course Content -- only for valid users
+export const getCourseContent = async (
+  user: IUser,
+  courseId: string
+): Promise<ICourseData[]> => {
+  const userCoursesList = user?.courses;
+
+  const courseExists = userCoursesList?.find(
+    (course: any) => course.courseId.toString() === courseId
+  );
+
+  if (!courseExists)
+    throw new ErrorHandler("You are not enrolled in this course", 404);
+
+  const course = await CourseModel.findById(courseId);
+  const content: ICourseData[] = course?.courseData || [];
+
+  return content;
 };

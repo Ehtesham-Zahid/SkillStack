@@ -3,6 +3,7 @@ import {
   handleCreateCourse,
   handleEditCourse,
   handleGetAllCourses,
+  handleGetCourseContent,
   handleGetSingleCourse,
 } from "../controllers/courseController";
 import { authorizeRoles, isAuthenticated } from "../middleware/auth";
@@ -26,5 +27,11 @@ courseRouter.put(
 courseRouter.get("/get-course/:id", handleGetSingleCourse);
 
 courseRouter.get("/get-all-courses", handleGetAllCourses);
+
+courseRouter.get(
+  "/get-course-content/:id",
+  isAuthenticated,
+  handleGetCourseContent
+);
 
 export default courseRouter;

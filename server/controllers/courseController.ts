@@ -4,8 +4,10 @@ import {
   editCourse,
   getCourseById,
   getAllCourses,
+  getCourseContent,
 } from "../services/courseService";
 import asyncHandler from "express-async-handler";
+import { IUser } from "../models/userModel";
 
 // Create Course
 export const handleCreateCourse = asyncHandler(
@@ -39,5 +41,13 @@ export const handleGetAllCourses = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const courses = await getAllCourses();
     res.status(200).json({ success: true, courses });
+  }
+);
+
+// Get Course Content -- only for valid users
+export const handleGetCourseContent = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const content = await getCourseContent(req.user as IUser, req.params.id);
+    res.status(200).json({ success: true, content });
   }
 );
