@@ -1,24 +1,24 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-interface IComment extends Document {
+export interface IComment extends Document {
   user: object;
   comment: string;
   commentReplies?: IComment[];
 }
 
-interface IReview extends Document {
+export interface IReview extends Document {
   user: object;
   rating: number;
   comment: string;
   commentReplies?: IComment[];
 }
 
-interface ILink extends Document {
+export interface ILink extends Document {
   title: string;
   url: string;
 }
 
-interface ICourseData extends Document {
+export interface ICourseData extends Document {
   title: string;
   description: string;
   videoUrl: string;
@@ -31,7 +31,7 @@ interface ICourseData extends Document {
   questions: IComment[];
 }
 
-interface ICourse extends Document {
+export interface ICourse extends Document {
   name: string;
   description: string;
   price: number;

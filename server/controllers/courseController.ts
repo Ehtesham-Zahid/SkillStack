@@ -1,26 +1,43 @@
 import { Request, Response, NextFunction } from "express";
-import { createCourse } from "../services/courseService";
+import {
+  createCourse,
+  editCourse,
+  getCourseById,
+  getAllCourses,
+} from "../services/courseService";
 import asyncHandler from "express-async-handler";
-import cloudinary from "cloudinary";
 
 // Create Course
 export const handleCreateCourse = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    const course = await createCourse(req.body);
+    res.status(201).json({ success: true, course });
+  }
+);
+
+// Edit Course
+export const handleEditCourse = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const data = req.body;
+    const courseId = req.params.id;
 
-    const thumbnail = data.thumbnail;
-    if (thumbnail) {
-      const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
-        folder: "courses",
-        width: 1000,
-        crop: "scale",
-      });
-      data.thumbnail = {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      };
-    }
+    const course = await editCourse(data, courseId);
+    res.status(201).json({ success: true, course });
+  }
+);
 
-    await createCourse(data, res, next);
+// Get Single Course --- without purchasing
+export const handleGetSingleCourse = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const course = await getCourseById(req.params.id);
+    res.status(200).json({ success: true, course });
+  }
+);
+
+// Get All Courses --- without purchasing
+export const handleGetAllCourses = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const courses = await getAllCourses();
+    res.status(200).json({ success: true, courses });
   }
 );
