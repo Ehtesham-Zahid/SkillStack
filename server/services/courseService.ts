@@ -1,6 +1,7 @@
 import CourseModel, { ICourse } from "../models/courseModel";
 import cloudinary from "cloudinary";
 import ErrorHandler from "../utils/ErrorHandler";
+import { redis } from "../utils/redis";
 
 // Create Course
 export const createCourse = async (data: any): Promise<ICourse> => {
@@ -36,17 +37,37 @@ export const editCourse = async (
 
 // Get Course by ID
 export const getCourseById = async (id: string): Promise<ICourse | null> => {
-  const course = await CourseModel.findById(id).select(
-    "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
-  );
+  let course: ICourse | null = null;
+
+  const isCacheExist = await redis.get(id);
+
+  if (isCacheExist) {
+    course = JSON.parse(isCacheExist);
+  } else {
+    course = await CourseModel.findById(id).select(
+      "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+    );
+    await redis.set(id, JSON.stringify(course));
+  }
+
   if (!course) throw new ErrorHandler("Course not found", 404);
   return course;
 };
 
 // Get All Courses
 export const getAllCourses = async (): Promise<ICourse[]> => {
-  const courses = await CourseModel.find().select(
-    "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
-  );
+  let courses: ICourse[] = [];
+
+  const isCacheExist = await redis.get("allCourses");
+
+  if (isCacheExist) {
+    courses = JSON.parse(isCacheExist);
+  } else {
+    courses = await CourseModel.find().select(
+      "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+    );
+    await redis.set("allCourses", JSON.stringify(courses));
+  }
+
   return courses;
 };
