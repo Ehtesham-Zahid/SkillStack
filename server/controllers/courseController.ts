@@ -5,6 +5,8 @@ import {
   getCourseById,
   getAllCourses,
   getCourseContent,
+  addQuestion,
+  addAnswer,
 } from "../services/courseService";
 import asyncHandler from "express-async-handler";
 import { IUser } from "../models/userModel";
@@ -49,5 +51,20 @@ export const handleGetCourseContent = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const content = await getCourseContent(req.user as IUser, req.params.id);
     res.status(200).json({ success: true, content });
+  }
+);
+
+// Add Question to Course
+export const handleAddQuestion = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const question = await addQuestion(req.user as IUser, req.body);
+    res.status(200).json({ success: true, question });
+  }
+);
+
+export const handleAddAnswer = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const answer = await addAnswer(req.user as IUser, req.body);
+    res.status(200).json({ success: true, answer });
   }
 );
