@@ -219,3 +219,98 @@ export const addAnswer = async (
   }
   return course;
 };
+
+// Add Review to Course
+interface IAddReviewData {
+  review: string;
+  rating: number;
+  userId: string;
+}
+export const addReview = async (
+  user: IUser,
+  data: IAddReviewData,
+  courseId: string
+): Promise<ICourse | null> => {
+  const userCoursesList = user?.courses;
+
+  const courseExists = userCoursesList?.some(
+    (course: any) => course._id.toString() === courseId.toString()
+  );
+
+  if (!courseExists) {
+    throw new ErrorHandler("You are not enrolled in this course", 404);
+  }
+
+  const course = await CourseModel.findById(courseId);
+
+  const { rating, review } = data as IAddReviewData;
+
+  const reviewData: any = {
+    user: user,
+    rating: rating,
+    comment: review,
+  };
+
+  course?.reviews.push(reviewData);
+
+  let avg = 0;
+
+  course?.reviews.forEach((item: any) => {
+    avg += item.rating;
+  });
+
+  if (course) {
+    course.ratings = avg / course?.reviews.length;
+  }
+
+  await course?.save();
+
+  const notification = {
+    title: "New Review Received",
+    message: `${user.name} has reviewed your course ${course?.name}.`,
+  };
+
+  //   Create a new notification
+
+  return course;
+};
+
+// Reply to Review
+interface IReplyToReviewData {
+  comment: string;
+  courseId: string;
+  reviewId: string;
+}
+export const addReplyToReview = async (
+  user: IUser,
+  data: IReplyToReviewData
+): Promise<ICourse | null> => {
+  const { comment, courseId, reviewId } = data as IReplyToReviewData;
+
+  const course = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new ErrorHandler("Course not found", 404);
+  }
+
+  const review = course.reviews.find(
+    (item: any) => item._id.toString() === reviewId
+  );
+  if (!review) {
+    throw new ErrorHandler("Review not found", 404);
+  }
+
+  const replyData: any = {
+    user: user,
+    comment: comment,
+  };
+
+  if (!review.commentReplies) {
+    review.commentReplies = [];
+  }
+
+  review.commentReplies?.push(replyData);
+
+  await course?.save();
+
+  return course;
+};

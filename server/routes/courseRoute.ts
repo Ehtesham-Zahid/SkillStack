@@ -1,10 +1,14 @@
 import express, { Router } from "express";
 import {
+  handleAddQuestion,
+  handleAddAnswer,
+  handleAddReview,
   handleCreateCourse,
   handleEditCourse,
   handleGetAllCourses,
   handleGetCourseContent,
   handleGetSingleCourse,
+  handleAddReplyToReview,
 } from "../controllers/courseController";
 import { authorizeRoles, isAuthenticated } from "../middleware/auth";
 
@@ -32,6 +36,19 @@ courseRouter.get(
   "/get-course-content/:id",
   isAuthenticated,
   handleGetCourseContent
+);
+
+courseRouter.put("/add-question", isAuthenticated, handleAddQuestion);
+
+courseRouter.put("/add-answer", isAuthenticated, handleAddAnswer);
+
+courseRouter.put("/add-review/:id", isAuthenticated, handleAddReview);
+
+courseRouter.put(
+  "/add-reply-to-review",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  handleAddReplyToReview
 );
 
 export default courseRouter;
