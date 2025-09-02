@@ -8,6 +8,9 @@ import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import { IUser } from "../models/userModel";
 import mongoose from "mongoose";
+import { sendMail } from "../utils/email";
+import path from "path";
+import ejs from "ejs";
 
 // Create Course
 export const createCourse = async (data: any): Promise<ICourse> => {
@@ -183,5 +186,36 @@ export const addAnswer = async (
 
   //   update the course content
   await course?.save();
+
+  if (user?._id === question.user._id) {
+  } else {
+    const data = {
+      name: question.user.name,
+      title: courseContent.title,
+      courseId: courseId,
+      contentId: contentId,
+      questionId: questionId,
+      viewLink: `${process.env.FRONTEND_URL}/course/${courseId}`,
+      questionText: question.question,
+      answerText: answer,
+      replierName: user.name,
+    };
+
+    const html = await ejs.renderFile(
+      path.join(__dirname, "../mails/question-reply.ejs"),
+      data
+    );
+
+    try {
+      await sendMail({
+        to: question.user.email,
+        subject: "New Answer to your question",
+        html,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new ErrorHandler("Error sending email", 500);
+    }
+  }
   return course;
 };
