@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { IUser } from "../models/userModel";
 import { redis } from "./redis";
 
-interface ITokenOptions {
+export interface ITokenOptions {
   expires: Date;
   maxAge: number;
   httpOnly: boolean;
@@ -12,12 +12,12 @@ interface ITokenOptions {
   secure?: boolean;
 }
 
-export const sendToken = (user: IUser, statusCode: number, res: Response) => {
+export const sendToken = async (user: IUser) => {
   const accessToken = user.signAccessToken();
   const refreshToken = user.signRefreshToken();
 
   //   upload session to redis
-  redis.set(user._id as string, JSON.stringify(user) as any);
+  await redis.set(user._id as string, JSON.stringify(user) as any);
 
   //   parse env variables to int
   const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE as string);
@@ -46,12 +46,11 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     refreshTokenOptions.secure = true;
   }
 
-  res.cookie("accessToken", accessToken, accessTokenOptions);
-  res.cookie("refreshToken", refreshToken, refreshTokenOptions);
-
-  res.status(statusCode).json({
-    success: true,
+  return {
     user,
     accessToken,
-  });
+    accessTokenOptions,
+    refreshToken,
+    refreshTokenOptions,
+  };
 };

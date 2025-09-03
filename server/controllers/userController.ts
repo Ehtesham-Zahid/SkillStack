@@ -1,164 +1,76 @@
 import { Request, Response, NextFunction } from "express";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
+import cloudinary from "cloudinary";
 import dotenv from "dotenv";
 dotenv.config();
-import asyncHandler from "express-async-handler";
-import jwt, { JwtPayload, Secret } from "jsonwebtoken";
-import ejs from "ejs";
-import path from "path";
 
-import userModel from "../models/userModel";
+import userModel, { IUser } from "../models/userModel";
 import ErrorHandler from "../utils/ErrorHandler";
-import { sendMail } from "../utils/email";
-import { sendToken } from "../utils/jwt";
+import { ITokenOptions, sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
-import { getUserById } from "../services/userService";
-import cloudinary from "cloudinary";
+import {
+  activateUser,
+  loginUser,
+  registerUser,
+  updateAccessToken,
+} from "../services/userService";
 
-const __dirname = path.resolve();
-
-// create activation token
-interface IActivationToken {
-  token: string;
-  activationCode: string;
-}
-
-export const createActivationToken = (user: any): IActivationToken => {
-  const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
-
-  const token = jwt.sign(
-    {
-      user,
-      activationCode,
-    },
-    process.env.ACTIVATION_SECRET as Secret,
-    {
-      expiresIn: "5m",
-    }
-  );
-
-  return { token, activationCode };
-};
-
-// registration user
-interface IRegistrationBody {
-  name: string;
-  email: string;
-  password: string;
-  avatar?: string;
-}
-
-export const registerUser = asyncHandler(
+// Register User
+export const handleRegisterUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, password } = req.body;
-    const isEmailExist = await userModel.findOne({ email });
-    if (isEmailExist) {
-      return next(new ErrorHandler("Email already exist", 400));
-    }
-
-    const user: IRegistrationBody = {
-      name,
-      email,
-      password,
-    };
-
-    const activationToken = createActivationToken(user);
-
-    const activationCode = activationToken.activationCode;
-
-    const data = {
-      user: {
-        name: user.name,
-        email: user.email,
-      },
-      activationCode,
-    };
-
-    const html = await ejs.renderFile(
-      path.join(__dirname, "./mails/activation-mail.ejs"),
-      data
-    );
-
-    await sendMail({
-      to: user.email,
-      subject: "Account Activation",
-      html,
-    });
+    const data = await registerUser(req.body);
 
     res.status(201).json({
       success: true,
-      message: `Please check your email ${user.email} to activate your account`,
-      activationToken: activationToken.token,
+      message: `Please check your email ${data.email} to activate your account`,
+      activationToken: data.token,
     });
   }
 );
 
 // activate user
-interface IActivationRequest {
-  activationToken: string;
-  activationCode: string;
-}
 
-export const activateUser = asyncHandler(
+export const handleActivateUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { activationToken, activationCode } = req.body as IActivationRequest;
-
-    const newUser: { user: IRegistrationBody; activationCode: string } =
-      jwt.verify(activationToken, process.env.ACTIVATION_SECRET as Secret) as {
-        user: IRegistrationBody;
-        activationCode: string;
-      };
-
-    if (newUser.activationCode !== activationCode) {
-      return next(new ErrorHandler("Invalid activation code", 400));
-    }
-
-    const { name, email, password } = newUser.user;
-
-    const userExist = await userModel.findOne({ email });
-
-    if (userExist) {
-      return next(new ErrorHandler("User already exist", 400));
-    }
-
-    const user = await userModel.create({ name, email, password });
+    await activateUser(req.body);
 
     res
       .status(201)
-      .json({ success: true, message: "User created successfully" });
+      .json({ success: true, message: "User activated successfully" });
   }
 );
 
 // login user
-interface ILoginRequest {
-  email: string;
-  password: string;
-}
-
-export const loginUser = asyncHandler(
+export const handleLoginUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body as ILoginRequest;
+    const {
+      accessToken,
+      refreshToken,
+      user,
+      accessTokenOptions,
+      refreshTokenOptions,
+    } = (await loginUser(req.body)) as {
+      accessToken: string;
+      refreshToken: string;
+      user: IUser;
+      accessTokenOptions: ITokenOptions;
+      refreshTokenOptions: ITokenOptions;
+    };
 
-    if (!email || !password) {
-      return next(new ErrorHandler("Please enter email and password", 400));
-    }
+    res.cookie("accessToken", accessToken, accessTokenOptions);
+    res.cookie("refreshToken", refreshToken, refreshTokenOptions);
 
-    const user = await userModel.findOne({ email }).select("+password");
-
-    if (!user) {
-      return next(new ErrorHandler("Invalid credentials", 400));
-    }
-
-    const isPasswordCorrect = await user.comparePassword(password);
-    if (!isPasswordCorrect) {
-      return next(new ErrorHandler("Invalid credentials", 400));
-    }
-
-    sendToken(user, 200, res);
+    res.status(200).json({
+      success: true,
+      user,
+      accessToken,
+    });
   }
 );
 
 // logout user
-export const logoutUser = asyncHandler(
+export const handleLogoutUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     res.cookie("accessToken", "", { maxAge: 1 });
     res.cookie("refreshToken", "", { maxAge: 1 });
@@ -170,30 +82,27 @@ export const logoutUser = asyncHandler(
 );
 
 // update access token
-export const updateAccessToken = asyncHandler(
+export const handleUpdateAccessToken = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.refreshToken as string;
+    const refreshTokenIncoming = req.cookies.refreshToken as string;
 
-    const decoded = jwt.verify(
+    const {
+      accessToken,
+      user,
       refreshToken,
-      process.env.REFRESH_TOKEN_SECRET as Secret
-    ) as JwtPayload;
+      accessTokenOptions,
+      refreshTokenOptions,
+    } = await updateAccessToken(refreshTokenIncoming);
 
-    const message = "Could not refresh token";
-    if (!decoded) {
-      return next(new ErrorHandler(message, 400));
-    }
-
-    const session = await redis.get(decoded.id as string);
-    if (!session) {
-      return next(new ErrorHandler(message, 400));
-    }
-
-    const user = JSON.parse(session);
-
+    res.cookie("accessToken", accessToken, accessTokenOptions);
+    res.cookie("refreshToken", refreshToken, refreshTokenOptions);
     req.user = user;
 
-    sendToken(user, 200, res);
+    res.status(200).json({
+      success: true,
+      user,
+      accessToken,
+    });
   }
 );
 
@@ -221,9 +130,9 @@ export const socialAuth = asyncHandler(
 
     if (!user) {
       const newUser = await userModel.create({ email, name, avatar });
-      sendToken(newUser, 201, res);
+      sendToken(newUser);
     } else {
-      sendToken(user, 200, res);
+      sendToken(user);
     }
   }
 );
