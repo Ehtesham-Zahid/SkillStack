@@ -11,6 +11,9 @@ import mongoose from "mongoose";
 import { sendMail } from "../utils/email";
 import path from "path";
 import ejs from "ejs";
+import NotificationModel from "../models/notificationModel";
+
+const __dirname = path.resolve();
 
 // Create Course
 export const createCourse = async (data: any): Promise<ICourse> => {
@@ -135,6 +138,12 @@ export const addQuestion = async (
   //   add the question to the course content
   courseContent.questions.push(newQuestion);
 
+  await NotificationModel.create({
+    user: user._id,
+    title: "New Question Received",
+    message: `${user.name} has asked a question in ${courseContent.title}.`,
+  });
+
   //   update the course content
   await course?.save();
 
@@ -188,6 +197,11 @@ export const addAnswer = async (
   await course?.save();
 
   if (user?._id === question.user._id) {
+    await NotificationModel.create({
+      user: user._id,
+      title: "New Question Reply Received",
+      message: `${user.name} has replied to your question in ${courseContent.title}.`,
+    });
   } else {
     const data = {
       name: question.user.name,
