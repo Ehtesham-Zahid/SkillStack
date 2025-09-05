@@ -1,26 +1,26 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
-import cloudinary from "cloudinary";
 import dotenv from "dotenv";
 dotenv.config();
 
-import userModel, { IUser } from "../models/userModel";
-import ErrorHandler from "../utils/ErrorHandler";
-import { ITokenOptions, sendToken } from "../utils/jwt";
+import { IUser } from "../models/userModel";
+import { ITokenOptions } from "../utils/jwt";
 import { redis } from "../utils/redis";
 import {
   activateUser,
   loginUser,
   registerUser,
   updateAccessToken,
+  updatePassword,
+  updateUserInfo,
+  updateProfilePicture,
+  socialAuth,
 } from "../services/userService";
 
 // Register User
 export const handleRegisterUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = await registerUser(req.body);
-
     res.status(201).json({
       success: true,
       message: `Please check your email ${data.email} to activate your account`,
@@ -30,11 +30,9 @@ export const handleRegisterUser = asyncHandler(
 );
 
 // activate user
-
 export const handleActivateUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     await activateUser(req.body);
-
     res
       .status(201)
       .json({ success: true, message: "User activated successfully" });
@@ -60,6 +58,7 @@ export const handleLoginUser = asyncHandler(
 
     res.cookie("accessToken", accessToken, accessTokenOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
+    req.user = user as IUser;
 
     res.status(200).json({
       success: true,
@@ -96,7 +95,7 @@ export const handleUpdateAccessToken = asyncHandler(
 
     res.cookie("accessToken", accessToken, accessTokenOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
-    req.user = user;
+    req.user = user as IUser;
 
     res.status(200).json({
       success: true,
@@ -107,142 +106,65 @@ export const handleUpdateAccessToken = asyncHandler(
 );
 
 // get user info
-export const getUserInfo = asyncHandler(
+export const handleGetUserInfo = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?._id;
-    getUserById(userId as string, res);
+    res.status(200).json({ success: true, user: req.user });
   }
 );
 
 // social auth
-
-interface ISocialAuthBody {
-  email: string;
-  name: string;
-  avatar: string;
-}
-
-export const socialAuth = asyncHandler(
+export const handleSocialAuth = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { email, name, avatar } = req.body as ISocialAuthBody;
+    const {
+      accessToken,
+      refreshToken,
+      user,
+      accessTokenOptions,
+      refreshTokenOptions,
+    } = (await socialAuth(req.body)) as {
+      accessToken: string;
+      refreshToken: string;
+      user: IUser;
+      accessTokenOptions: ITokenOptions;
+      refreshTokenOptions: ITokenOptions;
+    };
 
-    const user = await userModel.findOne({ email });
+    res.cookie("accessToken", accessToken, accessTokenOptions);
+    res.cookie("refreshToken", refreshToken, refreshTokenOptions);
+    req.user = user as IUser;
 
-    if (!user) {
-      const newUser = await userModel.create({ email, name, avatar });
-      sendToken(newUser);
-    } else {
-      sendToken(user);
-    }
+    res.status(200).json({
+      success: true,
+      user,
+      accessToken,
+    });
   }
 );
 
 // update user info
-interface IUpdateUserInfoBody {
-  name: string;
-  email: string;
-}
-
-export const updateUserInfo = asyncHandler(
+export const handleUpdateUserInfo = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email } = req.body as IUpdateUserInfoBody;
-    const userId = req.user?._id;
-    const user = await userModel.findById(userId);
-
-    if (email && user) {
-      const isEmailExist = await userModel.findOne({ email });
-      if (isEmailExist) {
-        return next(new ErrorHandler("Email already exist", 400));
-      }
-      user.email = email;
-    }
-
-    if (name && user) {
-      user.name = name;
-    }
-
-    await user?.save();
-
-    await redis.set(userId as string, JSON.stringify(user));
-
+    const user = (await updateUserInfo(req.body, req.user as IUser)) as IUser;
     res.status(200).json({ success: true, user });
   }
 );
 
 // update user password
-interface IUpdatePasswordBody {
-  oldPassword: string;
-  newPassword: string;
-}
-
-export const updatePassword = asyncHandler(
+export const handleUpdatePassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { oldPassword, newPassword } = req.body as IUpdatePasswordBody;
-    if (!oldPassword || !newPassword) {
-      return next(new ErrorHandler("Please enter old and new password", 400));
-    }
-
     const userId = req.user?._id;
-    const user = await userModel.findById(userId).select("+password");
-
-    if (user?.password === undefined) {
-      return next(new ErrorHandler("Initial login required", 404));
-    }
-
-    const isPasswordCorrect = await user.comparePassword(oldPassword);
-
-    if (!isPasswordCorrect) {
-      return next(new ErrorHandler("Invalid old password", 400));
-    }
-
-    user.password = newPassword;
-    await user.save();
-
-    await redis.set(userId as string, JSON.stringify(user));
-
+    const user = await updatePassword(req.body, userId as string);
     res.status(200).json({ success: true, user });
   }
 );
 
 // update profile picture
-interface IUpdateProfilePictureBody {
-  avatar: string;
-}
-
-export const updateProfilePicture = asyncHandler(
+export const handleUpdateProfilePicture = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { avatar } = req.body as IUpdateProfilePictureBody;
-    const userId = req.user?._id;
-    const user = await userModel.findById(userId);
-
-    if (avatar && user) {
-      if (user?.avatar?.public_id) {
-        await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
-
-        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-          folder: "avatars",
-          width: 150,
-        });
-        user.avatar = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url,
-        };
-      } else {
-        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-          folder: "avatars",
-          width: 150,
-        });
-        user.avatar = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url,
-        };
-      }
-    }
-
-    await user?.save();
-
-    await redis.set(userId as string, JSON.stringify(user));
-
+    const user = (await updateProfilePicture(
+      req.body.avatar,
+      req.user as IUser
+    )) as IUser;
     res.status(200).json({ success: true, user });
   }
 );

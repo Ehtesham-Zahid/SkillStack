@@ -23,7 +23,7 @@ export interface ICourseData extends Document {
   title: string;
   description: string;
   videoUrl: string;
-  videoThumbnail: object;
+  //   videoThumbnail: object;
   videoSection: string;
   videoLength: number;
   videoPlayer: string;
@@ -35,9 +35,9 @@ export interface ICourseData extends Document {
 export interface ICourse extends Document {
   name: string;
   description: string;
-  categories: string;
+  category: string;
   price: number;
-  estimatedPrice?: number;
+  discountedPrice?: number;
   thumbnail: object;
   tags: string;
   level: string;
@@ -100,11 +100,15 @@ const courseSchema = new Schema<ICourse>(
       type: String,
       required: [true, "Please enter course description"],
     },
+    category: {
+      type: String,
+      required: [true, "Please enter course category"],
+    },
     price: {
       type: Number,
       required: [true, "Please enter course price"],
     },
-    estimatedPrice: { type: Number },
+    discountedPrice: { type: Number },
     thumbnail: {
       public_id: {
         type: String,

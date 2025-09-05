@@ -8,6 +8,7 @@ import {
   addQuestion,
   addAnswer,
   addReview,
+  addReplyToReview,
 } from "../services/courseService";
 import asyncHandler from "express-async-handler";
 import { IUser } from "../models/userModel";
@@ -74,6 +75,16 @@ export const handleAddAnswer = asyncHandler(
 export const handleAddReview = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const course = await addReview(req.user as IUser, req.body, req.params.id);
+    res.status(200).json({ success: true, course });
+  }
+);
+
+// --------------EVERYTHING SOLID TILL NOW----------------
+
+// Add Reply to Review
+export const handleAddReplyToReview = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const course = await addReplyToReview(req.user as IUser, req.body);
     res.status(200).json({ success: true, course });
   }
 );

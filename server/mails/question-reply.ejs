@@ -132,8 +132,8 @@
                 <td class="content">
                   <p class="greeting">Hi <%= name ? name : "there" %>,</p>
                   <p class="intro">
-                    You have a new reply on your question <%= title ? ("in the
-                    lecture: \"" + title + "\"") : "" %>.
+                    You have a new reply on your question <%= title ? `in the
+                    lecture: "${title}"` : '' %>.
                   </p>
                   <p class="label">Your question</p>
                   <div class="card question">

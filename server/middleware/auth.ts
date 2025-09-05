@@ -3,6 +3,7 @@ import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
+import UserModel, { IUser } from "../models/userModel";
 
 // authenticate user
 export const isAuthenticated = asyncHandler(
@@ -14,22 +15,33 @@ export const isAuthenticated = asyncHandler(
       );
     }
 
-    const decoded = jwt.verify(
-      accessToken,
-      process.env.ACCESS_TOKEN_SECRET as string
-    ) as JwtPayload;
-
-    if (!decoded) {
+    let decoded: JwtPayload;
+    try {
+      decoded = jwt.verify(
+        accessToken,
+        process.env.ACCESS_TOKEN_SECRET as string
+      ) as JwtPayload;
+    } catch {
       return next(new ErrorHandler("Invalid access token", 401));
     }
 
-    const user = await redis.get(decoded.id);
+    const cached = await redis.get(decoded.id as string);
+
+    let user: IUser | null;
+    if (cached) {
+      user = JSON.parse(cached) as IUser;
+    } else {
+      user = await UserModel.findById(decoded.id as string).lean();
+      if (user) {
+        await redis.set(decoded.id as string, JSON.stringify(user));
+      }
+    }
 
     if (!user) {
       return next(new ErrorHandler("User not found", 401));
     }
 
-    req.user = JSON.parse(user);
+    req.user = user as IUser;
     next();
   }
 );

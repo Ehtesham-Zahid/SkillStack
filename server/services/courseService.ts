@@ -1,17 +1,19 @@
+import mongoose from "mongoose";
+import cloudinary from "cloudinary";
+import path from "path";
+import ejs from "ejs";
+
 import CourseModel, {
   ICourse,
   ICourseData,
   IComment,
 } from "../models/courseModel";
-import cloudinary from "cloudinary";
+import { IUser } from "../models/userModel";
+import NotificationModel from "../models/notificationModel";
+
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
-import { IUser } from "../models/userModel";
-import mongoose from "mongoose";
 import { sendMail } from "../utils/email";
-import path from "path";
-import ejs from "ejs";
-import NotificationModel from "../models/notificationModel";
 
 const __dirname = path.resolve();
 
@@ -116,6 +118,10 @@ export const addQuestion = async (
 ): Promise<ICourse | null> => {
   const { question, courseId, contentId } = data;
   const course: ICourse | null = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new ErrorHandler("Course not found", 404);
+  }
+
   if (!mongoose.Types.ObjectId.isValid(contentId)) {
     throw new ErrorHandler("Invalid content id", 400);
   }
@@ -139,12 +145,12 @@ export const addQuestion = async (
   courseContent.questions.push(newQuestion);
 
   await NotificationModel.create({
-    user: user._id,
+    userId: user._id,
     title: "New Question Received",
     message: `${user.name} has asked a question in ${courseContent.title}.`,
   });
 
-  //   update the course content
+  //   update the course
   await course?.save();
 
   return course;
@@ -164,6 +170,10 @@ export const addAnswer = async (
   const { answer, courseId, contentId, questionId }: IAddAnswerData = data;
 
   const course: ICourse | null = await CourseModel.findById(courseId);
+
+  if (!course) {
+    throw new ErrorHandler("Course not found", 404);
+  }
 
   if (!mongoose.Types.ObjectId.isValid(contentId)) {
     throw new ErrorHandler("Invalid content id", 400);
@@ -196,40 +206,65 @@ export const addAnswer = async (
   //   update the course content
   await course?.save();
 
-  if (user?._id === question.user._id) {
-    await NotificationModel.create({
-      user: user._id,
-      title: "New Question Reply Received",
-      message: `${user.name} has replied to your question in ${courseContent.title}.`,
-    });
-  } else {
+  //   if (user?._id === question.user._id) {
+  //     await NotificationModel.create({
+  //       userId: user._id,
+  //       title: "New Question Reply Received",
+  //       message: `${user.name} has replied to your question in ${courseContent.title}.`,
+  //     });
+  //   } else {
+  //     const data = {
+  //       name: question.user.name,
+  //       title: courseContent.title,
+  //       courseId: courseId,
+  //       contentId: contentId,
+  //       questionId: questionId,
+  //       viewLink: `${process.env.FRONTEND_URL}/course/${courseId}`,
+  //       questionText: question.question,
+  //       answerText: answer,
+  //       replierName: user.name,
+  //     };
+
+  //     const html = await ejs.renderFile(
+  //       path.join(__dirname, "../mails/question-reply.ejs"),
+  //       data
+  //     );
+
+  //     try {
+  //       await sendMail({
+  //         to: question.user.email,
+  //         subject: "New Answer to your question",
+  //         html,
+  //       });
+  //     } catch (error) {
+  //       console.log(error);
+  //       throw new ErrorHandler("Error sending email", 500);
+  //     }
+  //   }
+
+  if (user?._id !== question.user._id) {
     const data = {
       name: question.user.name,
       title: courseContent.title,
       courseId: courseId,
       contentId: contentId,
       questionId: questionId,
-      viewLink: `${process.env.FRONTEND_URL}/course/${courseId}`,
+      viewLink: `localhost:5173/course/${courseId}`,
       questionText: question.question,
       answerText: answer,
       replierName: user.name,
     };
 
     const html = await ejs.renderFile(
-      path.join(__dirname, "../mails/question-reply.ejs"),
+      path.join(__dirname, "./mails/question-reply.ejs"),
       data
     );
 
-    try {
-      await sendMail({
-        to: question.user.email,
-        subject: "New Answer to your question",
-        html,
-      });
-    } catch (error) {
-      console.log(error);
-      throw new ErrorHandler("Error sending email", 500);
-    }
+    await sendMail({
+      to: question.user.email,
+      subject: "New Answer to your question",
+      html,
+    });
   }
   return course;
 };
@@ -238,8 +273,8 @@ export const addAnswer = async (
 interface IAddReviewData {
   review: string;
   rating: number;
-  userId: string;
 }
+
 export const addReview = async (
   user: IUser,
   data: IAddReviewData,
@@ -247,15 +282,19 @@ export const addReview = async (
 ): Promise<ICourse | null> => {
   const userCoursesList = user?.courses;
 
-  const courseExists = userCoursesList?.some(
-    (course: any) => course._id.toString() === courseId.toString()
-  );
+  console.log(userCoursesList);
 
+  const courseExists = userCoursesList?.some(
+    (course: any) => course.courseId.toString() === courseId.toString()
+  );
   if (!courseExists) {
     throw new ErrorHandler("You are not enrolled in this course", 404);
   }
 
   const course = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new ErrorHandler("Course not found", 404);
+  }
 
   const { rating, review } = data as IAddReviewData;
 
@@ -263,28 +302,32 @@ export const addReview = async (
     user: user,
     rating: rating,
     comment: review,
+    commentReplies: [],
   };
 
-  course?.reviews.push(reviewData);
+  course.reviews.push(reviewData);
 
   let avg = 0;
 
-  course?.reviews.forEach((item: any) => {
+  course.reviews.forEach((item: any) => {
     avg += item.rating;
   });
 
-  if (course) {
-    course.ratings = avg / course?.reviews.length;
-  }
+  course.ratings = avg / course.reviews.length;
 
-  await course?.save();
+  await course.save();
 
   const notification = {
     title: "New Review Received",
-    message: `${user.name} has reviewed your course ${course?.name}.`,
+    message: `${user.name} has reviewed your course ${course.name}.`,
   };
 
   //   Create a new notification
+  await NotificationModel.create({
+    userId: user._id,
+    title: notification.title,
+    message: notification.message,
+  });
 
   return course;
 };
@@ -295,6 +338,7 @@ interface IReplyToReviewData {
   courseId: string;
   reviewId: string;
 }
+
 export const addReplyToReview = async (
   user: IUser,
   data: IReplyToReviewData

@@ -60,7 +60,7 @@ export const createOrder = async (
   };
 
   const html = await ejs.renderFile(
-    path.join(__dirname, "../mails/order-confirmation.ejs"),
+    path.join(__dirname, "./mails/order-confirmation.ejs"),
     { data: mailData }
   );
 

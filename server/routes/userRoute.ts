@@ -1,24 +1,24 @@
 import express from "express";
 import {
-  registerUser,
-  activateUser,
-  loginUser,
-  logoutUser,
-  updateAccessToken,
-  getUserInfo,
-  socialAuth,
-  updateUserInfo,
+  handleRegisterUser,
+  handleActivateUser,
+  handleLoginUser,
+  handleLogoutUser,
+  handleUpdateAccessToken,
+  handleGetUserInfo,
+  handleSocialAuth,
+  handleUpdateUserInfo,
 } from "../controllers/userController";
-import { isAuthenticated, authorizeRoles } from "../middleware/auth";
+import { isAuthenticated } from "../middleware/auth";
 const userRouter = express.Router();
 
-userRouter.post("/registration", registerUser);
-userRouter.post("/activate-user", activateUser);
-userRouter.post("/login", loginUser);
-userRouter.get("/logout", isAuthenticated, logoutUser);
-userRouter.get("/update-access-token", updateAccessToken);
-userRouter.get("/me", isAuthenticated, getUserInfo);
-userRouter.post("/social-auth", socialAuth);
-userRouter.put("/update-user-info", isAuthenticated, updateUserInfo);
+userRouter.post("/registration", handleRegisterUser);
+userRouter.post("/activate-user", handleActivateUser);
+userRouter.post("/login", handleLoginUser);
+userRouter.get("/logout", isAuthenticated, handleLogoutUser);
+userRouter.get("/update-access-token", handleUpdateAccessToken);
+userRouter.get("/me", isAuthenticated, handleGetUserInfo);
+userRouter.post("/social-auth", handleSocialAuth);
+userRouter.put("/update-user-info", isAuthenticated, handleUpdateUserInfo);
 
 export default userRouter;

@@ -1,14 +1,18 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface INotification extends Document {
+  userId: string;
   title: string;
   message: string;
   status: string;
-  userId: string;
 }
 
 const notificationSchema = new Schema<INotification>(
   {
+    userId: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -19,7 +23,6 @@ const notificationSchema = new Schema<INotification>(
     },
     status: {
       type: String,
-      required: true,
       default: "unread",
     },
   },

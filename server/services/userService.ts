@@ -1,11 +1,17 @@
+import ejs from "ejs";
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config();
+import cloudinary from "cloudinary";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
+
 import userModel, { IUser } from "../models/userModel";
 import { redis } from "../utils/redis";
 import { sendMail } from "../utils/email";
 import { sendToken, ITokenOptions } from "../utils/jwt";
-import jwt, { JwtPayload, Secret } from "jsonwebtoken";
-import ejs from "ejs";
 import ErrorHandler from "../utils/ErrorHandler";
-import path from "path";
+
+const __dirname = path.resolve();
 
 // Register User
 // create activation token
@@ -41,7 +47,7 @@ const createActivationToken = (user: IRegistrationBody): IActivationToken => {
 // registration user
 export const registerUser = async (userData: IRegistrationBody) => {
   const { name, email } = userData as IRegistrationBody;
-  const isEmailExist = await userModel.findOne({ email });
+  const isEmailExist = (await userModel.findOne({ email })) as IUser;
   if (isEmailExist) {
     throw new ErrorHandler("Email already exist", 400);
   }
@@ -59,7 +65,7 @@ export const registerUser = async (userData: IRegistrationBody) => {
   };
 
   const html = await ejs.renderFile(
-    path.join(__dirname, "../mails/activation-mail.ejs"),
+    path.join(__dirname, "./mails/activation-mail.ejs"),
     mailData
   );
 
@@ -101,13 +107,13 @@ export const activateUser = async (activationData: IActivationRequestBody) => {
 
   const { name, email, password } = newUser.user;
 
-  const userExist = await userModel.findOne({ email });
+  const userExist = (await userModel.findOne({ email })) as IUser;
 
   if (userExist) {
     throw new ErrorHandler("User already exist", 400);
   }
 
-  await userModel.create({ name, email, password });
+  (await userModel.create({ name, email, password })) as IUser;
 };
 
 // login user
@@ -131,13 +137,15 @@ export const loginUser = async (
     throw new ErrorHandler("Please enter email and password", 400);
   }
 
-  const user = await userModel.findOne({ email }).select("+password");
+  const user = (await userModel
+    .findOne({ email })
+    .select("+password")) as IUser;
 
   if (!user) {
     throw new ErrorHandler("Invalid credentials", 400);
   }
 
-  const isPasswordCorrect = await user.comparePassword(password);
+  const isPasswordCorrect = (await user.comparePassword(password)) as boolean;
 
   if (!isPasswordCorrect) {
     throw new ErrorHandler("Invalid credentials", 400);
@@ -186,11 +194,139 @@ export const updateAccessToken = async (
     refreshTokenOptions: ITokenOptions;
   };
 };
-// // get user by id
-// export const getUserById = async (id: string, res: Response) => {
-//   const userJson = await redis.get(id);
-//   if (userJson) {
-//     const user = JSON.parse(userJson);
-//     res.status(200).json({ success: true, user });
-//   }
-// };
+
+// Update Password
+
+interface IUpdatePasswordBody {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export const updatePassword = async (
+  passwordData: IUpdatePasswordBody,
+  userId: string
+): Promise<IUser> => {
+  const { oldPassword, newPassword } = passwordData as IUpdatePasswordBody;
+  if (!oldPassword || !newPassword) {
+    throw new ErrorHandler("Please enter old and new password", 400);
+  }
+
+  const user = (await userModel
+    .findById(userId as string)
+    .select("+password")) as IUser;
+
+  if (user?.password === undefined) {
+    throw new ErrorHandler("Initial login required", 404);
+  }
+
+  const isPasswordCorrect = (await user.comparePassword(
+    oldPassword
+  )) as boolean;
+
+  if (!isPasswordCorrect) {
+    throw new ErrorHandler("Invalid old password", 400);
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  await redis.set(userId as string, JSON.stringify(user as IUser));
+
+  return user as IUser;
+};
+
+interface IUpdateUserInfoBody {
+  name: string;
+}
+
+export const updateUserInfo = async (
+  userData: IUpdateUserInfoBody,
+  user: IUser
+): Promise<IUser> => {
+  const { name } = userData as IUpdateUserInfoBody;
+
+  if (name && user) {
+    user.name = name;
+  }
+
+  await user?.save();
+
+  await redis.set(user._id as string, JSON.stringify(user as IUser));
+
+  return user as IUser;
+};
+
+// update profile picture
+export const updateProfilePicture = async (
+  avatar: string,
+  user: IUser
+): Promise<IUser> => {
+  if (avatar && user) {
+    if (user?.avatar?.public_id) {
+      await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+
+      const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+        folder: "avatars",
+        width: 150,
+      });
+      user.avatar = {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      };
+    } else {
+      const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+        folder: "avatars",
+        width: 150,
+      });
+      user.avatar = {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      };
+    }
+  }
+
+  await user?.save();
+
+  await redis.set(user._id as string, JSON.stringify(user as IUser));
+
+  return user as IUser;
+};
+
+// social auth
+interface ISocialAuthBody {
+  email: string;
+  name: string;
+  avatar: string;
+}
+
+export const socialAuth = async (
+  userData: ISocialAuthBody
+): Promise<{
+  accessToken: string;
+  refreshToken: string;
+  user: IUser;
+  accessTokenOptions: ITokenOptions;
+  refreshTokenOptions: ITokenOptions;
+}> => {
+  const { email, name, avatar } = userData as ISocialAuthBody;
+  const user = (await userModel.findOne({ email })) as IUser;
+
+  if (!user) {
+    const newUser = (await userModel.create({ email, name, avatar })) as IUser;
+    return (await sendToken(newUser)) as {
+      accessToken: string;
+      refreshToken: string;
+      user: IUser;
+      accessTokenOptions: ITokenOptions;
+      refreshTokenOptions: ITokenOptions;
+    };
+  } else {
+    return (await sendToken(user)) as {
+      accessToken: string;
+      refreshToken: string;
+      user: IUser;
+      accessTokenOptions: ITokenOptions;
+      refreshTokenOptions: ITokenOptions;
+    };
+  }
+};
