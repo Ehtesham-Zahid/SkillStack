@@ -7,6 +7,7 @@ import UserModel, { IUser } from "../models/userModel";
 import NotificationModel from "../models/notificationModel";
 import ErrorHandler from "../utils/ErrorHandler";
 import { sendMail } from "../utils/email";
+import { redis } from "../utils/redis";
 
 const __dirname = path.resolve();
 
@@ -14,18 +15,21 @@ const __dirname = path.resolve();
 interface ICreateOrderData {
   courseId: string;
   userId: string;
-  payment_info: object;
+  payment_info?: object;
 }
+
 export const createOrder = async (
   data: ICreateOrderData,
-  user: IUser
+  userId: string
 ): Promise<ICourse> => {
-  const { courseId, payment_info } = data as ICreateOrderData;
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    throw new ErrorHandler("User not found", 404);
+  }
+  const { courseId, payment_info = {} } = data as ICreateOrderData;
 
-  //   const userExist = await UserModel.findById(user._id);
-
-  const courseExistInUser = user?.courses.some(
-    (course: any) => course._id.toString() === courseId.toString()
+  const courseExistInUser = user.courses.some(
+    (course: any) => course.courseId.toString() === courseId
   );
 
   if (courseExistInUser) {
@@ -41,7 +45,7 @@ export const createOrder = async (
   const orderData: any = {
     courseId: courseId,
     userId: user._id,
-    payment_info: payment_info,
+    payment_info: payment_info || {},
   };
 
   const order = await OrderModel.create(orderData);
@@ -64,31 +68,37 @@ export const createOrder = async (
     { data: mailData }
   );
 
-  try {
-    if (user) {
-      await sendMail({
-        to: user.email,
-        subject: "Order Confirmation",
-        html,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    throw new ErrorHandler("Error sending email", 500);
-  }
+  await sendMail({
+    to: user.email,
+    subject: "Order Confirmation",
+    html,
+  });
 
-  user?.courses.push({ courseId: courseId });
-  await user?.save();
+  user.courses.push({ courseId: courseId });
+  await user.save();
+  await redis.set(user._id as string, JSON.stringify(user) as any);
 
   await NotificationModel.create({
-    user: user?._id,
+    userId: user._id,
     title: "New Order",
     message: `${user.name} has purchased the course ${course?.name}.`,
   });
 
-  course.purchased ? (course.purchased += 1) : course.purchased;
+  if (course.purchased !== undefined) course.purchased += 1;
 
-  await course?.save();
+  await course.save();
+  await redis.set(course._id as string, JSON.stringify(course) as any);
+
+  // Update the specific course in allCourses cache
+  const allCoursesCache = await redis.get("allCourses");
+  if (allCoursesCache) {
+    const allCourses = JSON.parse(allCoursesCache);
+    const courseIndex = allCourses.findIndex((c: any) => c._id === course._id);
+    if (courseIndex !== -1) {
+      allCourses[courseIndex] = course;
+      await redis.set("allCourses", JSON.stringify(allCourses));
+    }
+  }
 
   return course;
 };

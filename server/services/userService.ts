@@ -142,12 +142,14 @@ export const loginUser = async (
     .select("+password")) as IUser;
 
   if (!user) {
+    console.log("Invalid credentials 1");
     throw new ErrorHandler("Invalid credentials", 400);
   }
 
   const isPasswordCorrect = (await user.comparePassword(password)) as boolean;
 
   if (!isPasswordCorrect) {
+    console.log("Invalid credentials 2");
     throw new ErrorHandler("Invalid credentials", 400);
   }
 

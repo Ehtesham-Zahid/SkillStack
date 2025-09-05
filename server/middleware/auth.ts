@@ -31,7 +31,7 @@ export const isAuthenticated = asyncHandler(
     if (cached) {
       user = JSON.parse(cached) as IUser;
     } else {
-      user = await UserModel.findById(decoded.id as string).lean();
+      user = await UserModel.findById(decoded.id as string);
       if (user) {
         await redis.set(decoded.id as string, JSON.stringify(user));
       }
