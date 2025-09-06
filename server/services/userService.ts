@@ -332,3 +332,37 @@ export const socialAuth = async (
     };
   }
 };
+
+// Get All Users --- Admin
+export const getAllUsers = async () => {
+  const users = await userModel
+    .find()
+    .select("-password")
+    .sort({ createdAt: -1 });
+  return users;
+};
+
+interface IUpdateUserRoleBody {
+  id: string;
+  role: string;
+}
+// Update User Role --- Admin
+export const updateUserRole = async (userData: IUpdateUserRoleBody) => {
+  const { id, role } = userData as IUpdateUserRoleBody;
+  const user = await userModel.findByIdAndUpdate(id, { role }, { new: true });
+  if (!user) {
+    throw new ErrorHandler("User not found", 404);
+  }
+  await redis.set(user._id as string, JSON.stringify(user as IUser));
+  return user;
+};
+
+// Delete User --- Admin
+export const deleteUser = async (userId: string) => {
+  const user = await userModel.findById(userId);
+  if (!user) {
+    throw new ErrorHandler("User not found", 404);
+  }
+  await user.deleteOne();
+  await redis.del(userId as string);
+};

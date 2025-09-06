@@ -22,7 +22,7 @@ export const sendMail = async (options: EmailOptions) => {
   try {
     const { to, subject, html } = options;
     const info = await transporter.sendMail({
-      from: `"SKILLSTACK" <ehteshamzahid313@gmail.com>`,
+      from: `"SkillStack" <ehteshamzahid313@gmail.com>`,
       to,
       subject,
       html,

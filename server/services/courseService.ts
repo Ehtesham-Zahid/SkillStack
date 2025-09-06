@@ -372,3 +372,27 @@ export const addReplyToReview = async (
 
   return course;
 };
+
+// Get All Courses --- Admin
+export const getAllCoursesAdmin = async () => {
+  const courses = await CourseModel.find().sort({ createdAt: -1 });
+  return courses;
+};
+
+// Delete Course --- Admin
+export const deleteCourse = async (courseId: string) => {
+  const course = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new ErrorHandler("Course not found", 404);
+  }
+  await course.deleteOne();
+  await redis.del(courseId as string);
+
+  // Delete the specific course in allCourses cache
+  const allCoursesCache = await redis.get("allCourses");
+  if (allCoursesCache) {
+    const allCourses = JSON.parse(allCoursesCache);
+    const filteredCourses = allCourses.filter((c: any) => c._id !== courseId);
+    await redis.set("allCourses", JSON.stringify(filteredCourses));
+  }
+};

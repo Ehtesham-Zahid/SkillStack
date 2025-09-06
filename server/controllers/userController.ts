@@ -15,6 +15,9 @@ import {
   updateUserInfo,
   updateProfilePicture,
   socialAuth,
+  getAllUsers,
+  updateUserRole,
+  deleteUser,
 } from "../services/userService";
 
 // Register User
@@ -166,5 +169,31 @@ export const handleUpdateProfilePicture = asyncHandler(
       req.user as IUser
     )) as IUser;
     res.status(200).json({ success: true, user });
+  }
+);
+
+// Get All Users --- Admin
+export const handleGetAllUsers = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const users = await getAllUsers();
+    res.status(200).json({ success: true, users });
+  }
+);
+
+// Update User Role --- Admin
+export const handleUpdateUserRole = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await updateUserRole(req.body);
+    res.status(201).json({ success: true, user });
+  }
+);
+
+// Delete User --- Admin
+export const handleDeleteUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    await deleteUser(req.params.id);
+    res
+      .status(200)
+      .json({ success: true, message: "User deleted successfully" });
   }
 );

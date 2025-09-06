@@ -9,6 +9,8 @@ import {
   addAnswer,
   addReview,
   addReplyToReview,
+  getAllCoursesAdmin,
+  deleteCourse,
 } from "../services/courseService";
 import asyncHandler from "express-async-handler";
 import { IUser } from "../models/userModel";
@@ -86,5 +88,23 @@ export const handleAddReplyToReview = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const course = await addReplyToReview(req.user as IUser, req.body);
     res.status(200).json({ success: true, course });
+  }
+);
+
+// Get All Courses --- Admin
+export const handleGetAllCoursesAdmin = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const courses = await getAllCoursesAdmin();
+    res.status(200).json({ success: true, courses });
+  }
+);
+
+// Delete Course --- Admin
+export const handleDeleteCourse = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    await deleteCourse(req.params.id);
+    res
+      .status(200)
+      .json({ success: true, message: "Course deleted successfully" });
   }
 );

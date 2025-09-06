@@ -9,6 +9,8 @@ import {
   handleGetCourseContent,
   handleGetSingleCourse,
   handleAddReplyToReview,
+  handleGetAllCoursesAdmin,
+  handleDeleteCourse,
 } from "../controllers/courseController";
 import { authorizeRoles, isAuthenticated } from "../middleware/auth";
 
@@ -49,6 +51,20 @@ courseRouter.put(
   isAuthenticated,
   authorizeRoles("admin"),
   handleAddReplyToReview
+);
+
+courseRouter.get(
+  "/get-all-courses-admin",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  handleGetAllCoursesAdmin
+);
+
+courseRouter.delete(
+  "/delete-course-admin/:id",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  handleDeleteCourse
 );
 
 export default courseRouter;

@@ -102,3 +102,9 @@ export const createOrder = async (
 
   return course;
 };
+
+// Get All Orders --- Admin
+export const getAllOrdersAdmin = async () => {
+  const orders = await OrderModel.find().sort({ createdAt: -1 });
+  return orders;
+};
