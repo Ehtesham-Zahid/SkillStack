@@ -61,7 +61,7 @@ export const getCourseById = async (id: string): Promise<ICourse | null> => {
     course = await CourseModel.findById(id).select(
       "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
     );
-    await redis.set(id, JSON.stringify(course));
+    await redis.set(id, JSON.stringify(course), "EX", 604800);
   }
 
   if (!course) throw new ErrorHandler("Course not found", 404);

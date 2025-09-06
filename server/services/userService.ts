@@ -183,7 +183,7 @@ export const updateAccessToken = async (
 
   const session = await redis.get(decoded.id as string);
   if (!session) {
-    throw new ErrorHandler("Session not found. Please login again.", 400);
+    throw new ErrorHandler("Please login to access this resource.", 400);
   }
 
   const user = JSON.parse(session) as IUser;
