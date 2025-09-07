@@ -18,8 +18,8 @@ const Sidebar = () => {
         </SheetTrigger>
         <SheetContent side="left" className="bg-surface">
           <SheetHeader className="border-b border-gray-200 pb-4">
-            <p className="text-3xl font-bold">
-              Skill<span className="text-primary">Stack</span>
+            <p className="text-3xl font-black text-primary">
+              Skill<span className="text-black">Stack</span>
             </p>
           </SheetHeader>
           <ul className="flex flex-col gap-4 mt-2 px-5">

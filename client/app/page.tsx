@@ -1,6 +1,7 @@
 "use client";
 
 import Heading from "./utils/Heading";
+import { Hero } from "./components/sections";
 
 interface Props {}
 
@@ -12,6 +13,7 @@ const Page = (props: Props) => {
         description="SkillStack is a platform for learning and teaching skills"
         keywords="Programming, Web Development, AI, Machine Learning, Data Science"
       />
+      <Hero />
     </>
   );
 };
