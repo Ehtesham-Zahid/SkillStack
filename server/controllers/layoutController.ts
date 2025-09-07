@@ -26,7 +26,7 @@ export const handleEditLayout = asyncHandler(
   }
 );
 
-// Get Layout
+// Get Layout By Type
 export const handleGetLayoutByType = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const layout = await getLayoutByType(req.body.type);
