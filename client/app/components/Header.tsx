@@ -7,7 +7,7 @@ import Sidebar from "./Sidebar";
 const Header = () => {
   return (
     <div className="w-full bg-surface border-b   ">
-      <div className="flex items-center justify-between w-11/12 mx-auto py-4 gap-4">
+      <div className="flex items-center justify-between w-11/12 2xl:w-5/6 mx-auto py-4 gap-4">
         <p className="text-3xl sm:text-4xl lg:text-5xl font-black text-primary">
           Skill<span className="text-black">Stack</span>
         </p>

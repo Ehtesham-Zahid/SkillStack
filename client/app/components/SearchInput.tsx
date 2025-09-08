@@ -4,7 +4,7 @@ import { SearchIcon } from "lucide-react";
 
 const SearchInput = () => {
   return (
-    <div className="flex w-full max-w-sm items-center gap-2">
+    <div className="flex w-full  sm:max-w-sm mx-auto lg:mx-0 items-center gap-2">
       <input
         type="email"
         placeholder="Search"
