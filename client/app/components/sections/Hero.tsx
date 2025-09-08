@@ -33,13 +33,13 @@ const Hero = () => {
         </p>
         <div className=" flex flex-col  sm:flex-row gap-2 sm:gap-5 justify-center lg:justify-start">
           <Button
-            className="text-white text-base lg:text-lg w-full sm:w-auto"
+            className="text-white text-base lg:text-lg w-full sm:w-auto cursor-pointer hover:bg-primary/90"
             size="lg"
           >
             Start Learning
           </Button>
           <Button
-            className="text-base lg:text-lg w-full sm:w-auto"
+            className="text-base lg:text-lg w-full sm:w-auto cursor-pointer hover:bg-zinc-200"
             size="lg"
             variant="outline"
           >
