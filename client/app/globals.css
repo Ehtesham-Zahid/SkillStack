@@ -19,6 +19,16 @@
   --spacing-custom: 90%;
   --font-primary: "Poppins";
   --font-secondary: "Inter";
+
+  /* DARK MODE */
+  --color-primary-dark: #ff7a00;
+  --color-background-dark: #111827;
+  --color-surface-dark: #1f2937;
+  --color-text1-dark: #f9fafb;
+  --color-text2-dark: #9ca3af;
+  --color-success-dark: #34d399;
+  --color-danger-dark: #f87171;
+  --color-accent-dark: #38bdf8;
 }
 
 :root {

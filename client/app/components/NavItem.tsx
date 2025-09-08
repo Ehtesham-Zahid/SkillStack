@@ -8,7 +8,10 @@ interface NavItemProps {
 const NavItem = ({ href, label }: NavItemProps) => {
   return (
     <li>
-      <Link href={href} className="text-text1 hover:text-primary font-medium">
+      <Link
+        href={href}
+        className="text-text1 dark:text-text1-dark hover:text-primary font-medium"
+      >
         {label}
       </Link>
     </li>

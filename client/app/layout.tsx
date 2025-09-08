@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
+// import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
+import { ThemeProvider } from "./utils/ThemeProvider";
 
 // const geistMono = Geist_Mono({
 //   variable: "--font-geist-mono",
@@ -19,10 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased bg-background`}>
-        <Header />
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`antialiased bg-background dark:bg-background-dark`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
