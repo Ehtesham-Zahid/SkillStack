@@ -3,6 +3,7 @@ import ThemeToggle from "./ThemeToggle";
 import { UserCircle2Icon } from "lucide-react";
 import { NAV_ITEMS } from "@/app/constants";
 import Sidebar from "./Sidebar";
+import AuthDialog from "./AuthDialog";
 
 const Header = () => {
   return (
@@ -18,9 +19,7 @@ const Header = () => {
             ))}
           </ul>
           <ThemeToggle />
-          <div className=" items-center justify-center cursor-pointer lg:flex hidden">
-            <UserCircle2Icon size={26} />
-          </div>
+          <AuthDialog />
           <Sidebar />
         </div>
       </div>
