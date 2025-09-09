@@ -4,6 +4,7 @@ import { UserCircle2Icon } from "lucide-react";
 import { NAV_ITEMS } from "@/app/constants";
 import Sidebar from "./Sidebar";
 import AuthDialog from "./AuthDialog";
+import OtpDialog from "./OtpDialog";
 
 const Header = () => {
   return (
@@ -21,6 +22,7 @@ const Header = () => {
           <ThemeToggle />
           <AuthDialog />
           <Sidebar />
+          <OtpDialog />
         </div>
       </div>
     </div>
