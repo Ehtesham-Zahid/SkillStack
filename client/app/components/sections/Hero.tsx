@@ -8,7 +8,7 @@ import { Badge } from "@/app/shadcn/ui/badge";
 
 const Hero = () => {
   return (
-    <div className="w-11/12  lg:w-11/12 2xl:w-5/6 mx-auto grid grid-cols-1 lg:grid-cols-2 items-start my-10 2xl:my-20">
+    <div className="w-11/12  lg:w-11/12 2xl:w-5/6 mx-auto grid grid-cols-1 lg:grid-cols-2 items-start my-10 2xl:my-16">
       <div className="flex flex-col gap-5 lg:gap-8  2xl:gap-10  ">
         <div className="flex flex-col gap-5">
           <Badge
@@ -19,7 +19,7 @@ const Hero = () => {
             Learn from Experts
           </Badge>
 
-          <p className="text-[clamp(28px,5vw,70px)]  font-black text-center lg:text-left leading-[1.3] text-text1 dark:text-text1-dark">
+          <p className="text-[clamp(28px,5vw,65px)]  font-bold text-center lg:text-left  text-text1 dark:text-text1-dark">
             Master Top Notch Skills from{" "}
             <span className="text-primary border-b-2 border-primary border-dashed  -rotate-5 inline-block ">
               Skill
