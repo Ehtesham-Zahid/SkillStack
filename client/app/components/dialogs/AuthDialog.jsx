@@ -1,21 +1,27 @@
 "use client";
 
-import { Button } from "@/app/shadcn/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/app/shadcn/ui/dialog";
 import { UserCircle2Icon } from "lucide-react";
-import AuthForm from "./AuthForm";
+import AuthForm from "../forms/AuthForm";
+import { useSelector, useDispatch } from "react-redux";
+import { setShowAuthDialog } from "../../../redux/features/auth/authSlice";
 
 const AuthDialog = () => {
+  const { showAuthDialog } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
   return (
-    <Dialog>
+    <Dialog
+      open={showAuthDialog}
+      onOpenChange={() => dispatch(setShowAuthDialog(!showAuthDialog))}
+    >
       <form>
         <DialogTrigger asChild>
           <div className=" items-center justify-center cursor-pointer lg:flex hidden">

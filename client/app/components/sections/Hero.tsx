@@ -1,5 +1,5 @@
 import { Button } from "@/app/shadcn/ui/button";
-import SearchInput from "../SearchInput";
+import SearchInput from "../ui/SearchInput";
 import { Avatar, AvatarImage, AvatarFallback } from "@/app/shadcn/ui/avatar";
 import Lottie from "lottie-react";
 import animationData from "@/public/lotties/hero.json";

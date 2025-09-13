@@ -1,5 +1,5 @@
-import { Button } from "../shadcn/ui/button";
-import { Input } from "../shadcn/ui/input";
+import { Button } from "../../shadcn/ui/button";
+import { Input } from "../../shadcn/ui/input";
 import { SearchIcon } from "lucide-react";
 
 const SearchInput = () => {

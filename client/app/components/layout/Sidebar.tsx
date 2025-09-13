@@ -6,8 +6,8 @@ import {
   SheetTrigger,
 } from "@/app/shadcn/ui/sheet";
 import { MenuIcon, UserCircle2Icon } from "lucide-react";
-import { NAV_ITEMS } from "../constants";
-import NavItem from "./NavItem";
+import { NAV_ITEMS } from "../../constants";
+import NavItem from "../ui/NavItem";
 
 const Sidebar = () => {
   return (

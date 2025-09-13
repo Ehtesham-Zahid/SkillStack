@@ -8,12 +8,20 @@ import {
   DialogTrigger,
 } from "@/app/shadcn/ui/dialog";
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
-import OtpForm from "./OtpForm";
+import OtpForm from "../forms/OtpForm";
 import { MailIcon } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { setShowOtpDialog } from "../../../redux/features/auth/authSlice";
 
 const OtpDialog = () => {
+  const { showOtpDialog } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
   return (
-    <Dialog>
+    <Dialog
+      open={showOtpDialog}
+      onOpenChange={() => dispatch(setShowOtpDialog(!showOtpDialog))}
+    >
       <form>
         <DialogTrigger asChild>
           <MailIcon size={26} className="cursor-pointer" />

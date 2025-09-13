@@ -1,8 +1,12 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
+import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { LuLoaderCircle } from "react-icons/lu";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/app/shadcn/ui/button";
 import {
@@ -10,7 +14,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/app/shadcn/ui/form";
 import {
@@ -18,7 +21,12 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/app/shadcn/ui/input-otp";
-import { useState } from "react";
+
+import { useActivationMutation } from "../../../redux/features/auth/authApi";
+import {
+  setShowOtpDialog,
+  setShowAuthDialog,
+} from "../../../redux/features/auth/authSlice";
 
 const FormSchema = z.object({
   pin: z.number().min(4, {
@@ -28,6 +36,11 @@ const FormSchema = z.object({
 
 const OtpForm = () => {
   const [resendOtp, setResendOtp] = useState(false);
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [activate, { data, error, isSuccess, isLoading, isError }] =
+    useActivationMutation();
+
   const form = useForm({
     loginResolver: zodResolver(FormSchema),
     defaultValues: {
@@ -35,18 +48,22 @@ const OtpForm = () => {
     },
   });
 
-  //   function onSubmit(data: z.infer<typeof FormSchema>) {
-  //     toast("You submitted the following values", {
-  //       description: (
-  //         <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-  //           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-  //         </pre>
-  //       ),
-  //     });
-  //   }
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Account activated");
+      dispatch(setShowOtpDialog(false));
+      dispatch(setShowAuthDialog(true));
+    }
+    if (error) {
+      toast.error(error.data.message);
+    }
+  }, [isSuccess, error]);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    await activate({
+      activationToken: token,
+      activationCode: data.pin,
+    });
   };
 
   return (
@@ -88,8 +105,16 @@ const OtpForm = () => {
           )}
         />
 
-        <Button type="submit" className="w-full cursor-pointer text-white">
-          Verify OTP
+        <Button
+          type="submit"
+          className="w-full cursor-pointer text-white"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <LuLoaderCircle className="animate-spin" />
+          ) : (
+            "Verify OTP"
+          )}
         </Button>
       </form>
       <p

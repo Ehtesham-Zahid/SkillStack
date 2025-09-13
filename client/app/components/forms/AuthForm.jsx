@@ -8,15 +8,17 @@ import { Button } from "@/app/shadcn/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/app/shadcn/ui/form";
 import { Input } from "@/app/shadcn/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import { useRegisterMutation } from "../../../redux/features/auth/authApi";
+import { LuLoaderCircle } from "react-icons/lu";
+import toast from "react-hot-toast";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -31,6 +33,8 @@ const registerSchema = z.object({
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [register, { data, error, isSuccess, isLoading, isError }] =
+    useRegisterMutation();
   const form = useForm({
     loginResolver: zodResolver(loginSchema),
     registerResolver: zodResolver(registerSchema),
@@ -41,9 +45,22 @@ const AuthForm = () => {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    if (isLogin) {
+      //   await login(data);
+    } else {
+      await register(data);
+    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Verification email sent");
+    }
+    if (error) {
+      toast.error(error.data.message);
+    }
+  }, [isSuccess, error]);
 
   return (
     <Form {...form}>
@@ -89,8 +106,18 @@ const AuthForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full cursor-pointer mt-2 text-white">
-          {isLogin ? "Login" : "Register"}
+        <Button
+          type="submit"
+          className="w-full cursor-pointer mt-2 text-white"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <LuLoaderCircle className="animate-spin" />
+          ) : isLogin ? (
+            "Login"
+          ) : (
+            "Register"
+          )}
         </Button>
       </form>
       <div className="flex items-center justify-center gap-2 text-text2 dark:text-text2-dark text-sm my-2.5 ">

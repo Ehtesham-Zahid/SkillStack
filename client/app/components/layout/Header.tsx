@@ -1,10 +1,9 @@
-import NavItem from "./NavItem";
-import ThemeToggle from "./ThemeToggle";
-import { UserCircle2Icon } from "lucide-react";
+import NavItem from "../ui/NavItem";
+import ThemeToggle from "../ui/ThemeToggle";
 import { NAV_ITEMS } from "@/app/constants";
 import Sidebar from "./Sidebar";
-import AuthDialog from "./AuthDialog";
-import OtpDialog from "./OtpDialog";
+import AuthDialog from "../dialogs/AuthDialog";
+import OtpDialog from "../dialogs/OtpDialog";
 
 const Header = () => {
   return (
