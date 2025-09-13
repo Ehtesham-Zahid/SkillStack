@@ -4,9 +4,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTrigger,
-} from "@/app/shadcn/ui/sheet";
+} from "@/src/shadcn/ui/sheet";
 import { MenuIcon, UserCircle2Icon } from "lucide-react";
-import { NAV_ITEMS } from "../../constants";
+import { NAV_ITEMS } from "@/src/constants";
 import NavItem from "../ui/NavItem";
 
 const Sidebar = () => {

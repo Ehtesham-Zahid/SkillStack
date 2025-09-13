@@ -6,12 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/app/shadcn/ui/dialog";
+} from "@/src/shadcn/ui/dialog";
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
 import OtpForm from "../forms/OtpForm";
 import { MailIcon } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { setShowOtpDialog } from "../../../redux/features/auth/authSlice";
+import { setShowOtpDialog } from "../../redux/features/auth/authSlice";
 
 const OtpDialog = () => {
   const { showOtpDialog } = useSelector((state) => state.auth);

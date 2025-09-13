@@ -8,25 +8,25 @@ import { useEffect, useState } from "react";
 import { LuLoaderCircle } from "react-icons/lu";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Button } from "@/app/shadcn/ui/button";
+import { Button } from "@/src/shadcn/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/app/shadcn/ui/form";
+} from "@/src/shadcn/ui/form";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/app/shadcn/ui/input-otp";
+} from "@/src/shadcn/ui/input-otp";
 
-import { useActivationMutation } from "../../../redux/features/auth/authApi";
+import { useActivationMutation } from "../../redux/features/auth/authApi";
 import {
   setShowOtpDialog,
   setShowAuthDialog,
-} from "../../../redux/features/auth/authSlice";
+} from "../../redux/features/auth/authSlice";
 
 const FormSchema = z.object({
   pin: z.number().min(4, {

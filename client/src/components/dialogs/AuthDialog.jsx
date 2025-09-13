@@ -7,11 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/app/shadcn/ui/dialog";
+} from "@/src/shadcn/ui/dialog";
 import { UserCircle2Icon } from "lucide-react";
 import AuthForm from "../forms/AuthForm";
 import { useSelector, useDispatch } from "react-redux";
-import { setShowAuthDialog } from "../../../redux/features/auth/authSlice";
+import { setShowAuthDialog } from "../../redux/features/auth/authSlice";
 
 const AuthDialog = () => {
   const { showAuthDialog } = useSelector((state) => state.auth);

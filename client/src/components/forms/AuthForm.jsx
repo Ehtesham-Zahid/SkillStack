@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button } from "@/app/shadcn/ui/button";
+import { Button } from "@/src/shadcn/ui/button";
 import {
   Form,
   FormControl,
@@ -12,15 +12,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/app/shadcn/ui/form";
-import { Input } from "@/app/shadcn/ui/input";
+} from "@/src/shadcn/ui/form";
+import { Input } from "@/src/shadcn/ui/input";
 import { useEffect, useState } from "react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import {
   useRegisterMutation,
   useSocialAuthMutation,
   useLoginMutation,
-} from "../../../redux/features/auth/authApi";
+} from "../../redux/features/auth/authApi";
 import { LuLoaderCircle } from "react-icons/lu";
 import toast from "react-hot-toast";
 import { signIn, useSession } from "next-auth/react";
@@ -28,7 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setShowAuthDialog,
   setShowOtpDialog,
-} from "../../../redux/features/auth/authSlice";
+} from "../../redux/features/auth/authSlice";
 
 const loginSchema = z.object({
   email: z.string().email(),

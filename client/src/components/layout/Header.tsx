@@ -1,6 +1,6 @@
 import NavItem from "../ui/NavItem";
 import ThemeToggle from "../ui/ThemeToggle";
-import { NAV_ITEMS } from "@/app/constants";
+import { NAV_ITEMS } from "@/src/constants";
 import Sidebar from "./Sidebar";
 import AuthDialog from "../dialogs/AuthDialog";
 import OtpDialog from "../dialogs/OtpDialog";
