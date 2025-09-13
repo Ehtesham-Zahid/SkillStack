@@ -16,9 +16,19 @@ import {
 import { Input } from "@/app/shadcn/ui/input";
 import { useEffect, useState } from "react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import { useRegisterMutation } from "../../../redux/features/auth/authApi";
+import {
+  useRegisterMutation,
+  useSocialAuthMutation,
+  useLoginMutation,
+} from "../../../redux/features/auth/authApi";
 import { LuLoaderCircle } from "react-icons/lu";
 import toast from "react-hot-toast";
+import { signIn, useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setShowAuthDialog,
+  setShowOtpDialog,
+} from "../../../redux/features/auth/authSlice";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -33,8 +43,37 @@ const registerSchema = z.object({
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [register, { data, error, isSuccess, isLoading, isError }] =
-    useRegisterMutation();
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { data: sessionData } = useSession();
+  const [
+    socialAuth,
+    {
+      data: socialAuthData,
+      error: socialAuthError,
+      isSuccess: socialAuthSuccess,
+      isLoading: socialAuthLoading,
+    },
+  ] = useSocialAuthMutation();
+  const [
+    register,
+    {
+      data: registerData,
+      error: registerError,
+      isSuccess: registerSuccess,
+      isLoading: registerLoading,
+    },
+  ] = useRegisterMutation();
+  const [
+    login,
+    {
+      data: loginData,
+      error: loginError,
+      isSuccess: loginSuccess,
+      isLoading: loginLoading,
+    },
+  ] = useLoginMutation();
+
   const form = useForm({
     loginResolver: zodResolver(loginSchema),
     registerResolver: zodResolver(registerSchema),
@@ -47,20 +86,51 @@ const AuthForm = () => {
 
   const onSubmit = async (data) => {
     if (isLogin) {
-      //   await login(data);
+      await login({ email: data.email, password: data.password });
     } else {
       await register(data);
     }
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      toast.success("Verification email sent");
+    if (isLogin) {
+      if (loginSuccess) {
+        toast.success("Logged in successfully");
+        dispatch(setShowAuthDialog(false));
+      }
+      if (loginError) {
+        toast.error(loginError.data.message);
+      }
+    } else {
+      if (registerSuccess) {
+        toast.success("Verification email sent");
+        dispatch(setShowOtpDialog(true));
+        dispatch(setShowAuthDialog(false));
+      }
+      if (registerError) {
+        toast.error(registerError.data.message);
+      }
     }
-    if (error) {
-      toast.error(error.data.message);
+  }, [loginSuccess, loginError, registerSuccess, registerError]);
+
+  useEffect(() => {
+    if (!user) {
+      if (sessionData) {
+        socialAuth({
+          email: sessionData.user.email,
+          name: sessionData.user.name,
+          avatar: sessionData.user.image,
+        });
+      }
     }
-  }, [isSuccess, error]);
+    if (socialAuthSuccess) {
+      toast.success("Logged in successfully");
+    }
+
+    if (socialAuthError) {
+      toast.error(socialAuthError.data.message);
+    }
+  }, [user, sessionData, socialAuthSuccess, socialAuthError]);
 
   return (
     <Form {...form}>
@@ -109,9 +179,9 @@ const AuthForm = () => {
         <Button
           type="submit"
           className="w-full cursor-pointer mt-2 text-white"
-          disabled={isLoading}
+          disabled={isLogin ? loginLoading : registerLoading}
         >
-          {isLoading ? (
+          {(isLogin ? loginLoading : registerLoading) ? (
             <LuLoaderCircle className="animate-spin" />
           ) : isLogin ? (
             "Login"
@@ -129,6 +199,7 @@ const AuthForm = () => {
         <Button
           variant="outline"
           className="  cursor-pointer bg-surface text-text1 hover:bg-surface dark:bg-surface-dark dark:text-text1-dark   flex-1   hover:border-primary dark:hover:border-primary"
+          onClick={() => signIn("google")}
         >
           <FaGoogle size={20} />
           Google
@@ -136,6 +207,7 @@ const AuthForm = () => {
         <Button
           variant="outline"
           className=" cursor-pointer bg-surface text-text1 hover:bg-surface dark:bg-surface-dark dark:text-text1-dark   flex-1   hover:border-primary dark:hover:border-primary"
+          onClick={() => signIn("github")}
         >
           <FaGithub size={20} />
           Github
@@ -143,7 +215,7 @@ const AuthForm = () => {
       </div>
       {isLogin ? (
         <p className="text-xs text-center text-text2 dark:text-text2-dark mt-2">
-          Don't have an account?{" "}
+          Don't have an account?
           <span
             className="text-primary  cursor-pointer hover:underline"
             onClick={() => setIsLogin(false)}
@@ -153,7 +225,7 @@ const AuthForm = () => {
         </p>
       ) : (
         <p className="text-xs text-center text-text2 dark:text-text2-dark mt-2">
-          Already have an account?{" "}
+          Already have an account?
           <span
             className="text-primary  cursor-pointer hover:underline"
             onClick={() => setIsLogin(true)}

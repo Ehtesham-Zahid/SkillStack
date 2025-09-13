@@ -314,7 +314,11 @@ export const socialAuth = async (
   const user = (await userModel.findOne({ email })) as IUser;
 
   if (!user) {
-    const newUser = (await userModel.create({ email, name, avatar })) as IUser;
+    const newUser = (await userModel.create({
+      email,
+      name,
+      avatar: { public_id: avatar, url: avatar },
+    })) as IUser;
     return (await sendToken(newUser)) as {
       accessToken: string;
       refreshToken: string;

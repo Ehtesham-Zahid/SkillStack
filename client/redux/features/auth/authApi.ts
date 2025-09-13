@@ -33,8 +33,6 @@ export const authApi = apiSlice.injectEndpoints({
           const result = await queryFulfilled;
           console.log(result.data);
           dispatch(userRegistration({ token: result.data.activationToken }));
-          dispatch(setShowOtpDialog(true));
-          dispatch(setShowAuthDialog(false));
         } catch (error) {
           console.log(error);
         }
@@ -64,6 +62,27 @@ export const authApi = apiSlice.injectEndpoints({
               token: result.data.accessToken,
             })
           );
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    socialAuth: builder.mutation({
+      query: (data) => ({
+        url: "/users/social-auth",
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(
+            userLoggedIn({
+              user: result.data.user,
+              token: result.data.accessToken,
+            })
+          );
           dispatch(setShowAuthDialog(false));
         } catch (error) {
           console.log(error);
@@ -73,5 +92,9 @@ export const authApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useRegisterMutation, useActivationMutation, useLoginMutation } =
-  authApi;
+export const {
+  useRegisterMutation,
+  useActivationMutation,
+  useLoginMutation,
+  useSocialAuthMutation,
+} = authApi;
