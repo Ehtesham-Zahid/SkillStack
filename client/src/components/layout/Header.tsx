@@ -3,9 +3,11 @@ import ThemeToggle from "../ui/ThemeToggle";
 import { NAV_ITEMS } from "@/src/constants";
 import Sidebar from "./Sidebar";
 import AuthDialog from "../dialogs/AuthDialog";
-import OtpDialog from "../dialogs/OtpDialog";
+import { useSelector } from "react-redux";
+import Image from "next/image";
 
 const Header = () => {
+  const { user } = useSelector((state: any) => state.auth);
   return (
     <div className="w-full bg-surface border-b    dark:bg-surface-dark dark:border-b-0">
       <div className="flex items-center justify-between w-11/12 2xl:w-5/6 mx-auto py-4 gap-4">
@@ -19,9 +21,18 @@ const Header = () => {
             ))}
           </ul>
           <ThemeToggle />
-          <AuthDialog />
+          {user ? (
+            <Image
+              src={user?.avatar?.url || "/images/client1.webp"}
+              alt="user"
+              width={32}
+              height={32}
+              className="rounded-full w-8 h-8 cursor-pointer"
+            />
+          ) : (
+            <AuthDialog />
+          )}
           <Sidebar />
-          <OtpDialog />
         </div>
       </div>
     </div>

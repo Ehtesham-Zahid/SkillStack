@@ -1,5 +1,6 @@
 "use client";
 import type { Metadata } from "next";
+import React from "react";
 // import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layout/Header";
@@ -7,6 +8,8 @@ import { ThemeProvider } from "../utils/ThemeProvider";
 import { Provider } from "./Provider";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
+import { useLoadUserQuery } from "../redux/features/api/apiSlice";
+import Spinner from "../components/ui/Spinner";
 
 // const geistMono = Geist_Mono({
 //   variable: "--font-geist-mono",
@@ -34,9 +37,11 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <Toaster />
-              <Header />
-              {children}
+              <Custom>
+                <Toaster />
+                <Header />
+                {children}
+              </Custom>
             </ThemeProvider>
           </SessionProvider>
         </Provider>
@@ -44,3 +49,8 @@ export default function RootLayout({
     </html>
   );
 }
+
+const Custom = ({ children }: { children: React.ReactNode }) => {
+  const { isLoading } = useLoadUserQuery({});
+  return <>{isLoading ? <Spinner /> : children}</>;
+};
