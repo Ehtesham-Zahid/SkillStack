@@ -327,6 +327,13 @@ export const socialAuth = async (
       refreshTokenOptions: ITokenOptions;
     };
   } else {
+    // if (!user.avatar?.url && avatar) {
+    //   user.avatar = {
+    //     public_id: avatar,
+    //     url: avatar,
+    //   };
+    //   await user.save();
+    // }
     return (await sendToken(user)) as {
       accessToken: string;
       refreshToken: string;
