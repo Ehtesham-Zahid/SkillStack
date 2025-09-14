@@ -8,6 +8,7 @@ import AuthDialog from "../features/auth/AuthDialog";
 
 import Image from "next/image";
 import { NAV_ITEMS } from "@/src/constants";
+import Link from "next/link";
 
 const Header = () => {
   const { user } = useSelector((state: any) => state.auth);
@@ -25,13 +26,15 @@ const Header = () => {
           </ul>
           <ThemeToggle />
           {user ? (
-            <Image
-              src={user?.avatar?.url || "/images/client1.webp"}
-              alt="user"
-              width={32}
-              height={32}
-              className="rounded-full w-8 h-8 cursor-pointer"
-            />
+            <Link href="/profile">
+              <Image
+                src={user?.avatar?.url || "/images/client1.webp"}
+                alt="user"
+                width={32}
+                height={32}
+                className="rounded-full w-8 h-8 cursor-pointer"
+              />
+            </Link>
           ) : (
             <AuthDialog />
           )}

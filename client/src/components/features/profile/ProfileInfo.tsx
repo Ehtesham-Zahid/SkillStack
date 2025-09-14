@@ -1,5 +1,10 @@
+import ProfileInfoForm from "./ProfileInfoForm";
 const ProfileInfo = () => {
-  return <div>ProfileInfo</div>;
+  return (
+    <div>
+      <ProfileInfoForm />
+    </div>
+  );
 };
 
 export default ProfileInfo;
