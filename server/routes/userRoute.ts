@@ -11,6 +11,7 @@ import {
   handleGetAllUsers,
   handleUpdateUserRole,
   handleDeleteUser,
+  handleUpdateProfilePicture,
 } from "../controllers/userController";
 import { isAuthenticated, authorizeRoles } from "../middleware/auth";
 const userRouter = express.Router();
@@ -23,6 +24,11 @@ userRouter.get("/update-access-token", handleUpdateAccessToken);
 userRouter.get("/me", isAuthenticated, handleGetUserInfo);
 userRouter.post("/social-auth", handleSocialAuth);
 userRouter.put("/update-user-info", isAuthenticated, handleUpdateUserInfo);
+userRouter.put(
+  "/update-profile-picture",
+  isAuthenticated,
+  handleUpdateProfilePicture
+);
 
 userRouter.get(
   "/get-all-users-admin",
