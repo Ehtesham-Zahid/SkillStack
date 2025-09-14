@@ -1,8 +1,14 @@
 "use client";
 
+import { z } from "zod";
+import { useEffect, useState } from "react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { LuLoaderCircle } from "react-icons/lu";
+import toast from "react-hot-toast";
+import { signIn, useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button } from "@/src/shadcn/ui/button";
 import {
@@ -14,23 +20,19 @@ import {
   FormMessage,
 } from "@/src/shadcn/ui/form";
 import { Input } from "@/src/shadcn/ui/input";
-import { useEffect, useState } from "react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
+
 import {
   useRegisterMutation,
   useSocialAuthMutation,
   useLoginMutation,
-} from "../../redux/features/auth/authApi";
-import { LuLoaderCircle } from "react-icons/lu";
-import toast from "react-hot-toast";
-import { signIn, useSession } from "next-auth/react";
-import { useDispatch, useSelector } from "react-redux";
+} from "../../../redux/features/auth/authApi";
 import {
   setShowAuthDialog,
   setShowOtpDialog,
-} from "../../redux/features/auth/authSlice";
+} from "../../../redux/features/auth/authSlice";
 
 const loginSchema = z.object({
+  name: z.string().min(2).optional(),
   email: z.string().email(),
   password: z.string().min(8),
 });
@@ -43,7 +45,7 @@ const registerSchema = z.object({
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const { data: sessionData } = useSession();
   const [
@@ -75,16 +77,13 @@ const AuthForm = () => {
   ] = useLoginMutation();
 
   const form = useForm({
-    loginResolver: zodResolver(loginSchema),
-    registerResolver: zodResolver(registerSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
+    resolver: zodResolver(isLogin ? loginSchema : registerSchema),
+    defaultValues: isLogin
+      ? { name: "", email: "", password: "" }
+      : { name: "", email: "", password: "" },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     if (isLogin) {
       await login({ email: data.email, password: data.password });
     } else {
@@ -98,8 +97,11 @@ const AuthForm = () => {
         toast.success("Logged in successfully");
         dispatch(setShowAuthDialog(false));
       }
-      if (loginError) {
-        toast.error(loginError.data.message);
+      if (loginError && "data" in loginError) {
+        const errorData = loginError as any;
+        toast.error(
+          (errorData?.data?.message as string) || "Something went wrong"
+        );
       }
     } else {
       if (registerSuccess) {
@@ -107,8 +109,11 @@ const AuthForm = () => {
         dispatch(setShowOtpDialog(true));
         dispatch(setShowAuthDialog(false));
       }
-      if (registerError) {
-        toast.error(registerError.data.message);
+      if (registerError && "data" in registerError) {
+        const errorData = registerError as any;
+        toast.error(
+          (errorData?.data?.message as string) || "Something went wrong"
+        );
       }
     }
   }, [loginSuccess, loginError, registerSuccess, registerError]);
@@ -117,9 +122,9 @@ const AuthForm = () => {
     if (!user) {
       if (sessionData) {
         socialAuth({
-          email: sessionData.user.email,
-          name: sessionData.user.name,
-          avatar: sessionData.user.image,
+          email: sessionData.user?.email,
+          name: sessionData.user?.name,
+          avatar: sessionData.user?.image,
         });
       }
     }
@@ -127,8 +132,11 @@ const AuthForm = () => {
       toast.success("Logged in successfully");
     }
 
-    if (socialAuthError) {
-      toast.error(socialAuthError.data.message);
+    if (socialAuthError && "data" in socialAuthError) {
+      const errorData = socialAuthError as any;
+      toast.error(
+        (errorData?.data?.message as string) || "Something went wrong"
+      );
     }
   }, [user, sessionData, socialAuthSuccess, socialAuthError]);
 

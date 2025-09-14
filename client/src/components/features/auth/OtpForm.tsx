@@ -22,11 +22,11 @@ import {
   InputOTPSlot,
 } from "@/src/shadcn/ui/input-otp";
 
-import { useActivationMutation } from "../../redux/features/auth/authApi";
+import { useActivationMutation } from "../../../redux/features/auth/authApi";
 import {
   setShowOtpDialog,
   setShowAuthDialog,
-} from "../../redux/features/auth/authSlice";
+} from "../../../redux/features/auth/authSlice";
 
 const FormSchema = z.object({
   pin: z.number().min(4, {
@@ -36,13 +36,13 @@ const FormSchema = z.object({
 
 const OtpForm = () => {
   const [resendOtp, setResendOtp] = useState(false);
-  const { token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const [activate, { data, error, isSuccess, isLoading, isError }] =
     useActivationMutation();
 
   const form = useForm({
-    loginResolver: zodResolver(FormSchema),
+    resolver: zodResolver(FormSchema),
     defaultValues: {
       pin: 0,
     },
@@ -54,12 +54,13 @@ const OtpForm = () => {
       dispatch(setShowOtpDialog(false));
       dispatch(setShowAuthDialog(true));
     }
-    if (error) {
-      toast.error(error.data.message);
+    if (error && "data" in error) {
+      const errorData = error as any;
+      toast.error(errorData.data.message);
     }
   }, [isSuccess, error]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     await activate({
       activationToken: token,
       activationCode: data.pin,
@@ -73,8 +74,7 @@ const OtpForm = () => {
         className="w-full space-y-6 flex flex-col items-center"
       >
         <FormField
-          className=" "
-          control={form.control}
+          control={form.control as any}
           name="pin"
           render={({ field }) => (
             <FormItem className=" ">

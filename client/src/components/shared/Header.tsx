@@ -1,10 +1,13 @@
+import { useSelector } from "react-redux";
+
 import NavItem from "../ui/NavItem";
 import ThemeToggle from "../ui/ThemeToggle";
-import { NAV_ITEMS } from "@/src/constants";
 import Sidebar from "./Sidebar";
-import AuthDialog from "../dialogs/AuthDialog";
-import { useSelector } from "react-redux";
+
+import AuthDialog from "../features/auth/AuthDialog";
+
 import Image from "next/image";
+import { NAV_ITEMS } from "@/src/constants";
 
 const Header = () => {
   const { user } = useSelector((state: any) => state.auth);

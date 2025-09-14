@@ -1,7 +1,7 @@
 "use client";
 
 import Heading from "../utils/Heading";
-import { Hero } from "../components/sections";
+import Hero from "../components/features/home/Hero";
 
 interface Props {}
 

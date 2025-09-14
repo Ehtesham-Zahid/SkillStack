@@ -1,9 +1,12 @@
-import { Button } from "@/src/shadcn/ui/button";
-import SearchInput from "../ui/SearchInput";
-import { Avatar, AvatarImage, AvatarFallback } from "@/src/shadcn/ui/avatar";
 import Lottie from "lottie-react";
-import animationData from "@/public/lotties/hero.json";
+
 import { Badge } from "@/src/shadcn/ui/badge";
+import { Button } from "@/src/shadcn/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/shadcn/ui/avatar";
+
+import SearchInput from "../../ui/SearchInput";
+
+import animationData from "@/public/lotties/hero.json";
 
 const Hero = () => {
   return (

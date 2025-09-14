@@ -1,6 +1,10 @@
 import React from "react";
 
-const Spinner = ({ size = "large" }) => {
+interface SpinnerProps {
+  size?: "small" | "medium" | "large" | "xlarge";
+}
+
+const Spinner = ({ size = "large" }: SpinnerProps) => {
   const sizeClasses = {
     small: "w-6 h-6",
     medium: "w-8 h-8",

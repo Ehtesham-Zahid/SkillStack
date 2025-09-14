@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import React from "react";
 // import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "../components/layout/Header";
+import Header from "../components/shared/Header";
+import Footer from "../components/shared/Footer";
 import { ThemeProvider } from "../utils/ThemeProvider";
 import { Provider } from "./Provider";
 import { Toaster } from "react-hot-toast";
@@ -40,7 +41,8 @@ export default function RootLayout({
               <Custom>
                 <Toaster />
                 <Header />
-                {children}
+                <main className="min-h-screen">{children}</main>
+                <Footer />
               </Custom>
             </ThemeProvider>
           </SessionProvider>

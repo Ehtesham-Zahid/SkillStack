@@ -1,4 +1,9 @@
 "use client";
+
+import { useSelector, useDispatch } from "react-redux";
+import { MailIcon } from "lucide-react";
+import { IoShieldCheckmarkSharp } from "react-icons/io5";
+
 import {
   Dialog,
   DialogContent,
@@ -7,14 +12,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/shadcn/ui/dialog";
-import { IoShieldCheckmarkSharp } from "react-icons/io5";
-import OtpForm from "../forms/OtpForm";
-import { MailIcon } from "lucide-react";
-import { useSelector, useDispatch } from "react-redux";
-import { setShowOtpDialog } from "../../redux/features/auth/authSlice";
+
+import OtpForm from "./OtpForm";
+import { setShowOtpDialog } from "../../../redux/features/auth/authSlice";
 
 const OtpDialog = () => {
-  const { showOtpDialog } = useSelector((state) => state.auth);
+  const { showOtpDialog } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
   return (
