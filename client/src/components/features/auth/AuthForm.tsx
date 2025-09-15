@@ -119,28 +119,6 @@ const AuthForm = () => {
     }
   }, [loginSuccess, loginError, registerSuccess, registerError]);
 
-  useEffect(() => {
-    if (!user) {
-      if (sessionData) {
-        socialAuth({
-          email: sessionData.user?.email,
-          name: sessionData.user?.name,
-          avatar: sessionData.user?.image,
-        });
-      }
-    }
-    if (socialAuthSuccess) {
-      toast.success("Logged in successfully");
-    }
-
-    if (socialAuthError && "data" in socialAuthError) {
-      const errorData = socialAuthError as any;
-      toast.error(
-        (errorData?.data?.message as string) || "Something went wrong"
-      );
-    }
-  }, [user, sessionData, socialAuthSuccess, socialAuthError]);
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">

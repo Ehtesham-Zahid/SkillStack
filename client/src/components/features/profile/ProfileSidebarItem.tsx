@@ -26,20 +26,12 @@ const ProfileSidebarItem = ({ item }: ProfileSidebarItemProps) => {
     },
   ] = useLogoutMutation();
 
-  //   useEffect(() => {
-  //     if (logoutSuccess) {
-  //       router.push("/");
-  //     }
-  //     if (logoutError) {
-  //       toast.error("Logout failed");
-  //     }
-  //   }, [logoutSuccess, logoutError]);
-
   const logoutHandler = async () => {
     try {
-      await logout().unwrap(); // unwrap throws if request fails
       await signOut({ redirect: false });
+      await logout().unwrap(); // unwrap throws if request fails
       router.push("/");
+      toast.success("Logged out successfully");
     } catch (err) {
       toast.error("Logout failed");
     }

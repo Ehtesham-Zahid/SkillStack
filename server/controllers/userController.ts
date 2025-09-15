@@ -135,8 +135,11 @@ export const handleSocialAuth = asyncHandler(
     };
 
     res.cookie("accessToken", accessToken, accessTokenOptions);
+    console.log("accessToken", accessToken);
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
+    console.log("refreshToken", refreshToken);
     req.user = user as IUser;
+    console.log("user", user);
 
     res.status(200).json({
       success: true,

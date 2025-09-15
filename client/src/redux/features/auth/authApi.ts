@@ -83,6 +83,7 @@ export const authApi = apiSlice.injectEndpoints({
               token: result.data.accessToken,
             })
           );
+          console.log(result.data);
           dispatch(setShowAuthDialog(false));
         } catch (error) {
           console.log(error);
@@ -98,6 +99,7 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           await queryFulfilled;
+          console.log("logged out");
           dispatch(userLoggedOut());
         } catch (error) {
           console.log(error);

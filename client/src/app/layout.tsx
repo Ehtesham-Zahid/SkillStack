@@ -1,6 +1,6 @@
 "use client";
 import type { Metadata } from "next";
-import React from "react";
+import React, { useEffect } from "react";
 // import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "../components/shared/Header";
@@ -11,6 +11,11 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { useLoadUserQuery } from "../redux/features/api/apiSlice";
 import Spinner from "../components/ui/Spinner";
+import { useSelector } from "react-redux";
+import { useSession } from "next-auth/react";
+import { useSocialAuthMutation } from "../redux/features/auth/authApi";
+import { toast } from "react-hot-toast";
+import AuthProvider from "../utils/AuthProvider";
 
 // const geistMono = Geist_Mono({
 //   variable: "--font-geist-mono",
@@ -40,9 +45,11 @@ export default function RootLayout({
             >
               <Custom>
                 <Toaster />
-                <Header />
-                <main className="min-h-screen">{children}</main>
-                <Footer />
+                <AuthProvider>
+                  <Header />
+                  <main className="min-h-screen">{children}</main>
+                  <Footer />
+                </AuthProvider>
               </Custom>
             </ThemeProvider>
           </SessionProvider>
