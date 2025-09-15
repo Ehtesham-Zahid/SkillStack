@@ -28,11 +28,11 @@ const Header = () => {
           {user ? (
             <Link href="/profile">
               <Image
-                src={user?.avatar?.url || "/images/client1.webp"}
+                src={user?.avatar?.url || "/images/user.webp"}
                 alt="user"
                 width={32}
                 height={32}
-                className="rounded-full w-8 h-8 cursor-pointer"
+                className="rounded-full w-8 h-8 cursor-pointer border-2 border-primary p-1"
               />
             </Link>
           ) : (

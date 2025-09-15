@@ -28,7 +28,7 @@ const ProfileSidebar = () => {
     },
   ];
   return (
-    <div className="w-80 rounded-md h-[500px] bg-surface dark:bg-surface-dark p-5 ">
+    <div className="w-72 rounded-md h-[500px] bg-surface dark:bg-surface-dark p-5 ">
       <ul className="flex flex-col gap-8">
         {PROFILE_SIDEBAR_ITEMS.map((item) => (
           <ProfileSidebarItem key={item.label} item={item} />

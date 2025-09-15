@@ -243,8 +243,12 @@ interface IUpdateUserInfoBody {
 
 export const updateUserInfo = async (
   userData: IUpdateUserInfoBody,
-  user: IUser
+  userId: string
 ): Promise<IUser> => {
+  const user = (await userModel.findById(userId as string)) as IUser;
+  if (!user) {
+    throw new ErrorHandler("User not found", 404);
+  }
   const { name } = userData as IUpdateUserInfoBody;
 
   if (name && user) {
@@ -261,8 +265,12 @@ export const updateUserInfo = async (
 // update profile picture
 export const updateProfilePicture = async (
   avatar: string,
-  user: IUser
+  userId: string
 ): Promise<IUser> => {
+  const user = (await userModel.findById(userId as string)) as IUser;
+  if (!user) {
+    throw new ErrorHandler("User not found", 404);
+  }
   if (avatar && user) {
     if (user?.avatar?.public_id) {
       await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
@@ -287,6 +295,7 @@ export const updateProfilePicture = async (
     }
   }
 
+  console.log(user);
   await user?.save();
 
   await redis.set(user._id as string, JSON.stringify(user as IUser));

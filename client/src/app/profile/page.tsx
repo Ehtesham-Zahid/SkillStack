@@ -8,7 +8,7 @@ import ProfileInfo from "@/src/components/features/profile/ProfileInfo";
 const page = () => {
   const { user } = useSelector((state: any) => state.auth);
   return (
-    <div>
+    <div className="w-full">
       <Protected>
         <Heading
           title={`${user?.name}'s Profile`}

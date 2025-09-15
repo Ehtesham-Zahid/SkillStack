@@ -28,6 +28,9 @@ const authSlice = createSlice({
     setShowAuthDialog: (state, action) => {
       state.showAuthDialog = action.payload;
     },
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
 
@@ -37,6 +40,7 @@ export const {
   userLoggedOut,
   setShowOtpDialog,
   setShowAuthDialog,
+  setUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

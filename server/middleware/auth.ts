@@ -40,7 +40,7 @@ export const isAuthenticated = asyncHandler(
     if (!user) {
       return next(new ErrorHandler("User not found", 401));
     }
-
+    console.log(user);
     req.user = user as IUser;
     next();
   }

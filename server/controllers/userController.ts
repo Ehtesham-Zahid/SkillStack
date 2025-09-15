@@ -149,7 +149,10 @@ export const handleSocialAuth = asyncHandler(
 // update user info
 export const handleUpdateUserInfo = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = (await updateUserInfo(req.body, req.user as IUser)) as IUser;
+    const user = (await updateUserInfo(
+      req.body,
+      req.user._id as string
+    )) as IUser;
     res.status(200).json({ success: true, user });
   }
 );
@@ -168,7 +171,7 @@ export const handleUpdateProfilePicture = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = (await updateProfilePicture(
       req.body.avatar,
-      req.user as IUser
+      req.user?._id as string
     )) as IUser;
     res.status(200).json({ success: true, user });
   }

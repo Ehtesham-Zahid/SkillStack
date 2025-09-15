@@ -10,17 +10,15 @@ interface ProfileSidebarItemProps {
 
 const ProfileSidebarItem = ({ item }: ProfileSidebarItemProps) => {
   return (
-    <div>
-      <li className="flex items-center gap-2.5">
-        {item.icon}
-        <Link
-          href={item.href || ""}
-          className="text-text1 dark:text-text1-dark hover:text-primary dark:hover:text-primary font-medium text-lg"
-        >
-          {item.label}
-        </Link>
-      </li>
-    </div>
+    <li className="flex items-center gap-2.5 cursor-pointer">
+      {item.icon}
+      <Link
+        href={item.href || ""}
+        className="text-text1 dark:text-text1-dark hover:text-primary dark:hover:text-primary font-medium text-lg"
+      >
+        {item.label}
+      </Link>
+    </li>
   );
 };
 
