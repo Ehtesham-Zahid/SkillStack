@@ -1,4 +1,11 @@
+"use client";
 import Link from "next/link";
+import { useLogoutMutation } from "@/src/redux/features/auth/authApi";
+import Spinner from "../../ui/Spinner";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { signOut } from "next-auth/react";
 
 interface ProfileSidebarItemProps {
   item: {
@@ -9,7 +16,48 @@ interface ProfileSidebarItemProps {
 }
 
 const ProfileSidebarItem = ({ item }: ProfileSidebarItemProps) => {
-  return (
+  const router = useRouter();
+  const [
+    logout,
+    {
+      isLoading: logoutLoading,
+      isSuccess: logoutSuccess,
+      isError: logoutError,
+    },
+  ] = useLogoutMutation();
+
+  //   useEffect(() => {
+  //     if (logoutSuccess) {
+  //       router.push("/");
+  //     }
+  //     if (logoutError) {
+  //       toast.error("Logout failed");
+  //     }
+  //   }, [logoutSuccess, logoutError]);
+
+  const logoutHandler = async () => {
+    try {
+      await logout().unwrap(); // unwrap throws if request fails
+      await signOut({ redirect: false });
+      router.push("/");
+    } catch (err) {
+      toast.error("Logout failed");
+    }
+  };
+
+  return logoutLoading ? (
+    <Spinner />
+  ) : item.label === "Logout" ? (
+    <li
+      className="flex items-center gap-2.5 cursor-pointer"
+      onClick={() => logoutHandler()}
+    >
+      {item.icon}
+      <span className="text-text1 dark:text-text1-dark hover:text-primary dark:hover:text-primary font-medium text-lg">
+        {item.label}
+      </span>
+    </li>
+  ) : (
     <li className="flex items-center gap-2.5 cursor-pointer">
       {item.icon}
       <Link

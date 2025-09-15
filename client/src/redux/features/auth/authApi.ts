@@ -89,6 +89,21 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "/users/logout",
+        method: "GET",
+        credentials: "include",
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled;
+          dispatch(userLoggedOut());
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
   }),
 });
 
@@ -97,4 +112,5 @@ export const {
   useActivationMutation,
   useLoginMutation,
   useSocialAuthMutation,
+  useLogoutMutation,
 } = authApi;
