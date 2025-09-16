@@ -32,7 +32,7 @@ const Header = () => {
                 alt="user"
                 width={32}
                 height={32}
-                className="rounded-full w-8 h-8 cursor-pointer border-2 border-primary p-1"
+                className="rounded-full w-8 h-8 cursor-pointer border-2 border-primary "
               />
             </Link>
           ) : (

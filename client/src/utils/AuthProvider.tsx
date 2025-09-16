@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
 import { useSocialAuthMutation } from "@/src/redux/features/auth/authApi";
 import { toast } from "react-hot-toast";
+import Spinner from "@/src/components/ui/Spinner";
 
 export default function AuthProvider({
   children,
@@ -13,7 +14,8 @@ export default function AuthProvider({
 }) {
   const { user } = useSelector((state: any) => state.auth);
   const { data } = useSession();
-  const [socialAuth, { error, isSuccess, isError }] = useSocialAuthMutation();
+  const [socialAuth, { error, isSuccess, isError, isLoading }] =
+    useSocialAuthMutation();
 
   useEffect(() => {
     if (!user && data) {
@@ -32,5 +34,5 @@ export default function AuthProvider({
     }
   }, [isSuccess, isError, error]);
 
-  return <>{children}</>;
+  return <>{isLoading ? <Spinner /> : children}</>;
 }
