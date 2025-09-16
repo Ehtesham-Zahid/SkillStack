@@ -33,7 +33,6 @@ import {
 } from "../../../redux/features/auth/authSlice";
 
 const loginSchema = z.object({
-  name: z.string().min(2).optional(),
   email: z.string().email(),
   password: z.string().min(8),
 });
@@ -46,18 +45,7 @@ const registerSchema = z.object({
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { user } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
-  const { data: sessionData } = useSession();
-  const [
-    socialAuth,
-    {
-      data: socialAuthData,
-      error: socialAuthError,
-      isSuccess: socialAuthSuccess,
-      isLoading: socialAuthLoading,
-    },
-  ] = useSocialAuthMutation();
   const [
     register,
     {
@@ -79,12 +67,15 @@ const AuthForm = () => {
 
   const form = useForm({
     resolver: zodResolver(isLogin ? loginSchema : registerSchema),
-    defaultValues: isLogin
-      ? { name: "", email: "", password: "" }
-      : { name: "", email: "", password: "" },
+    defaultValues: {
+      email: "",
+      password: "",
+      ...(isLogin ? {} : { name: "" }),
+    },
   });
 
   const onSubmit = async (data: any) => {
+    console.log(data);
     if (isLogin) {
       await login({ email: data.email, password: data.password });
     } else {
@@ -119,6 +110,10 @@ const AuthForm = () => {
     }
   }, [loginSuccess, loginError, registerSuccess, registerError]);
 
+  useEffect(() => {
+    form.reset({ email: "", password: "", ...(isLogin ? {} : { name: "" }) });
+  }, [isLogin]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -130,7 +125,7 @@ const AuthForm = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input placeholder="John Doe" {...field} type="text" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -144,7 +139,11 @@ const AuthForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="example@gmail.com" {...field} />
+                <Input
+                  placeholder="example@gmail.com"
+                  {...field}
+                  type="email"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -157,7 +156,7 @@ const AuthForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="********" {...field} />
+                <Input placeholder="********" {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>

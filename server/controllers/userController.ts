@@ -86,6 +86,7 @@ export const handleLogoutUser = asyncHandler(
 // update access token
 export const handleUpdateAccessToken = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log("req.cookies", req.cookies);
     const refreshTokenIncoming = req.cookies.refreshToken as string;
 
     const {
