@@ -5,6 +5,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { SiCoursera } from "react-icons/si";
 import { CiLogout } from "react-icons/ci";
 import { useSelector } from "react-redux";
+import { FaUserCog } from "react-icons/fa";
 
 const ProfileSidebar = () => {
   const { user } = useSelector((state: any) => state.auth);
@@ -30,6 +31,14 @@ const ProfileSidebar = () => {
       label: "Change Password",
       href: "/profile/change-password",
       icon: <RiLockPasswordFill size={24} />,
+    });
+  }
+
+  if (user.role === "admin") {
+    PROFILE_SIDEBAR_ITEMS.splice(PROFILE_SIDEBAR_ITEMS.length - 1, 0, {
+      label: "Admin Dashboard",
+      href: "/admin",
+      icon: <FaUserCog size={24} />,
     });
   }
   return (
