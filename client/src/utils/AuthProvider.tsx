@@ -14,15 +14,19 @@ export default function AuthProvider({
 }) {
   const { user } = useSelector((state: any) => state.auth);
   const { data } = useSession();
+
   const [socialAuth, { error, isSuccess, isError, isLoading }] =
     useSocialAuthMutation();
 
   useEffect(() => {
     if (!user && data) {
+      console.log(data);
+      const session = data as any;
       socialAuth({
-        email: data.user?.email,
-        name: data.user?.name,
-        avatar: data.user?.image,
+        email: session.user?.email,
+        name: session.user?.name,
+        avatar: session.user?.image,
+        provider: session?.provider,
       });
     }
   }, [user, data]);

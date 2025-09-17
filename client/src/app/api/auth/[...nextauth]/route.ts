@@ -14,6 +14,19 @@ const handler = NextAuth({
     }),
   ],
   secret: process.env.NEXT_SECRET as string,
+
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account) {
+        token.provider = account.provider; // save provider into JWT
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      (session as any).provider = token.provider; // expose provider in session
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };

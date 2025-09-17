@@ -48,7 +48,15 @@ const createActivationToken = (user: IRegistrationBody): IActivationToken => {
 export const registerUser = async (userData: IRegistrationBody) => {
   const { name, email } = userData as IRegistrationBody;
   const isEmailExist = (await userModel.findOne({ email })) as IUser;
-  if (isEmailExist) {
+  if (
+    isEmailExist &&
+    (isEmailExist.provider === "google" || isEmailExist.provider === "github")
+  ) {
+    throw new ErrorHandler(
+      `User already exist with ${isEmailExist.provider} provider`,
+      400
+    );
+  } else if (isEmailExist) {
     throw new ErrorHandler("Email already exist", 400);
   }
 
@@ -308,6 +316,7 @@ interface ISocialAuthBody {
   email: string;
   name: string;
   avatar: string;
+  provider: "manual" | "google" | "github";
 }
 
 export const socialAuth = async (
@@ -319,7 +328,7 @@ export const socialAuth = async (
   accessTokenOptions: ITokenOptions;
   refreshTokenOptions: ITokenOptions;
 }> => {
-  const { email, name, avatar } = userData as ISocialAuthBody;
+  const { email, name, avatar, provider } = userData as ISocialAuthBody;
   const user = (await userModel.findOne({ email })) as IUser;
 
   if (!user) {
@@ -327,6 +336,7 @@ export const socialAuth = async (
       email,
       name,
       avatar: { public_id: avatar, url: avatar },
+      provider,
     })) as IUser;
     return (await sendToken(newUser)) as {
       accessToken: string;

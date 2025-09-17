@@ -17,6 +17,7 @@ export interface IUser extends Document {
   role: string;
   isVerified: boolean;
   courses: Array<{ courseId: string }>;
+  provider: "manual" | "google" | "github";
   comparePassword: (password: string) => Promise<boolean>;
   signAccessToken: () => string;
   signRefreshToken: () => string;
@@ -54,6 +55,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       default: false,
     },
     courses: [{ courseId: String }],
+    provider: {
+      type: String,
+      default: "manual",
+      enum: ["manual", "google", "github"],
+    },
   },
   { timestamps: true }
 );
