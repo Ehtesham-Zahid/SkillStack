@@ -17,17 +17,24 @@ import {
 } from "@/src/shadcn/ui/form";
 import { Input } from "@/src/shadcn/ui/input";
 import { LuLoaderCircle } from "react-icons/lu";
-import Spinner from "../../ui/Spinner";
+import { useUpdatePasswordMutation } from "@/src/redux/features/user/userApi";
 
-const updateUserInfoSchema = z.object({
-  oldPassword: z.string().min(8),
-  password: z.string().min(8),
-  confirmPassword: z.string().min(8),
-});
+const updateUserInfoSchema = z
+  .object({
+    oldPassword: z.string().min(8),
+    password: z.string().min(8),
+    confirmPassword: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"], // attach the error to confirmPassword field
+    message: "Passwords do not match",
+  });
 
 const ChangePasswordForm = () => {
   const { user } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
+  const [updatePassword, { isLoading, isSuccess, isError, error }] =
+    useUpdatePasswordMutation();
 
   const form = useForm({
     resolver: zodResolver(updateUserInfoSchema),
@@ -36,11 +43,24 @@ const ChangePasswordForm = () => {
 
   const onSubmit = async (data: any) => {
     console.log(data);
+
+    await updatePassword({
+      oldPassword: data.oldPassword,
+      newPassword: data.password,
+    });
   };
 
-  return false ? (
-    <Spinner />
-  ) : (
+  useEffect(() => {
+    form.reset({ oldPassword: "", password: "", confirmPassword: "" });
+    if (isSuccess) {
+      toast.success("Password updated successfully");
+    }
+    if (isError && "data" in error) {
+      toast.error((error as any)?.data?.message || "Something went wrong");
+    }
+  }, [isSuccess, isError, error]);
+
+  return (
     <div className="w-full flex flex-col gap-4 items-center justify-center">
       <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8">
         Change Password
@@ -68,7 +88,6 @@ const ChangePasswordForm = () => {
           <FormField
             control={form.control}
             name="password"
-            disabled={false}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>New Password</FormLabel>
@@ -87,7 +106,6 @@ const ChangePasswordForm = () => {
           <FormField
             control={form.control}
             name="confirmPassword"
-            disabled={false}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
@@ -106,9 +124,9 @@ const ChangePasswordForm = () => {
           <Button
             type="submit"
             className="sm:w-md w-xs cursor-pointer mt-2 text-white text-base"
-            disabled={false}
+            disabled={isLoading}
           >
-            {false ? (
+            {isLoading ? (
               <LuLoaderCircle className="animate-spin" />
             ) : (
               "Change Password"
