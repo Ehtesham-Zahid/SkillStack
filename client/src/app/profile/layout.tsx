@@ -16,7 +16,7 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <main className="w-11/12 2xl:w-5/6 mx-auto my-20 flex gap-10 ">
+        <main className="w-11/12 2xl:w-5/6 mx-auto my-20 flex lg:flex-row flex-col gap-10 ">
           <ProfileSidebar />
           {children}
         </main>

@@ -68,11 +68,13 @@ const ProfileImageForm = () => {
               loading="lazy"
               src={avatar || user?.avatar?.url || "/images/user.webp"}
               alt="Preview"
-              className={"w-40 h-40  rounded-full border-4 border-primary "}
+              className={
+                "sm:w-40 sm:h-40 w-32 h-32  rounded-full border-4 border-primary "
+              }
             />
             <label htmlFor="file-input">
               <Camera
-                className="absolute right-2 top-30 bg-primary rounded-full text-white p-1 cursor-pointer"
+                className="absolute right-2 top-24 sm:top-30 bg-primary rounded-full text-white p-1 cursor-pointer"
                 size={28}
               />
               <input

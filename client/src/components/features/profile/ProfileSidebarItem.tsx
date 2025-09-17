@@ -45,18 +45,20 @@ const ProfileSidebarItem = ({ item }: ProfileSidebarItemProps) => {
       onClick={() => logoutHandler()}
     >
       {item.icon}
-      <span className="text-text1 dark:text-text1-dark hover:text-primary dark:hover:text-primary font-medium text-lg">
+      <span className="text-text1 dark:text-text1-dark hover:text-primary dark:hover:text-primary font-medium text-lg hidden lg:block">
         {item.label}
       </span>
     </li>
   ) : (
-    <li className="flex items-center gap-2.5 cursor-pointer">
-      {item.icon}
+    <li>
       <Link
         href={item.href || ""}
-        className="text-text1 dark:text-text1-dark hover:text-primary dark:hover:text-primary font-medium text-lg"
+        className="flex items-center gap-2.5 cursor-pointer"
       >
-        {item.label}
+        {item.icon}
+        <p className="text-text1 dark:text-text1-dark hover:text-primary dark:hover:text-primary font-medium text-lg hidden lg:block">
+          {item.label}
+        </p>
       </Link>
     </li>
   );

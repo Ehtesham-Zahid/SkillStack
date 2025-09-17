@@ -15,66 +15,50 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/shadcn/ui/form";
-import { useUpdateUserInfoMutation } from "@/src/redux/features/user/userApi";
 import { Input } from "@/src/shadcn/ui/input";
 import { LuLoaderCircle } from "react-icons/lu";
 import Spinner from "../../ui/Spinner";
 
 const updateUserInfoSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
+  oldPassword: z.string().min(8),
+  password: z.string().min(8),
+  confirmPassword: z.string().min(8),
 });
 
-const ProfileInfoForm = () => {
+const ChangePasswordForm = () => {
   const { user } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
-  const [
-    updateUserInfo,
-    {
-      data: updateUserInfoData,
-      error: updateUserInfoError,
-      isSuccess: updateUserInfoSuccess,
-      isLoading: updateUserInfoLoading,
-    },
-  ] = useUpdateUserInfoMutation();
-
   const form = useForm({
     resolver: zodResolver(updateUserInfoSchema),
-    defaultValues: { name: user?.name, email: user?.email },
+    defaultValues: { oldPassword: "", password: "", confirmPassword: "" },
   });
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    await updateUserInfo({ name: data.name, email: user?.email });
   };
 
-  useEffect(() => {
-    if (updateUserInfoSuccess) {
-      toast.success("User info updated successfully");
-    }
-    if (updateUserInfoError) {
-      toast.error("User info update failed");
-    }
-  }, [updateUserInfoSuccess, updateUserInfoError]);
-
-  return updateUserInfoLoading ? (
+  return false ? (
     <Spinner />
   ) : (
     <div className="w-full flex flex-col gap-4 items-center justify-center">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8">
+        Change Password
+      </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={form.control}
-            name="name"
+            name="oldPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Old Password</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="John Doe"
+                    placeholder="********"
                     {...field}
                     className="sm:w-md w-xs"
+                    type="password"
                   />
                 </FormControl>
                 <FormMessage />
@@ -83,16 +67,36 @@ const ProfileInfoForm = () => {
           />
           <FormField
             control={form.control}
-            name="email"
-            disabled={true}
+            name="password"
+            disabled={false}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>New Password</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="example@gmail.com"
+                    placeholder="********"
                     {...field}
-                    className="opacity-50 cursor-not-allowed sm:w-md w-xs"
+                    className="sm:w-md w-xs"
+                    type="password"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            disabled={false}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="********"
+                    {...field}
+                    className="sm:w-md w-xs"
+                    type="password"
                   />
                 </FormControl>
                 <FormMessage />
@@ -102,12 +106,12 @@ const ProfileInfoForm = () => {
           <Button
             type="submit"
             className="sm:w-md w-xs cursor-pointer mt-2 text-white text-base"
-            disabled={updateUserInfoLoading}
+            disabled={false}
           >
-            {updateUserInfoLoading ? (
+            {false ? (
               <LuLoaderCircle className="animate-spin" />
             ) : (
-              "Update"
+              "Change Password"
             )}
           </Button>
         </form>
@@ -116,4 +120,4 @@ const ProfileInfoForm = () => {
   );
 };
 
-export default ProfileInfoForm;
+export default ChangePasswordForm;
