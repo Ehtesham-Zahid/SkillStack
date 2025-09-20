@@ -81,7 +81,10 @@ const CourseInformation = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 w-full bg-surface dark:bg-surface-dark p-8 rounded-lg"
+      >
         <FormField
           control={form.control}
           name="courseName"
