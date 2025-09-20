@@ -30,7 +30,7 @@ const page = () => {
   }
 
   return (
-    <div className="w-full flex lg:flex-row flex-col gap-10 ">
+    <div className="w-full flex lg:flex-row flex-col gap-10 mb-10">
       {component}
       <CreateCourseStages
         currentStep={currentStep}

@@ -10,6 +10,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  SidebarFooter,
 } from "@/src/shadcn/ui/sidebar";
 
 import {
@@ -32,6 +33,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import Image from "next/image";
 
 // Sidebar items config
 const sidebarItems = [
@@ -99,16 +101,21 @@ const sidebarItems = [
 
 const AdminSidebar = () => {
   return (
-    <Sidebar className=" pt-20 border-0 border-r-2 dark:border-background-dark">
+    <Sidebar className=" border-0 border-r-2 dark:border-background-dark">
       <SidebarContent className="dark:bg-surface-dark bg-surface dark:text-text1-dark text-text1  border-0  ">
         <SidebarGroup>
+          <SidebarGroupLabel className="mb-8 mt-2">
+            <p className="text-3xl sm:text-4xl lg:text-3xl font-black text-primary ">
+              Skill<span className="text-black dark:text-white">Stack</span>
+            </p>
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {sidebarItems.map((item, idx) => (
                 <SidebarMenuItem key={idx} className="">
                   <SidebarMenuButton
                     asChild={!item.children}
-                    className="  hover:bg-surface dark:hover:bg-surface-dark   dark:text-text2-dark text-text2 font-semibold"
+                    className="   hover:bg-surface dark:hover:bg-surface-dark   dark:text-text2-dark text-text1 font-semibold"
                   >
                     {item.children ? (
                       <div className="flex items-center gap-2">
@@ -148,6 +155,24 @@ const AdminSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="p-1.5 dark:bg-surface-dark bg-surface  border-t border-text2 dark:border-text2-dark ">
+        <SidebarMenu className="w-full dark:hover:bg-gray-700 rounded-lg p-0.5">
+          <SidebarMenuItem>
+            <SidebarMenuButton className=" flex flex-row items-center gap-2  hover:bg-transparent dark:hover:bg-transparent h-10">
+              <Image
+                src={"/images/client1.webp"}
+                alt="user"
+                width={36}
+                height={36}
+                className="rounded-full w-9 h-9 cursor-pointer border-2 border-primary"
+              />
+              <p className="text-sm font-semibold   text-text1 dark:text-text1-dark">
+                Ehtesham Zahid
+              </p>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 };

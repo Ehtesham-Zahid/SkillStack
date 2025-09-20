@@ -83,7 +83,7 @@ const CourseInformation = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 w-full bg-surface dark:bg-surface-dark p-8 rounded-lg"
+        className="space-y-8 w-full bg-surface dark:bg-surface-dark p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none"
       >
         <FormField
           control={form.control}

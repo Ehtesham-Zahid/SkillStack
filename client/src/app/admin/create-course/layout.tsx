@@ -3,5 +3,5 @@ export default function CreateCourseLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <main className="w-11/12 2xl:w-5/6 mx-auto">{children}</main>;
+  return <main className="w-11/12   mx-auto">{children}</main>;
 }

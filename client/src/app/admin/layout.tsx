@@ -2,6 +2,7 @@
 
 import AdminHeader from "@/src/components/features/admin/user/AdminHeader";
 import AdminSidebar from "@/src/components/features/admin/user/AdminSidebar";
+import HeaderActions from "@/src/components/features/admin/user/HeaderActions";
 import { SidebarProvider, SidebarTrigger } from "@/src/shadcn/ui/sidebar";
 
 export default function AdminLayout({
@@ -10,16 +11,16 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <section>
+    <section className="flex flex-row w-full">
       <SidebarProvider>
-        <main className="flex flex-col w-full">
-          <AdminHeader />
-          <div className="  flex lg:flex-row flex-col  ">
-            <AdminSidebar />
+        <AdminSidebar />
+        <div className="w-full flex flex-col">
+          <div className="flex items-start justify-between w-full mx-auto ">
             <SidebarTrigger />
-            <div className="w-11/12 2xl:w-5/6 mx-auto my-10">{children}</div>
+            <HeaderActions />
           </div>
-        </main>
+          <main className=" w-full ">{children}</main>
+        </div>
       </SidebarProvider>
     </section>
   );
