@@ -7,7 +7,7 @@ import {
 } from "@/src/shadcn/ui/dropzone";
 
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -22,63 +22,76 @@ import {
 } from "@/src/shadcn/ui/form";
 import { Input } from "@/src/shadcn/ui/input";
 import { Textarea } from "@/src/shadcn/ui/textarea";
+import Image from "next/image";
 
 const courseInformationSchema = z.object({
-  courseName: z.string().min(2),
-  courseDescription: z.string().min(2),
-  coursePrice: z.coerce.number().min(1),
-  courseDiscountedPrice: z.coerce.number().min(1),
-  courseTags: z.string().min(2),
-  courseLevel: z.string().min(2),
-  courseDemoUrl: z.string().min(2),
-  courseThumbnail: z.string().min(1, "Please upload a thumbnail"),
+  name: z.string().min(2),
+  description: z.string().min(2),
+  price: z.coerce.number().min(1),
+  discountedPrice: z.coerce.number().min(1),
+  tags: z.string().min(2),
+  level: z.string().min(2),
+  demoUrl: z.string().min(2),
+  thumbnail: z.string().min(1, "Please upload a thumbnail"),
+  //   categories: z.string().min(2),
 });
 
 type CourseInformationProps = {
   currentStep: number;
   onStepChange: (nextStepIndex: number) => void;
+  courseInfo: any;
+  setCourseInfo: (data: any) => void;
 };
 
 const CourseInformation = ({
   currentStep,
   onStepChange,
+  courseInfo,
+  setCourseInfo,
 }: CourseInformationProps) => {
   const [file, setFile] = useState<File | undefined>();
-  const [filePreview, setFilePreview] = useState<string | undefined>();
+
+  console.log("THUMBNAIL", courseInfo?.thumbnail);
 
   const form = useForm({
     resolver: zodResolver(courseInformationSchema),
     defaultValues: {
-      courseName: "",
-      courseDescription: "",
-      coursePrice: 0,
-      courseDiscountedPrice: 0,
-      courseTags: "",
-      courseLevel: "",
-      courseDemoUrl: "",
-      courseThumbnail: "",
+      name: courseInfo?.name || "",
+      description: courseInfo?.description || "",
+      price: courseInfo?.price || 0,
+      discountedPrice: courseInfo?.discountedPrice || 0,
+      tags: courseInfo?.tags || "",
+      level: courseInfo?.level || "",
+      demoUrl: courseInfo?.demoUrl || "",
+      thumbnail: courseInfo?.thumbnail || "",
+      //   categories: courseInfo?.categories || "",
     },
   });
 
   const onSubmit = async (data: any) => {
+    console.log(currentStep);
     console.log(data);
+    setCourseInfo({ ...courseInfo, ...data });
     onStepChange(currentStep + 1);
   };
 
   const handleDrop = (file: File) => {
-    console.log(file);
     setFile(file);
 
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (typeof e.target?.result === "string") {
-          setFilePreview(e.target?.result);
-        }
+          const preview = e.target.result;
 
-        form.setValue("courseThumbnail", e.target?.result as string, {
-          shouldValidate: true,
-        });
+          // 🔹 Save it in parent
+          setCourseInfo({
+            ...courseInfo,
+            thumbnail: preview,
+          });
+
+          form.setValue("thumbnail", preview, { shouldValidate: true });
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -92,7 +105,7 @@ const CourseInformation = ({
       >
         <FormField
           control={form.control}
-          name="courseName"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Course Name</FormLabel>
@@ -105,7 +118,7 @@ const CourseInformation = ({
         />
         <FormField
           control={form.control}
-          name="courseDescription"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Course Description</FormLabel>
@@ -123,12 +136,17 @@ const CourseInformation = ({
         <div className="flex gap-2 w-full">
           <FormField
             control={form.control}
-            name="coursePrice"
+            name="price"
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Course Price</FormLabel>
                 <FormControl>
-                  <Input placeholder="Course Price" {...field} type="number" />
+                  <Input
+                    placeholder="Course Price"
+                    {...field}
+                    type="number"
+                    value={field.value as number}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,7 +154,7 @@ const CourseInformation = ({
           />
           <FormField
             control={form.control}
-            name="courseDiscountedPrice"
+            name="discountedPrice"
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Discounted Price(Optional)</FormLabel>
@@ -145,6 +163,7 @@ const CourseInformation = ({
                     placeholder="Discounted Price(Optional)"
                     {...field}
                     type="number"
+                    value={field.value as number}
                   />
                 </FormControl>
                 <FormMessage />
@@ -154,7 +173,7 @@ const CourseInformation = ({
         </div>
         <FormField
           control={form.control}
-          name="courseTags"
+          name="tags"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Course Tags</FormLabel>
@@ -168,7 +187,7 @@ const CourseInformation = ({
         <div className="flex gap-2 w-full">
           <FormField
             control={form.control}
-            name="courseLevel"
+            name="level"
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Course Level</FormLabel>
@@ -181,7 +200,7 @@ const CourseInformation = ({
           />
           <FormField
             control={form.control}
-            name="courseDemoUrl"
+            name="demoUrl"
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Demo Url</FormLabel>
@@ -208,21 +227,23 @@ const CourseInformation = ({
             src={file ? [file] : undefined}
           >
             <DropzoneEmptyState />
-            <DropzoneContent>
-              {filePreview && (
-                <div className="h-[400px] w-full">
-                  <img
-                    alt="Preview"
-                    className="absolute top-0 left-0 h-full w-full object-contain"
-                    src={filePreview}
-                  />
-                </div>
-              )}
-            </DropzoneContent>
+            {/* <DropzoneContent> */}
+            {courseInfo?.thumbnail && (
+              <div className="h-[400px] w-full">
+                <Image
+                  alt="Preview"
+                  className="absolute top-0 left-0 h-full w-full object-contain"
+                  src={courseInfo?.thumbnail}
+                  width={1000}
+                  height={1000}
+                />
+              </div>
+            )}
+            {/* </DropzoneContent> */}
           </Dropzone>
           <FormField
             control={form.control}
-            name="courseThumbnail"
+            name="thumbnail"
             render={({ field }) => (
               <FormItem>
                 {/* hidden input to keep it registered */}

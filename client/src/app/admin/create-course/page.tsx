@@ -5,6 +5,36 @@ import { useEffect, useState } from "react";
 import CreateCourseStages from "@/src/components/features/admin/course/CreateCourseStages";
 import CourseOptions from "@/src/components/features/admin/course/CourseOptions";
 const page = () => {
+  const [courseInfo, setCourseInfo] = useState({
+    name: "",
+    description: "",
+    price: 0,
+    discountedPrice: 0,
+    tags: "",
+    level: "",
+    // categories: "",
+    demoUrl: "",
+    thumbnail: "",
+  });
+  const [benefits, setBenefits] = useState([{ title: "" }]);
+  const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
+  const [courseData, setCourseData] = useState({});
+  const [courseContentData, setCourseContentData] = useState([
+    {
+      videoUrl: "",
+      title: "",
+      description: "",
+      videoSection: "Untitled Section",
+      videoLength: "",
+      links: [
+        {
+          title: "",
+          url: "",
+        },
+      ],
+      suggestion: "",
+    },
+  ]);
   const [currentStep, setCurrentStep] = useState(0);
   //   const [completedSteps, setCompletedSteps] = useState<boolean[]>([
   //     false,
@@ -12,21 +42,30 @@ const page = () => {
   //     false,
   //     false,
   //   ]);
-  const handleStepChange = (nextStepIndex: number) => {
-    setCurrentStep(nextStepIndex);
-  };
+
   let component = null;
 
   if (currentStep === 0) {
     component = (
       <CourseInformation
         currentStep={currentStep}
-        onStepChange={handleStepChange}
+        onStepChange={setCurrentStep}
+        courseInfo={courseInfo}
+        setCourseInfo={setCourseInfo}
       />
     );
   }
   if (currentStep === 1) {
-    component = <CourseOptions />;
+    component = (
+      <CourseOptions
+        currentStep={currentStep}
+        onStepChange={setCurrentStep}
+        benefits={benefits}
+        prerequisites={prerequisites}
+        setBenefits={setBenefits}
+        setPrerequisites={setPrerequisites}
+      />
+    );
   }
 
   return (
@@ -35,7 +74,7 @@ const page = () => {
       <CreateCourseStages
         currentStep={currentStep}
         // completedSteps={completedSteps}
-        onStepChange={handleStepChange}
+        onStepChange={setCurrentStep}
       />
     </div>
   );
