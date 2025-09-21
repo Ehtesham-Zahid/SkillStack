@@ -31,7 +31,7 @@ const courseInformationSchema = z.object({
   courseTags: z.string().min(2),
   courseLevel: z.string().min(2),
   courseDemoUrl: z.string().min(2),
-  //   courseThumbnail: z.string().min(2),
+  courseThumbnail: z.string().min(1, "Please upload a thumbnail"),
 });
 
 type CourseInformationProps = {
@@ -43,7 +43,7 @@ const CourseInformation = ({
   currentStep,
   onStepChange,
 }: CourseInformationProps) => {
-  const [files, setFiles] = useState<File[] | undefined>();
+  const [file, setFile] = useState<File | undefined>();
   const [filePreview, setFilePreview] = useState<string | undefined>();
 
   const form = useForm({
@@ -56,7 +56,7 @@ const CourseInformation = ({
       courseTags: "",
       courseLevel: "",
       courseDemoUrl: "",
-      //   courseThumbnail: "",
+      courseThumbnail: "",
     },
   });
 
@@ -65,17 +65,22 @@ const CourseInformation = ({
     onStepChange(currentStep + 1);
   };
 
-  const handleDrop = (files: File[]) => {
-    console.log(files);
-    setFiles(files);
-    if (files.length > 0) {
+  const handleDrop = (file: File) => {
+    console.log(file);
+    setFile(file);
+
+    if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (typeof e.target?.result === "string") {
           setFilePreview(e.target?.result);
         }
+
+        form.setValue("courseThumbnail", e.target?.result as string, {
+          shouldValidate: true,
+        });
       };
-      reader.readAsDataURL(files[0]);
+      reader.readAsDataURL(file);
     }
   };
 
@@ -188,25 +193,49 @@ const CourseInformation = ({
             )}
           />
         </div>
-        <Dropzone
-          accept={{ "image/*": [".png", ".jpg", ".jpeg"] }}
-          onDrop={handleDrop}
-          onError={console.error}
-          src={files}
-        >
-          <DropzoneEmptyState />
-          <DropzoneContent>
-            {filePreview && (
-              <div className="h-[400px] w-full">
-                <img
-                  alt="Preview"
-                  className="absolute top-0 left-0 h-full w-full object-contain"
-                  src={filePreview}
-                />
-              </div>
+
+        <div>
+          <Dropzone
+            accept={{ "image/*": [".png", ".jpg", ".jpeg"] }}
+            multiple={false}
+            onDrop={(acceptedFiles) => {
+              if (acceptedFiles.length > 0) {
+                handleDrop(acceptedFiles[0]);
+              }
+            }}
+            onError={console.error}
+            maxFiles={1}
+            src={file ? [file] : undefined}
+          >
+            <DropzoneEmptyState />
+            <DropzoneContent>
+              {filePreview && (
+                <div className="h-[400px] w-full">
+                  <img
+                    alt="Preview"
+                    className="absolute top-0 left-0 h-full w-full object-contain"
+                    src={filePreview}
+                  />
+                </div>
+              )}
+            </DropzoneContent>
+          </Dropzone>
+          <FormField
+            control={form.control}
+            name="courseThumbnail"
+            render={({ field }) => (
+              <FormItem>
+                {/* hidden input to keep it registered */}
+                <FormControl>
+                  <Input type="hidden" {...field} />
+                </FormControl>
+                {/* this will show the error */}
+                <FormMessage />
+              </FormItem>
             )}
-          </DropzoneContent>
-        </Dropzone>
+          />
+        </div>
+
         <div className="flex justify-end">
           <Button
             type="submit"
