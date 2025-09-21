@@ -229,7 +229,7 @@ const CourseInformation = ({
             <DropzoneEmptyState />
             {/* <DropzoneContent> */}
             {courseInfo?.thumbnail && (
-              <div className="h-[400px] w-full">
+              <div className="h-[400px] w-full flex flex-col items-center justify-center">
                 <Image
                   alt="Preview"
                   className="absolute top-0 left-0 h-full w-full object-contain"
@@ -237,6 +237,9 @@ const CourseInformation = ({
                   width={1000}
                   height={1000}
                 />
+                <p className="text-sm text-gray-400 text-center">
+                  Click to change thumbnail.
+                </p>
               </div>
             )}
             {/* </DropzoneContent> */}
