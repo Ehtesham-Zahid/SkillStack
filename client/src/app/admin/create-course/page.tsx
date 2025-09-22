@@ -4,6 +4,7 @@ import CourseInformation from "@/src/components/features/admin/course/CourseInfo
 import { useEffect, useState } from "react";
 import CreateCourseStages from "@/src/components/features/admin/course/CreateCourseStages";
 import CourseOptions from "@/src/components/features/admin/course/CourseOptions";
+import CourseContent from "@/src/components/features/admin/course/CourseContent";
 const page = () => {
   const [courseInfo, setCourseInfo] = useState({
     name: "",
@@ -35,7 +36,7 @@ const page = () => {
       suggestion: "",
     },
   ]);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(2);
   //   const [completedSteps, setCompletedSteps] = useState<boolean[]>([
   //     false,
   //     false,
@@ -68,6 +69,16 @@ const page = () => {
     );
   }
 
+  if (currentStep === 2) {
+    component = (
+      <CourseContent
+        currentStep={currentStep}
+        onStepChange={setCurrentStep}
+        courseContentData={courseContentData}
+        setCourseContentData={setCourseContentData}
+      />
+    );
+  }
   return (
     <div className="w-full flex lg:flex-row flex-col gap-10 mb-10">
       {component}
