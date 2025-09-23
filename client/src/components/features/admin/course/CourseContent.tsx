@@ -18,6 +18,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/src/shadcn/ui/textarea";
+import { Separator } from "@/src/shadcn/ui/separator";
+import { PlusIcon } from "lucide-react";
 
 type CourseContentProps = {
   currentStep: number;
@@ -56,6 +58,11 @@ const CourseContent = ({
       suggestion: courseContentData?.suggestion || "",
     },
   });
+
+  const handleAddLesson = () => {
+    setCourseContentData([...courseContentData, {}]);
+  };
+
   return (
     <div className="w-full bg-surface dark:bg-surface-dark p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none">
       {" "}
@@ -125,10 +132,10 @@ const CourseContent = ({
                         name="videoLength"
                         render={({ field }) => (
                           <FormItem className="flex-1">
-                            <FormLabel>Video Length</FormLabel>
+                            <FormLabel>Video Length(in minutes)</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Video Length"
+                                placeholder="Video Length(in minutes)"
                                 {...field}
                                 type="text"
                               />
@@ -193,6 +200,11 @@ const CourseContent = ({
                         )}
                       />
                     ))}
+                    {courseContentData.length === index + 1 && (
+                      <p className="text-sm font-medium text-primary cursor-pointer border-t border-text2 dark:border-text2-dark pt-4 flex items-center gap-2 hover:underline">
+                        Add New Lesson <PlusIcon className="w-4 h-4" />
+                      </p>
+                    )}
                   </form>
                 </Form>
               </AccordionContent>
