@@ -22,20 +22,43 @@ const page = () => {
   const [courseData, setCourseData] = useState({});
   const [courseContentData, setCourseContentData] = useState([
     {
-      videoUrl: "",
-      title: "",
+      title: "Untitled Section",
       description: "",
-      videoSection: "Untitled Section",
-      videoLength: "",
-      links: [
+      lessons: [
         {
-          title: "",
-          url: "",
+          title: "Lesson 1",
+          description: "",
+          videoUrl: "",
+          videoLength: 0,
+          videoPlayer: "vdocipher", // or default value
+          suggestion: "",
+          links: [
+            {
+              title: "",
+              url: "",
+            },
+          ],
         },
       ],
-      suggestion: "",
     },
   ]);
+
+  //   const [courseContentData, setCourseContentData] = useState([
+  //     {
+  //       videoUrl: "",
+  //       title: "",
+  //       description: "",
+  //       videoSection: "Untitled Section",
+  //       videoLength: "",
+  //       links: [
+  //         {
+  //           title: "",
+  //           url: "",
+  //         },
+  //       ],
+  //       suggestion: "",
+  //     },
+  //   ]);
   const [currentStep, setCurrentStep] = useState(2);
   //   const [completedSteps, setCompletedSteps] = useState<boolean[]>([
   //     false,
