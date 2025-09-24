@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import CreateCourseStages from "@/src/components/features/admin/course/CreateCourseStages";
 import CourseOptions from "@/src/components/features/admin/course/CourseOptions";
 import CourseContent from "@/src/components/features/admin/course/CourseContent";
+import CoursePreview from "@/src/components/features/admin/course/CoursePreview";
 const page = () => {
   const [courseInfo, setCourseInfo] = useState({
     name: "",
@@ -97,6 +98,10 @@ const page = () => {
   //     false,
   //   ]);
 
+  const handleCourseCreate = async () => {
+    console.log("COURSE DATA", courseData);
+  };
+
   let component = null;
 
   if (currentStep === 0) {
@@ -130,6 +135,17 @@ const page = () => {
         courseContentData={courseContentData}
         setCourseContentData={setCourseContentData}
         handleSubmit={handleSubmit}
+      />
+    );
+  }
+
+  if (currentStep === 3) {
+    component = (
+      <CoursePreview
+        currentStep={currentStep}
+        onStepChange={setCurrentStep}
+        courseData={courseData}
+        handleCourseCreate={handleCourseCreate}
       />
     );
   }

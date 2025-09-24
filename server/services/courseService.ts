@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import cloudinary from "cloudinary";
 import path from "path";
 import ejs from "ejs";
+import axios from "axios";
 
 import CourseModel, {
   ICourse,
@@ -395,4 +396,20 @@ export const deleteCourse = async (courseId: string) => {
     const filteredCourses = allCourses.filter((c: any) => c._id !== courseId);
     await redis.set("allCourses", JSON.stringify(filteredCourses));
   }
+};
+
+// Generate Video URL
+export const generateVideoURL = async (videoId: any) => {
+  const response = await axios.post(
+    `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+    { ttl: 300 },
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Apisecret ${process.env.VDOCIPHER_API_SECRET}`,
+      },
+    }
+  );
+  return response.data;
 };

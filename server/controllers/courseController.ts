@@ -11,6 +11,7 @@ import {
   addReplyToReview,
   getAllCoursesAdmin,
   deleteCourse,
+  generateVideoURL,
 } from "../services/courseService";
 import asyncHandler from "express-async-handler";
 import { IUser } from "../models/userModel";
@@ -106,5 +107,13 @@ export const handleDeleteCourse = asyncHandler(
     res
       .status(200)
       .json({ success: true, message: "Course deleted successfully" });
+  }
+);
+
+// Generate Video URL
+export const handleGenerateVideoURL = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const videoURL = await generateVideoURL(req.body.videoId);
+    res.status(200).json({ success: true, videoURL });
   }
 );

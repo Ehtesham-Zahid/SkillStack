@@ -11,6 +11,7 @@ import {
   handleAddReplyToReview,
   handleGetAllCoursesAdmin,
   handleDeleteCourse,
+  handleGenerateVideoURL,
 } from "../controllers/courseController";
 import { authorizeRoles, isAuthenticated } from "../middleware/auth";
 
@@ -59,6 +60,8 @@ courseRouter.get(
   authorizeRoles("admin"),
   handleGetAllCoursesAdmin
 );
+
+courseRouter.post("/getVdoCipherOTP", handleGenerateVideoURL);
 
 courseRouter.delete(
   "/delete-course-admin/:id",
