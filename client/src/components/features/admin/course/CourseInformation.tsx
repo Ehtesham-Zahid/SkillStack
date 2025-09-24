@@ -23,6 +23,8 @@ import {
 import { Input } from "@/src/shadcn/ui/input";
 import { Textarea } from "@/src/shadcn/ui/textarea";
 import Image from "next/image";
+import CourseLevelSelector from "./CourseLevelSelector";
+import CourseCategorySelector from "./CourseCategorySelector";
 
 const courseInformationSchema = z.object({
   name: z.string().min(2),
@@ -33,7 +35,7 @@ const courseInformationSchema = z.object({
   level: z.string().min(2),
   demoUrl: z.string().min(2),
   thumbnail: z.string().min(1, "Please upload a thumbnail"),
-  //   categories: z.string().min(2),
+  category: z.string().min(2),
 });
 
 type CourseInformationProps = {
@@ -61,10 +63,10 @@ const CourseInformation = ({
       price: courseInfo?.price || 0,
       discountedPrice: courseInfo?.discountedPrice || 0,
       tags: courseInfo?.tags || "",
-      level: courseInfo?.level || "",
+      level: courseInfo?.level || "beginner",
       demoUrl: courseInfo?.demoUrl || "",
       thumbnail: courseInfo?.thumbnail || "",
-      //   categories: courseInfo?.categories || "",
+      category: courseInfo?.category || "web-development",
     },
   });
 
@@ -72,6 +74,7 @@ const CourseInformation = ({
     console.log(currentStep);
     console.log(data);
     setCourseInfo({ ...courseInfo, ...data });
+    console.log("COURSE INFO", courseInfo);
     onStepChange(currentStep + 1);
   };
 
@@ -171,19 +174,6 @@ const CourseInformation = ({
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Course Tags</FormLabel>
-              <FormControl>
-                <Input placeholder="Course Tags" {...field} type="text" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="flex gap-2 w-full">
           <FormField
             control={form.control}
@@ -191,8 +181,36 @@ const CourseInformation = ({
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Course Level</FormLabel>
+                <CourseLevelSelector
+                  currentLevel={field.value}
+                  setCurrentLevel={field.onChange}
+                />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Course Category</FormLabel>
+                <CourseCategorySelector
+                  currentCategory={field.value}
+                  setCurrentCategory={field.onChange}
+                />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex gap-2 w-full">
+          <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Course Tags</FormLabel>
                 <FormControl>
-                  <Input placeholder="Course Level" {...field} type="text" />
+                  <Input placeholder="Course Tags" {...field} type="text" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

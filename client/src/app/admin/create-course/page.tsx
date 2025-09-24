@@ -12,8 +12,8 @@ const page = () => {
     price: 0,
     discountedPrice: 0,
     tags: "",
-    level: "",
-    // categories: "",
+    level: "beginner",
+    category: "web-development",
     demoUrl: "",
     thumbnail: "",
   });
@@ -23,7 +23,6 @@ const page = () => {
   const [courseContentData, setCourseContentData] = useState([
     {
       title: "Untitled Section",
-      description: "",
       lessons: [
         {
           title: "Lesson 1",
@@ -43,22 +42,53 @@ const page = () => {
     },
   ]);
 
-  //   const [courseContentData, setCourseContentData] = useState([
-  //     {
-  //       videoUrl: "",
-  //       title: "",
-  //       description: "",
-  //       videoSection: "Untitled Section",
-  //       videoLength: "",
-  //       links: [
-  //         {
-  //           title: "",
-  //           url: "",
-  //         },
-  //       ],
-  //       suggestion: "",
-  //     },
-  //   ]);
+  const handleSubmit = async () => {
+    const formattedBenefits = benefits.map((benefit) => ({
+      title: benefit.title,
+    }));
+    const formattedPrerequisites = prerequisites.map((prerequisite) => ({
+      title: prerequisite.title,
+    }));
+
+    // const formattedCourseContentData = courseContentData.map(
+    //   (courseContent) => ({
+    //     videoUrl: courseContent.videoUrl,
+    //     title: courseContent.title,
+    //     description: courseContent.description,
+    //     videoLength: courseContent.videoLength,
+    //     videoSection: courseContent.videoSection,
+    //     links: courseContent.links.map((link) => ({
+    //       title: link.title,
+    //       url: link.url,
+    //     })),
+    //     suggestion: courseContent.suggestion,
+    //   })
+    // );
+
+    const data = {
+      name: courseInfo.name,
+      description: courseInfo.description,
+      category: courseInfo.category,
+      price: courseInfo.price,
+      discountedPrice: courseInfo.discountedPrice,
+      tags: courseInfo.tags,
+      thumbnail: courseInfo.thumbnail,
+      level: courseInfo.level,
+      demoUrl: courseInfo.demoUrl,
+      totalVideos: courseContentData.reduce(
+        (acc: number, section: any) => acc + section.lessons.length,
+        0
+      ),
+      benefits: formattedBenefits,
+      prerequisites: formattedPrerequisites,
+      sections: courseContentData,
+    };
+
+    console.log("DATA", data);
+
+    setCourseData(data);
+  };
+
   const [currentStep, setCurrentStep] = useState(2);
   //   const [completedSteps, setCompletedSteps] = useState<boolean[]>([
   //     false,
@@ -99,6 +129,7 @@ const page = () => {
         onStepChange={setCurrentStep}
         courseContentData={courseContentData}
         setCourseContentData={setCourseContentData}
+        handleSubmit={handleSubmit}
       />
     );
   }
