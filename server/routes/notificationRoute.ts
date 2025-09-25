@@ -4,11 +4,13 @@ import {
   handleUpdateNotificationStatus,
 } from "../controllers/notificationController";
 import { authorizeRoles, isAuthenticated } from "../middleware/auth";
+import { handleUpdateAccessToken } from "../controllers/userController";
 
 const notificationRouter = express.Router();
 
 notificationRouter.get(
   "/get-all-notifications",
+  handleUpdateAccessToken,
   isAuthenticated,
   authorizeRoles("admin"),
   handleGetAllNotifications
@@ -16,6 +18,7 @@ notificationRouter.get(
 
 notificationRouter.put(
   "/update-notification-status/:id",
+  handleUpdateAccessToken,
   isAuthenticated,
   authorizeRoles("admin"),
   handleUpdateNotificationStatus

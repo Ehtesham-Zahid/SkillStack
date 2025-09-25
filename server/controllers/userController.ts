@@ -103,11 +103,12 @@ export const handleUpdateAccessToken = asyncHandler(
 
     redis.set(user._id as string, JSON.stringify(user) as any, "EX", 604800); // 7days
 
-    res.status(200).json({
-      success: true,
-      user,
-      accessToken,
-    });
+    // res.status(200).json({
+    //   success: true,
+    //   user,
+    //   accessToken,
+    // });
+    next();
   }
 );
 

@@ -6,7 +6,25 @@ import CreateCourseStages from "@/src/components/features/admin/course/CreateCou
 import CourseOptions from "@/src/components/features/admin/course/CourseOptions";
 import CourseContent from "@/src/components/features/admin/course/CourseContent";
 import CoursePreview from "@/src/components/features/admin/course/CoursePreview";
+import { useCreateCourseMutation } from "@/src/redux/features/course/courseApi";
+import { toast } from "react-hot-toast";
+import { redirect } from "next/navigation";
 const page = () => {
+  const [createCourse, { isLoading, isError, isSuccess, error }] =
+    useCreateCourseMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Course created successfully");
+      redirect("/admin/courses");
+    }
+    if (error) {
+      if ("data" in error) {
+        const errorMessage = error as any;
+        toast.error(errorMessage.data.message);
+      }
+    }
+  }, [isLoading, isSuccess, error]);
   const [courseInfo, setCourseInfo] = useState({
     name: "",
     description: "",
@@ -90,7 +108,7 @@ const page = () => {
     setCourseData(data);
   };
 
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(3);
   //   const [completedSteps, setCompletedSteps] = useState<boolean[]>([
   //     false,
   //     false,
@@ -100,6 +118,9 @@ const page = () => {
 
   const handleCourseCreate = async () => {
     console.log("COURSE DATA", courseData);
+    if (!isLoading) {
+      await createCourse(courseData);
+    }
   };
 
   let component = null;

@@ -12,39 +12,48 @@ const CoursePlayer = ({ videoUrl, title }: CoursePlayerProps) => {
     playbackInfo: "",
   });
 
-  useEffect(() => {
-    axios
-      .post(`${process.env.NEXT_PUBLIC_SERVER_URL}courses/getVdoCipherOTP`, {
-        videoId: videoUrl,
-      })
-      .then((res) => {
-        setVideoData(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const fetchVideoData = React.useCallback(async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}courses/getVdoCipherOTP`,
+        {
+          videoId: videoUrl,
+        }
+      );
+      console.log("Video data received", response.data);
+
+      if (
+        response.data?.videoURL?.otp &&
+        response.data?.videoURL?.playbackInfo
+      ) {
+        setVideoData(response.data.videoURL);
+      } else {
+        console.log("Invalid video data received");
+      }
+    } catch (err: any) {
+      console.error("Video loading error: catch", err);
+      console.log(
+        err.response?.data?.message || "Failed to load video. Please try again."
+      );
+    } finally {
+      console.log("Video loading error: finally");
+    }
   }, [videoUrl]);
 
+  useEffect(() => {
+    fetchVideoData();
+  }, [videoUrl, fetchVideoData]);
+
   return (
-    <div>
-      <div style={{ paddingTop: "56%", position: "relative" }}>
-        {videoData.otp && videoData.playbackInfo !== "" && (
-          <iframe
-            src={`https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}`}
-            style={{
-              border: "0",
-              maxWidth: "100%",
-              position: "absolute",
-              top: "0",
-              left: "0",
-              height: "100%",
-              width: "100%",
-            }}
-            allowFullScreen={true}
-            allow="encrypted-media"
-          ></iframe>
-        )}
-      </div>
+    <div className="w-full h-full">
+      {videoData?.otp && videoData?.playbackInfo !== "" && (
+        <iframe
+          src={`https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}&player=Aqj945gVGrnvSFQu`}
+          className="w-full h-full"
+          allowFullScreen={true}
+          allow="encrypted-media"
+        ></iframe>
+      )}
     </div>
   );
 };

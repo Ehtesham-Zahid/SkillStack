@@ -22,18 +22,35 @@ userRouter.post("/activate-user", handleActivateUser);
 userRouter.post("/login", handleLoginUser);
 userRouter.get("/logout", isAuthenticated, handleLogoutUser);
 userRouter.get("/update-access-token", handleUpdateAccessToken);
-userRouter.get("/me", isAuthenticated, handleGetUserInfo);
+userRouter.get(
+  "/me",
+  handleUpdateAccessToken,
+  isAuthenticated,
+  handleGetUserInfo
+);
 userRouter.post("/social-auth", handleSocialAuth);
-userRouter.put("/update-user-info", isAuthenticated, handleUpdateUserInfo);
-userRouter.put("/update-password", isAuthenticated, handleUpdatePassword);
+userRouter.put(
+  "/update-user-info",
+  handleUpdateAccessToken,
+  isAuthenticated,
+  handleUpdateUserInfo
+);
+userRouter.put(
+  "/update-password",
+  handleUpdateAccessToken,
+  isAuthenticated,
+  handleUpdatePassword
+);
 userRouter.put(
   "/update-profile-picture",
+  handleUpdateAccessToken,
   isAuthenticated,
   handleUpdateProfilePicture
 );
 
 userRouter.get(
   "/get-all-users-admin",
+  handleUpdateAccessToken,
   isAuthenticated,
   authorizeRoles("admin"),
   handleGetAllUsers
@@ -41,6 +58,7 @@ userRouter.get(
 
 userRouter.put(
   "/update-user-role-admin",
+  handleUpdateAccessToken,
   isAuthenticated,
   authorizeRoles("admin"),
   handleUpdateUserRole
@@ -48,6 +66,7 @@ userRouter.put(
 
 userRouter.delete(
   "/delete-user-admin/:id",
+  handleUpdateAccessToken,
   isAuthenticated,
   authorizeRoles("admin"),
   handleDeleteUser
