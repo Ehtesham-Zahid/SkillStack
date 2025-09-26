@@ -49,7 +49,7 @@ const CoursePreview = ({
   };
 
   return (
-    <div className="w-full bg-surface dark:bg-surface-dark p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none">
+    <div className="w-full bg-surface dark:bg-surface-dark sm:p-8 p-5 rounded-lg shadow-sm shadow-text1 dark:shadow-none">
       <div className="mb-8 flex flex-col gap-2">
         <p className="text-4xl font-bold dark:text-text1-dark text-text1">
           Course Preview
@@ -84,8 +84,9 @@ const CoursePreview = ({
           )}
           <Button
             type="button"
-            className="w-full text-lg cursor-pointer"
+            className="w-full text-lg cursor-not-allowed "
             size={"lg"}
+            disabled={true}
           >
             Buy Now
           </Button>
