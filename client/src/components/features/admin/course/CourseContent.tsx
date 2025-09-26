@@ -20,18 +20,6 @@ type CourseContentProps = {
   handleSubmit: any;
 };
 
-// const courseContentSchema = z.object({
-//   videoUrl: z.string().min(1),
-//   title: z.string().min(1),
-//   description: z.string().min(1),
-//   videoSection: z.string().min(1),
-//   videoLength: z.number().min(1),
-//   links: z.array(
-//     z.object({ title: z.string().min(1), url: z.string().min(1) })
-//   ),
-//   suggestion: z.string().min(1),
-// });
-
 const CourseContent = ({
   currentStep,
   onStepChange,
@@ -39,19 +27,6 @@ const CourseContent = ({
   setCourseContentData,
   handleSubmit: handleCourseSubmit,
 }: CourseContentProps) => {
-  //   const form = useForm({
-  //     resolver: zodResolver(courseContentSchema),
-  //     defaultValues: {
-  //       videoUrl: courseContentData?.videoUrl || "",
-  //       title: courseContentData?.title || "",
-  //       description: courseContentData?.description || "",
-  //       videoSection: courseContentData?.videoSection || "",
-  //       videoLength: courseContentData?.videoLength || 0,
-  //       links: courseContentData?.links || [],
-  //       suggestion: courseContentData?.suggestion || "",
-  //     },
-  //   });
-
   const handleAddLesson = (sectionIndex: number) => {
     if (
       courseContentData[sectionIndex].lessons[
@@ -63,6 +38,9 @@ const CourseContent = ({
       courseContentData[sectionIndex].lessons[
         courseContentData[sectionIndex].lessons.length - 1
       ].videoLength === 0 ||
+      courseContentData[sectionIndex].lessons[
+        courseContentData[sectionIndex].lessons.length - 1
+      ].videoLength === undefined ||
       courseContentData[sectionIndex].lessons[
         courseContentData[sectionIndex].lessons.length - 1
       ].description === ""
@@ -80,7 +58,7 @@ const CourseContent = ({
           title: `Lesson ${updatedSections[sectionIndex].lessons.length + 1}`,
           description: "",
           videoUrl: "",
-          videoLength: 0,
+          videoLength: undefined,
           videoPlayer: "vdocipher",
           suggestion: "",
           links: [{ title: "", url: "" }],
@@ -108,6 +86,9 @@ const CourseContent = ({
       ].videoLength === 0 ||
       courseContentData[courseContentData.length - 1].lessons[
         courseContentData[courseContentData.length - 1].lessons.length - 1
+      ].videoLength === undefined ||
+      courseContentData[courseContentData.length - 1].lessons[
+        courseContentData[courseContentData.length - 1].lessons.length - 1
       ].description === ""
     ) {
       toast.error("Please fill all the fields of the last lesson");
@@ -122,7 +103,7 @@ const CourseContent = ({
             title: "Untitled Lesson",
             description: "",
             videoUrl: "",
-            videoLength: 0,
+            videoLength: undefined,
             videoPlayer: "vdocipher",
             suggestion: "",
             links: [{ title: "", url: "" }],
@@ -195,6 +176,9 @@ const CourseContent = ({
       ].videoLength === 0 ||
       courseContentData[courseContentData.length - 1].lessons[
         courseContentData[courseContentData.length - 1].lessons.length - 1
+      ].videoLength === undefined ||
+      courseContentData[courseContentData.length - 1].lessons[
+        courseContentData[courseContentData.length - 1].lessons.length - 1
       ].description === ""
     ) {
       toast.error("Please fill all the fields of the last lesson");
@@ -205,13 +189,13 @@ const CourseContent = ({
   };
 
   return (
-    <div className="w-full bg-surface dark:bg-surface-dark p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none">
+    <div className="w-full bg-surface dark:bg-surface-dark p-5 sm:p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none">
       {" "}
       <div className="mb-8 flex flex-col gap-2">
-        <p className="text-4xl font-bold dark:text-text1-dark text-text1">
+        <p className="text-3xl md:text-4xl font-bold dark:text-text1-dark text-text1">
           Course Content
         </p>
-        <p className=" dark:text-text2-dark text-text2 font-medium">
+        <p className="text-sm md:text-base dark:text-text2-dark text-text2 font-medium">
           Create sections and add video lessons for your course
         </p>
       </div>
@@ -221,14 +205,14 @@ const CourseContent = ({
             type="single"
             collapsible
             key={index}
-            className="border border-gray-200 rounded-md px-5 py-2 dark:border-text2-dark"
+            className="border border-gray-200 rounded-md px-4 sm:px-5 py-2 dark:border-text2-dark"
           >
             <AccordionItem value={`item-${index}`}>
               <AccordionTrigger className="  dark:text-text1-dark flex items-center justify-between hover:no-underline">
                 <input
                   placeholder={`Section Title`}
                   type="text"
-                  className="p-0 text-2xl font-bold  focus:outline-none"
+                  className="p-0 text-xl md:text-2xl font-bold  focus:outline-none w-60 sm:w-full"
                   value={section.title}
                   onChange={(e) => {
                     const updatedSections = [...courseContentData];
@@ -268,7 +252,7 @@ const CourseContent = ({
                         )}
                       </AccordionTrigger>
                       <AccordionContent>
-                        <form className="flex flex-col gap-8 w-full">
+                        <form className="flex flex-col sm:gap-8 gap-5 w-full">
                           <div className="flex flex-col gap-2">
                             <Label>Video Title</Label>
                             <Input
@@ -282,10 +266,11 @@ const CourseContent = ({
                                 ].title = e.target.value;
                                 setCourseContentData(updatedSections);
                               }}
+                              className="py-3 sm:py-5"
                             />
                           </div>
 
-                          <div className="flex gap-5 w-full">
+                          <div className="flex flex-col sm:flex-row gap-5 w-full">
                             <div className="flex-1 flex flex-col gap-2">
                               <Label>Video Url</Label>
                               <Input
@@ -301,6 +286,7 @@ const CourseContent = ({
                                   ].videoUrl = e.target.value;
                                   setCourseContentData(updatedSections);
                                 }}
+                                className="py-3 sm:py-5"
                               />
                             </div>
                             <div className="flex-1 flex flex-col gap-2">
@@ -313,11 +299,18 @@ const CourseContent = ({
                                   const updatedSections = [
                                     ...courseContentData,
                                   ];
-                                  updatedSections[index].lessons[
-                                    lessonIndex
-                                  ].videoLength = Number(e.target.value);
+                                  if (e.target.value === "") {
+                                    updatedSections[index].lessons[
+                                      lessonIndex
+                                    ].videoLength = undefined;
+                                  } else {
+                                    updatedSections[index].lessons[
+                                      lessonIndex
+                                    ].videoLength = Number(e.target.value);
+                                  }
                                   setCourseContentData(updatedSections);
                                 }}
+                                className="py-3 sm:py-5"
                               />
                             </div>
                           </div>
@@ -325,7 +318,7 @@ const CourseContent = ({
                             <Label>Video Description</Label>
                             <Textarea
                               placeholder="Video Description"
-                              className="h-48"
+                              className="h-48 py-3 sm:py-5"
                               value={lesson.description}
                               onChange={(e) => {
                                 const updatedSections = [...courseContentData];
@@ -340,7 +333,7 @@ const CourseContent = ({
                           <div className="flex flex-col gap-4 w-full">
                             {lesson.links.map(
                               (link: any, linkIndex: number) => (
-                                <div className="flex flex-col gap-4 w-full border border-text2-dark rounded-md p-5">
+                                <div className="flex flex-col gap-4 w-full border border-text2-dark rounded-md p-4 sm:p-5">
                                   <div className="text-base font-medium dark:text-accent-dark text-accent  flex items-center justify-between">
                                     Link {linkIndex + 1}
                                     {lesson.links.length > 1 && (
@@ -356,7 +349,7 @@ const CourseContent = ({
                                       />
                                     )}
                                   </div>
-                                  <div className="flex gap-5 w-full">
+                                  <div className="flex flex-col sm:flex-row gap-5 w-full">
                                     <div className="flex-1 flex flex-col gap-2">
                                       <Label>Link Title</Label>
                                       <Input
@@ -373,6 +366,7 @@ const CourseContent = ({
                                             e.target.value;
                                           setCourseContentData(updatedSections);
                                         }}
+                                        className="py-3 sm:py-5"
                                       />
                                     </div>
                                     <div className="flex-1 flex flex-col gap-2">
@@ -391,6 +385,7 @@ const CourseContent = ({
                                             e.target.value;
                                           setCourseContentData(updatedSections);
                                         }}
+                                        className="py-3 sm:py-5"
                                       />
                                     </div>
                                   </div>

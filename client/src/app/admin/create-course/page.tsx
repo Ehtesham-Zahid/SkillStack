@@ -28,8 +28,8 @@ const page = () => {
   const [courseInfo, setCourseInfo] = useState({
     name: "",
     description: "",
-    price: 0,
-    discountedPrice: 0,
+    price: "",
+    discountedPrice: "",
     tags: "",
     level: "beginner",
     category: "web-development",
@@ -47,7 +47,7 @@ const page = () => {
           title: "Lesson 1",
           description: "",
           videoUrl: "",
-          videoLength: 0,
+          videoLength: undefined,
           videoPlayer: "vdocipher", // or default value
           suggestion: "",
           links: [

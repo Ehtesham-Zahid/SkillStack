@@ -25,12 +25,13 @@ import { Textarea } from "@/src/shadcn/ui/textarea";
 import Image from "next/image";
 import CourseLevelSelector from "./CourseLevelSelector";
 import CourseCategorySelector from "./CourseCategorySelector";
+import { toast } from "react-hot-toast";
 
 const courseInformationSchema = z.object({
   name: z.string().min(2),
   description: z.string().min(2),
   price: z.coerce.number().min(1),
-  discountedPrice: z.coerce.number().min(1),
+  discountedPrice: z.coerce.number().optional(),
   tags: z.string().min(2),
   level: z.string().min(2),
   demoUrl: z.string().min(2),
@@ -60,8 +61,8 @@ const CourseInformation = ({
     defaultValues: {
       name: courseInfo?.name || "",
       description: courseInfo?.description || "",
-      price: courseInfo?.price || undefined,
-      discountedPrice: courseInfo?.discountedPrice || undefined,
+      price: courseInfo?.price || "",
+      discountedPrice: courseInfo?.discountedPrice || "",
       tags: courseInfo?.tags || "",
       level: courseInfo?.level || "beginner",
       demoUrl: courseInfo?.demoUrl || "",
@@ -71,10 +72,15 @@ const CourseInformation = ({
   });
 
   const onSubmit = async (data: any) => {
-    console.log(currentStep);
-    console.log(data);
+    if (data.discountedPrice === 0) {
+      delete data.discountedPrice;
+    }
+    if (data.price <= data.discountedPrice) {
+      toast.error("Discounted price cannot be greater than or equal to price");
+      return;
+    }
+    console.log("DATA", data);
     setCourseInfo({ ...courseInfo, ...data });
-    console.log("COURSE INFO", courseInfo);
     onStepChange(currentStep + 1);
   };
 
@@ -119,7 +125,7 @@ const CourseInformation = ({
                   placeholder="Course Name"
                   {...field}
                   type="text"
-                  className="py-5"
+                  className="py-3 sm:py-5"
                 />
               </FormControl>
               <FormMessage />
@@ -138,7 +144,7 @@ const CourseInformation = ({
                 <Textarea
                   placeholder="Course Description"
                   {...field}
-                  className="h-48"
+                  className="h-48 py-3 sm:py-5"
                 />
               </FormControl>
               <FormMessage />
@@ -160,7 +166,7 @@ const CourseInformation = ({
                     {...field}
                     type="number"
                     value={field.value as number}
-                    className="py-5"
+                    className="py-3 sm:py-5"
                   />
                 </FormControl>
                 <FormMessage />
@@ -181,7 +187,7 @@ const CourseInformation = ({
                     {...field}
                     type="number"
                     value={field.value as number}
-                    className="py-5"
+                    className="py-3 sm:py-5"
                   />
                 </FormControl>
                 <FormMessage />
@@ -235,7 +241,7 @@ const CourseInformation = ({
                     placeholder="Course Tags"
                     {...field}
                     type="text"
-                    className="py-5"
+                    className="py-3 sm:py-5"
                   />
                 </FormControl>
                 <FormMessage />
@@ -255,7 +261,7 @@ const CourseInformation = ({
                     placeholder="Demo Url"
                     {...field}
                     type="text"
-                    className="py-5"
+                    className="py-3 sm:py-5"
                   />
                 </FormControl>
                 <FormMessage />

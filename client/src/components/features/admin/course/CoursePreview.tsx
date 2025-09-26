@@ -59,13 +59,13 @@ const CoursePreview = ({
         </p>
       </div>
       <div className="grid grid-cols-3 gap-5">
-        <div className="col-span-2">
+        <div className="h-[400px] w-full xl:h-auto col-span-3 xl:col-span-2">
           <CoursePlayer
             videoUrl={courseData?.demoUrl}
             title={courseData?.name}
           />
         </div>
-        <div className="col-span-1 border dark:border-text2-dark border-text2 rounded-md p-5 flex flex-col gap-5">
+        <div className="col-span-3 xl:col-span-1 border dark:border-text2-dark border-text2 rounded-md p-5 flex flex-col gap-5">
           {courseData?.discountedPrice && courseData?.discountedPrice > 0 ? (
             <div className="flex gap-3 items-end">
               <p className="text-3xl font-bold dark:text-text1-dark text-text1">

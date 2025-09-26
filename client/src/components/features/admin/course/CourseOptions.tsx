@@ -114,12 +114,12 @@ const CourseOptions = ({
   };
 
   return (
-    <div className="w-full bg-surface dark:bg-surface-dark p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none">
+    <div className="w-full bg-surface dark:bg-surface-dark  p-5 sm:p-8  rounded-lg shadow-sm shadow-text1 dark:shadow-none">
       <div className="mb-8 flex flex-col gap-2">
-        <p className="text-4xl font-bold dark:text-text1-dark text-text1">
+        <p className="text-3xl md:text-4xl font-bold dark:text-text1-dark text-text1">
           Course Benefits & Prerequisites
         </p>
-        <p className=" dark:text-text2-dark text-text2 font-medium">
+        <p className="text-sm md:text-base dark:text-text2-dark text-text2 font-medium">
           Add benefits and prerequisites to your course. These will be shown to
           the students.
         </p>
@@ -127,7 +127,7 @@ const CourseOptions = ({
       <div className="flex flex-col gap-5">
         {/* ----BENEFITS---- */}
         <div className="flex flex-col gap-2">
-          <p className="text-lg font-medium dark:text-text1-dark text-text1">
+          <p className="text-base md:text-lg font-medium dark:text-text1-dark text-text1">
             What are the benefits of taking this course?
           </p>
           <div className="flex flex-col gap-3">
@@ -138,6 +138,7 @@ const CourseOptions = ({
                   placeholder="Benefit"
                   value={benefit.title}
                   onChange={(e) => handleBenefitChange(e, index)}
+                  className="py-3 sm:py-5"
                 />
                 {benefits.length > 1 && (
                   <p
@@ -165,7 +166,7 @@ const CourseOptions = ({
 
         {/* ----PREREQUISITES---- */}
         <div className="flex flex-col gap-2">
-          <p className="text-lg font-medium dark:text-text1-dark text-text1">
+          <p className="text-base md:text-lg font-medium dark:text-text1-dark text-text1">
             What are the prerequisites for taking this course?
           </p>
           <div className="flex flex-col gap-3">
@@ -176,6 +177,7 @@ const CourseOptions = ({
                   placeholder="Prerequisite"
                   value={prerequisite.title}
                   onChange={(e) => handlePrerequisiteChange(e, index)}
+                  className="py-3 sm:py-5"
                 />
                 {prerequisites.length > 1 && (
                   <p

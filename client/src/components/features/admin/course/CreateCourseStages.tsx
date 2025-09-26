@@ -73,7 +73,7 @@ const CreateCourseStages: React.FC<CreateCourseStagesProps> = ({
       <div className="p-4 sm:p-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
         {/* Vertical layout for screens below sm (mobile) */}
         <div className="sm:hidden">
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {STEP_TITLES.map((title, index) => {
               const isCurrent = index === currentStep;
               const isCompleted = safeCompleted[index];
