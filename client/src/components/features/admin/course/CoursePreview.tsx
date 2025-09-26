@@ -4,14 +4,9 @@ import CoursePlayer from "@/src/components/shared/CoursePlayer";
 import { Badge } from "@/src/shadcn/ui/badge";
 import { Button } from "@/src/shadcn/ui/button";
 import { Input } from "@/src/shadcn/ui/input";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/src/shadcn/ui/accordion";
 import { Separator } from "@/src/shadcn/ui/separator";
 import { CheckIcon } from "lucide-react";
+import Ratings from "@/src/components/shared/Ratings";
 
 type CoursePreviewProps = {
   currentStep: number;
@@ -44,6 +39,14 @@ const CoursePreview = ({
         return acc + sectionMinutes;
       }, 0)
     : 0;
+
+  const handlePrev = () => {
+    onStepChange(currentStep - 1);
+  };
+
+  const handleNext = () => {
+    onStepChange(currentStep + 1);
+  };
 
   return (
     <div className="w-full bg-surface dark:bg-surface-dark p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none">
@@ -96,16 +99,16 @@ const CoursePreview = ({
             </Button>
           </div>
           <div className="flex flex-col  gap-2 border-b dark:border-text2-dark border-text2 pb-5">
-            <p className="text-base font-bold dark:text-text1-dark text-text1">
+            <p className="text-base font-bold dark:text-text2-dark text-text2">
               This course includes:
             </p>
-            <p className="flex items-center gap-2 text-sm dark:text-text2-dark text-text2">
+            <p className="flex items-center gap-2 text-sm dark:text-text1-dark text-text1">
               <CheckIcon className="w-4 h-4 inline-block" /> Lifetime Access
             </p>
-            <p className="flex items-center gap-2 text-sm dark:text-text2-dark text-text2">
+            <p className="flex items-center gap-2 text-sm dark:text-text1-dark text-text1">
               <CheckIcon className="w-4 h-4 inline-block" /> 24/7 Support
             </p>
-            <p className="flex items-center gap-2 text-sm dark:text-text2-dark text-text2">
+            <p className="flex items-center gap-2 text-sm dark:text-text1-dark text-text1">
               <CheckIcon className="w-4 h-4 inline-block" /> Certificate of
               Completion
             </p>
@@ -137,24 +140,20 @@ const CoursePreview = ({
         </div>
       </div>
       <div className="mt-8">
-        <div className="flex flex-col gap-2">
-          <p className="text-2xl font-bold dark:text-text1-dark text-text1">
+        <div className="flex flex-col gap-5">
+          <p className="text-4xl font-bold dark:text-text1-dark text-text1 capitalize">
             {courseData?.name || "Untitled Course"}
           </p>
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <span className="dark:text-text2-dark text-text2">0 ratings</span>
-            <Separator orientation="vertical" className="h-4" />
-            <span className="dark:text-text2-dark text-text2">0 students</span>
-            <Separator orientation="vertical" className="h-4" />
-            <span className="dark:text-text2-dark text-text2 capitalize">
-              {courseData?.category?.replaceAll("-", " ") || "category"}
-            </span>
-            <Separator orientation="vertical" className="h-4" />
+          <div className="flex flex-wrap items-center gap-4 text-sm">
+            <Ratings rating={courseData?.ratings || 0} />
             <span className="dark:text-text2-dark text-text2">
-              {totalLessons} lessons • {totalMinutes} min
+              ({courseData?.ratings || 0} Reviews)
             </span>
-            <Badge variant="secondary" className="ml-auto">
-              {courseData?.level || "beginner"}
+            <span className="dark:text-text2-dark text-text2">
+              {courseData?.purchased || 0} Students
+            </span>
+            <Badge className=" bg-orange-200  text-orange-500 font-bold capitalize">
+              {courseData?.level || "Beginner"}
             </Badge>
           </div>
         </div>
@@ -162,7 +161,7 @@ const CoursePreview = ({
         <Separator className="my-6" />
 
         <div className="flex flex-col gap-4">
-          <p className="text-lg font-bold dark:text-text1-dark text-text1">
+          <p className="text-2xl font-semibold dark:text-text1-dark text-text1">
             What you'll learn
           </p>
           <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
@@ -184,7 +183,7 @@ const CoursePreview = ({
         <Separator className="my-6" />
 
         <div className="flex flex-col gap-4">
-          <p className="text-lg font-bold dark:text-text1-dark text-text1">
+          <p className="text-2xl font-semibold dark:text-text1-dark text-text1">
             Prerequisites
           </p>
           <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
@@ -206,74 +205,33 @@ const CoursePreview = ({
         <Separator className="my-6" />
 
         <div className="flex flex-col gap-3">
-          <p className="text-lg font-bold dark:text-text1-dark text-text1">
-            Course description
+          <p className="text-2xl font-semibold dark:text-text1-dark text-text1 capitalize">
+            Course Description
           </p>
           <p className="text-sm leading-6 dark:text-text2-dark text-text2">
             {courseData?.description ||
               "Add a compelling description in Course Information."}
           </p>
         </div>
-
-        <Separator className="my-6" />
-
-        <div className="flex flex-col gap-4">
-          <p className="text-lg font-bold dark:text-text1-dark text-text1">
-            Curriculum
-          </p>
-          <Accordion type="single" collapsible className="w-full">
-            {Array.isArray(courseData?.sections) &&
-            courseData.sections.length > 0 ? (
-              courseData.sections.map((section: any, sIdx: number) => (
-                <AccordionItem
-                  key={`sec-${sIdx}`}
-                  value={`sec-${sIdx}`}
-                  className="border dark:border-text2-dark border-text2 rounded-md px-5"
-                >
-                  <AccordionTrigger className="py-3 text-base font-semibold dark:text-text1-dark text-text1 hover:no-underline">
-                    <div className="flex items-center justify-between w-full gap-3">
-                      <span className="truncate">
-                        {section?.title || `Section ${sIdx + 1}`}
-                      </span>
-                      <span className="text-xs font-medium dark:text-text2-dark text-text2 whitespace-nowrap">
-                        {section?.lessons?.length || 0} lessons
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4">
-                    <div className="flex flex-col">
-                      {Array.isArray(section?.lessons) &&
-                      section.lessons.length > 0 ? (
-                        section.lessons.map((lesson: any, lIdx: number) => (
-                          <div
-                            key={`les-${sIdx}-${lIdx}`}
-                            className="flex items-center justify-between py-2 border-b last:border-b-0 dark:border-text2-dark border-text2"
-                          >
-                            <p className="text-sm dark:text-text2-dark text-text2 truncate pr-3">
-                              {lesson?.title || `Lesson ${lIdx + 1}`}
-                            </p>
-                            <span className="text-xs dark:text-text2-dark text-text2 whitespace-nowrap">
-                              {lesson?.videoLength || 0} min
-                            </span>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-sm dark:text-text2-dark text-text2">
-                          No lessons added.
-                        </p>
-                      )}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))
-            ) : (
-              <div className="border dark:border-text2-dark border-text2 rounded-md p-5 text-sm dark:text-text2-dark text-text2">
-                No curriculum added yet. Add sections and lessons in Course
-                Content.
-              </div>
-            )}
-          </Accordion>
-        </div>
+      </div>
+      <Separator className="my-6" />
+      <div className="flex justify-between mt-8">
+        <Button
+          type="button"
+          onClick={handlePrev}
+          className=" cursor-pointer mt-2 dark:text-text1-dark text-text1  text-base w-32  border dark:border-text2-dark border-text2   hover:border-primary dark:hover:border-primary-dark bg-transparent hover:bg-transparent"
+          size="lg"
+        >
+          Previous
+        </Button>
+        <Button
+          type="button"
+          onClick={handleNext}
+          className=" cursor-pointer mt-2 text-white text-base w-32"
+          size="lg"
+        >
+          Create Course
+        </Button>
       </div>
     </div>
   );

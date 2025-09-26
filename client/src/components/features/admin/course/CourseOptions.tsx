@@ -24,6 +24,7 @@ import { Input } from "@/src/shadcn/ui/input";
 import { Textarea } from "@/src/shadcn/ui/textarea";
 import { PlusIcon, XIcon } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { Separator } from "@/src/shadcn/ui/separator";
 
 type CourseOptionsProps = {
   currentStep: number;
@@ -200,6 +201,7 @@ const CourseOptions = ({
           </div>
         </div>
       </div>
+      <Separator className="my-6" />
       <div className="flex justify-between mt-8">
         <Button
           type="button"

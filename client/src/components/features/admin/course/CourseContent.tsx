@@ -11,6 +11,7 @@ import { Textarea } from "@/src/shadcn/ui/textarea";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { Label } from "@/src/shadcn/ui/label";
 import { toast } from "react-hot-toast";
+import { Separator } from "@/src/shadcn/ui/separator";
 type CourseContentProps = {
   currentStep: number;
   onStepChange: (nextStepIndex: number) => void;
@@ -425,6 +426,7 @@ const CourseContent = ({
           Add Section
         </Button>
       </div>
+      <Separator className="my-6" />
       <div className="flex justify-between mt-8">
         <Button
           type="button"
