@@ -46,6 +46,7 @@ const CoursePreview = ({
 
   const handleNext = () => {
     onStepChange(currentStep + 1);
+    handleCourseCreate();
   };
 
   return (

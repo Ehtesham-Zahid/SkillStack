@@ -9,6 +9,7 @@ import CoursePreview from "@/src/components/features/admin/course/CoursePreview"
 import { useCreateCourseMutation } from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
 import { redirect } from "next/navigation";
+import Spinner from "@/src/components/ui/Spinner";
 const page = () => {
   const [createCourse, { isLoading, isError, isSuccess, error }] =
     useCreateCourseMutation();
@@ -25,6 +26,7 @@ const page = () => {
       }
     }
   }, [isLoading, isSuccess, error]);
+
   const [courseInfo, setCourseInfo] = useState({
     name: "",
     description: "",
@@ -68,21 +70,6 @@ const page = () => {
     const formattedPrerequisites = prerequisites.map((prerequisite) => ({
       title: prerequisite.title,
     }));
-
-    // const formattedCourseContentData = courseContentData.map(
-    //   (courseContent) => ({
-    //     videoUrl: courseContent.videoUrl,
-    //     title: courseContent.title,
-    //     description: courseContent.description,
-    //     videoLength: courseContent.videoLength,
-    //     videoSection: courseContent.videoSection,
-    //     links: courseContent.links.map((link) => ({
-    //       title: link.title,
-    //       url: link.url,
-    //     })),
-    //     suggestion: courseContent.suggestion,
-    //   })
-    // );
 
     const data = {
       name: courseInfo.name,
@@ -170,7 +157,9 @@ const page = () => {
       />
     );
   }
-  return (
+  return isLoading ? (
+    <Spinner />
+  ) : (
     <div className="w-full flex  flex-col gap-10 mb-10">
       <div className=" ">
         <CreateCourseStages

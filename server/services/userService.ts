@@ -189,12 +189,7 @@ export const updateAccessToken = async (
     throw new ErrorHandler("Invalid refresh token", 400);
   }
 
-  const session = await redis.get(decoded.id as string);
-  if (!session) {
-    throw new ErrorHandler("Please login to access this resource.", 400);
-  }
-
-  const user = JSON.parse(session) as IUser;
+  const user = (await userModel.findById(decoded.id as string)) as IUser;
 
   return (await sendToken(user)) as {
     accessToken: string;
