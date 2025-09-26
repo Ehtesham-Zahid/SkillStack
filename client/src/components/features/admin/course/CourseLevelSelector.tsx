@@ -21,7 +21,7 @@ const CourseLevelSelector = ({
 }: CourseLevelSelectorProps) => {
   return (
     <Select value={currentLevel} onValueChange={setCurrentLevel}>
-      <SelectTrigger className="w-full dark:border-text2-dark border-text2 dark:text-text1-dark text-text1">
+      <SelectTrigger className="w-full dark:border-text2-dark border-text2 dark:text-text1-dark text-text1 py-5">
         <SelectValue placeholder="Select a Level" />
       </SelectTrigger>
       <SelectContent className="dark:bg-background-dark bg-background">

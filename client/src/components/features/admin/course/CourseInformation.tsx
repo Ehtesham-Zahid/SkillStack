@@ -60,8 +60,8 @@ const CourseInformation = ({
     defaultValues: {
       name: courseInfo?.name || "",
       description: courseInfo?.description || "",
-      price: courseInfo?.price || 0,
-      discountedPrice: courseInfo?.discountedPrice || 0,
+      price: courseInfo?.price || undefined,
+      discountedPrice: courseInfo?.discountedPrice || undefined,
       tags: courseInfo?.tags || "",
       level: courseInfo?.level || "beginner",
       demoUrl: courseInfo?.demoUrl || "",
@@ -104,16 +104,23 @@ const CourseInformation = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 w-full bg-surface dark:bg-surface-dark p-8 rounded-lg shadow-sm shadow-text1 dark:shadow-none"
+        className="sm:space-y-8 space-y-6 w-full bg-surface dark:bg-surface-dark  p-5 sm:p-8   rounded-lg shadow-sm shadow-text1 dark:shadow-none"
       >
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Course Name</FormLabel>
+              <FormLabel className="text-base font-semibold">
+                Course Name
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Course Name" {...field} type="text" />
+                <Input
+                  placeholder="Course Name"
+                  {...field}
+                  type="text"
+                  className="py-5"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -124,7 +131,9 @@ const CourseInformation = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Course Description</FormLabel>
+              <FormLabel className="text-base font-semibold">
+                Course Description
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Course Description"
@@ -136,19 +145,22 @@ const CourseInformation = ({
             </FormItem>
           )}
         />
-        <div className="flex gap-2 w-full">
+        <div className="flex sm:gap-2 gap-6 sm:flex-row flex-col w-full">
           <FormField
             control={form.control}
             name="price"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Course Price</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  Course Price
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Course Price"
                     {...field}
                     type="number"
                     value={field.value as number}
+                    className="py-5"
                   />
                 </FormControl>
                 <FormMessage />
@@ -160,13 +172,16 @@ const CourseInformation = ({
             name="discountedPrice"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Discounted Price(Optional)</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  Discounted Price(Optional)
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Discounted Price(Optional)"
                     {...field}
                     type="number"
                     value={field.value as number}
+                    className="py-5"
                   />
                 </FormControl>
                 <FormMessage />
@@ -174,13 +189,15 @@ const CourseInformation = ({
             )}
           />
         </div>
-        <div className="flex gap-2 w-full">
+        <div className="flex sm:gap-2 gap-6 sm:flex-row flex-col w-full">
           <FormField
             control={form.control}
             name="level"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Course Level</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  Course Level
+                </FormLabel>
                 <CourseLevelSelector
                   currentLevel={field.value}
                   setCurrentLevel={field.onChange}
@@ -193,7 +210,9 @@ const CourseInformation = ({
             name="category"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Course Category</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  Course Category
+                </FormLabel>
                 <CourseCategorySelector
                   currentCategory={field.value}
                   setCurrentCategory={field.onChange}
@@ -202,15 +221,22 @@ const CourseInformation = ({
             )}
           />
         </div>
-        <div className="flex gap-2 w-full">
+        <div className="flex sm:gap-2 gap-6 sm:flex-row flex-col w-full">
           <FormField
             control={form.control}
             name="tags"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Course Tags</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  Course Tags
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Course Tags" {...field} type="text" />
+                  <Input
+                    placeholder="Course Tags"
+                    {...field}
+                    type="text"
+                    className="py-5"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -221,9 +247,16 @@ const CourseInformation = ({
             name="demoUrl"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Demo Url</FormLabel>
+                <FormLabel className="text-base font-semibold">
+                  Demo Url
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Demo Url" {...field} type="text" />
+                  <Input
+                    placeholder="Demo Url"
+                    {...field}
+                    type="text"
+                    className="py-5"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -247,7 +280,7 @@ const CourseInformation = ({
             <DropzoneEmptyState />
             {/* <DropzoneContent> */}
             {courseInfo?.thumbnail && (
-              <div className="h-[400px] w-full flex flex-col items-center justify-center">
+              <div className=" h-[200px] sm:h-[400px] w-full flex flex-col items-center justify-center">
                 <Image
                   alt="Preview"
                   className="absolute top-0 left-0 h-full w-full object-contain"
@@ -255,13 +288,15 @@ const CourseInformation = ({
                   width={1000}
                   height={1000}
                 />
-                <p className="text-sm text-gray-400 text-center">
-                  Click to change thumbnail.
-                </p>
               </div>
             )}
             {/* </DropzoneContent> */}
           </Dropzone>
+          {courseInfo?.thumbnail && (
+            <p className="text-sm text-text2 dark:text-text2-dark text-center mt-3 font-semibold">
+              Click to change thumbnail.
+            </p>
+          )}
           <FormField
             control={form.control}
             name="thumbnail"

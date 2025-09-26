@@ -171,13 +171,22 @@ const page = () => {
     );
   }
   return (
-    <div className="w-full flex lg:flex-row flex-col gap-10 mb-10">
+    <div className="w-full flex  flex-col gap-10 mb-10">
+      <div className=" ">
+        <CreateCourseStages
+          currentStep={currentStep}
+          // completedSteps={completedSteps}
+          onStepChange={setCurrentStep}
+        />
+      </div>
+      {/* <div className=" xl:hidden ">
+        <CreateCourseStages
+          currentStep={currentStep}
+          // completedSteps={completedSteps}
+          onStepChange={setCurrentStep}
+        />{" "}
+      </div> */}
       {component}
-      <CreateCourseStages
-        currentStep={currentStep}
-        // completedSteps={completedSteps}
-        onStepChange={setCurrentStep}
-      />
     </div>
   );
 };
