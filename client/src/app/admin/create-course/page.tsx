@@ -17,7 +17,7 @@ const page = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success("Course created successfully");
-      redirect("/admin/courses");
+      redirect("/admin/create-course");
     }
     if (error) {
       if ("data" in error) {
@@ -95,13 +95,7 @@ const page = () => {
     setCourseData(data);
   };
 
-  const [currentStep, setCurrentStep] = useState(3);
-  //   const [completedSteps, setCompletedSteps] = useState<boolean[]>([
-  //     false,
-  //     false,
-  //     false,
-  //     false,
-  //   ]);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const handleCourseCreate = async () => {
     console.log("COURSE DATA", courseData);
@@ -164,17 +158,10 @@ const page = () => {
       <div className=" ">
         <CreateCourseStages
           currentStep={currentStep}
-          // completedSteps={completedSteps}
           onStepChange={setCurrentStep}
         />
       </div>
-      {/* <div className=" xl:hidden ">
-        <CreateCourseStages
-          currentStep={currentStep}
-          // completedSteps={completedSteps}
-          onStepChange={setCurrentStep}
-        />{" "}
-      </div> */}
+
       {component}
     </div>
   );
