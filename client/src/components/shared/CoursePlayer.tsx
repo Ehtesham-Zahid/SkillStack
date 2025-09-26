@@ -25,7 +25,6 @@ const CoursePlayer = ({ videoUrl, title }: CoursePlayerProps) => {
           videoId: videoUrl,
         }
       );
-      console.log("Video data received", response.data);
 
       if (
         response.data?.videoURL?.otp &&

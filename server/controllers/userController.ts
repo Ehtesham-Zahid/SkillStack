@@ -86,7 +86,6 @@ export const handleLogoutUser = asyncHandler(
 // update access token
 export const handleUpdateAccessToken = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log("req.cookies", req.cookies);
     const refreshTokenIncoming = req.cookies.refreshToken as string;
 
     const {
@@ -137,11 +136,8 @@ export const handleSocialAuth = asyncHandler(
     };
 
     res.cookie("accessToken", accessToken, accessTokenOptions);
-    console.log("accessToken", accessToken);
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
-    console.log("refreshToken", refreshToken);
     req.user = user as IUser;
-    console.log("user", user);
 
     res.status(200).json({
       success: true,

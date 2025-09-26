@@ -90,8 +90,6 @@ const page = () => {
       sections: courseContentData,
     };
 
-    console.log("DATA", data);
-
     setCourseData(data);
   };
 
