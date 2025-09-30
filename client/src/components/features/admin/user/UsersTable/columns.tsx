@@ -3,8 +3,11 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/src/utils/formatDate";
 import { Badge } from "@/src/shadcn/ui/badge";
-import { MessageCircleCodeIcon, Trash2Icon } from "lucide-react";
-
+import { Loader2Icon, MessageCircleCodeIcon, Trash2Icon } from "lucide-react";
+import { useDeleteUserMutation } from "@/src/redux/features/user/userApi";
+import { useEffect } from "react";
+import { toast } from "react-hot-toast";
+import DeleteUserButton from "../DeleteUserButton";
 // This type is used to define the shape of our data.
 export interface User {
   _id: string;
@@ -19,6 +22,10 @@ export interface User {
   provider: "manual" | "google" | "github";
   createdAt: Date;
 }
+
+// --- Delete User ---
+
+// --- End Delete User ---
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -108,10 +115,17 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const user = row.original;
       return (
         <div className="flex gap-4 items-center">
-          <Trash2Icon className="w-6 h-6 rounded-md p-1 dark:text-destructive-dark text-destructive dark:hover:bg-destructive-dark/30 hover:bg-destructive-dark/30 cursor-pointer" />
-          <MessageCircleCodeIcon className="w-6 h-6 rounded-md p-1 dark:text-accent-dark text-accent dark:hover:bg-accent-dark/30 hover:bg-accent-dark/30  cursor-pointer" />
+          {user.role !== "admin" && (
+            <>
+              <DeleteUserButton user={user} />
+            </>
+          )}
+          <a href={`mailto:${user.email}`} title={`Email ${user.name}`}>
+            <MessageCircleCodeIcon className="w-6 h-6 rounded-md p-1 dark:text-accent-dark text-accent dark:hover:bg-accent-dark/30 hover:bg-accent-dark/30 cursor-pointer" />
+          </a>
         </div>
       );
     },
