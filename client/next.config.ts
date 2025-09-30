@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       "localhost",
       "skillstack-production.up.railway.app",
       "res.cloudinary.com",
+      "lh3.googleusercontent.com",
     ],
   },
 };

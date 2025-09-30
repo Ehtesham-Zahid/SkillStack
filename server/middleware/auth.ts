@@ -17,6 +17,11 @@ export const isAuthenticated = asyncHandler(
       );
     }
 
+    console.log("---------------------IS AUTHENTICATED---------------------");
+    console.log("ACCESS TOKEN", accessToken);
+    console.log("ACCESS TOKEN SECRET", process.env.ACCESS_TOKEN_SECRET);
+    console.log("USER", req.user);
+
     let decoded: JwtPayload;
     try {
       decoded = jwt.verify(
@@ -24,6 +29,7 @@ export const isAuthenticated = asyncHandler(
         process.env.ACCESS_TOKEN_SECRET as string
       ) as JwtPayload;
     } catch {
+      console.log("INVALIDD ACCESS TOKENNN");
       return next(new ErrorHandler("Invalid access token", 401));
     }
 
@@ -42,7 +48,6 @@ export const isAuthenticated = asyncHandler(
     if (!user) {
       return next(new ErrorHandler("User not found", 401));
     }
-    console.log(user);
     req.user = user as IUser;
     next();
   }

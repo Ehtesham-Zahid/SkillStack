@@ -100,13 +100,17 @@ export const handleUpdateAccessToken = asyncHandler(
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
     req.user = user as IUser;
 
+    console.log(
+      "---------------------UPDATE ACCESS TOKEN---------------------"
+    );
+    console.log("ACCESS TOKEN", accessToken);
+    console.log("REFRESH TOKEN", refreshToken);
+    console.log("USER", user);
+    console.log("ACCESS TOKEN OPTIONS", accessTokenOptions);
+    console.log("REFRESH TOKEN OPTIONS", refreshTokenOptions);
+
     redis.set(user._id as string, JSON.stringify(user) as any, "EX", 604800); // 7days
 
-    // res.status(200).json({
-    //   success: true,
-    //   user,
-    //   accessToken,
-    // });
     next();
   }
 );

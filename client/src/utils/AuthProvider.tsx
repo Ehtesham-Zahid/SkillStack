@@ -33,6 +33,7 @@ export default function AuthProvider({
 
   useEffect(() => {
     if (isSuccess) toast.success("Logged in successfully");
+    console.log("isSuccess", isSuccess);
     if (isError && "data" in error) {
       toast.error((error as any)?.data?.message || "Something went wrong");
     }

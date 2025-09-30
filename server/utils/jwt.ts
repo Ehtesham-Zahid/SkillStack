@@ -3,6 +3,7 @@ dotenv.config();
 import { Request, Response, NextFunction } from "express";
 import { IUser } from "../models/userModel";
 import { redis } from "./redis";
+import ms from "ms";
 
 export interface ITokenOptions {
   expires: Date;
@@ -19,35 +20,27 @@ export const sendToken = async (user: IUser) => {
   //   upload session to redis
   await redis.set(user._id as string, JSON.stringify(user) as any);
 
-  //   parse env variables to int
-  const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE as string);
-  const refreshTokenExpire = parseInt(
-    process.env.REFRESH_TOKEN_EXPIRE as string
-  );
-
   //   options for cookies
   const accessTokenOptions: ITokenOptions = {
-    expires: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000),
-    maxAge: accessTokenExpire * 60 * 60 * 1000,
+    expires: new Date(Date.now() + ms(process.env.ACCESS_TOKEN_EXPIRE! as any)),
+    maxAge: ms(process.env.ACCESS_TOKEN_EXPIRE! as any) as any,
     httpOnly: true,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
   };
 
   const refreshTokenOptions: ITokenOptions = {
-    expires: new Date(Date.now() + refreshTokenExpire * 24 * 60 * 60 * 1000),
-    maxAge: refreshTokenExpire * 24 * 60 * 60 * 1000,
+    expires: new Date(
+      Date.now() + ms(process.env.REFRESH_TOKEN_EXPIRE! as any)
+    ),
+    maxAge: ms(process.env.REFRESH_TOKEN_EXPIRE! as any) as any,
     httpOnly: true,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
   };
 
-  //   only set secure to true in production
-  if (process.env.NODE_ENV === "production") {
-    accessTokenOptions.secure = true;
-    refreshTokenOptions.secure = true;
-  }
-
   return {
-    user,
+    user: user as IUser,
     accessToken,
     accessTokenOptions,
     refreshToken,

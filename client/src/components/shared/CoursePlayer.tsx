@@ -34,22 +34,16 @@ const CoursePlayer = ({ videoUrl, title }: CoursePlayerProps) => {
       } else {
         toast.error("Invalid video data received");
         setError("Invalid video data received");
-        console.log("Invalid video data received");
       }
     } catch (err: any) {
-      console.error("Video loading error: catch", err);
       setError(
         err.response?.data?.message || "Failed to load video. Please try again."
       );
       toast.error(
         err.response?.data?.message || "Failed to load video. Please try again."
       );
-      console.log(
-        err.response?.data?.message || "Failed to load video. Please try again."
-      );
     } finally {
       setIsLoading(false);
-      console.log("Video loading error: finally");
     }
   }, [videoUrl]);
 

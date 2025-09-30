@@ -96,7 +96,6 @@ const page = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleCourseCreate = async () => {
-    console.log("COURSE DATA", courseData);
     if (!isLoading) {
       await createCourse(courseData);
     }
@@ -114,6 +113,7 @@ const page = () => {
       />
     );
   }
+
   if (currentStep === 1) {
     component = (
       <CourseOptions
@@ -149,6 +149,7 @@ const page = () => {
       />
     );
   }
+
   return isLoading ? (
     <Spinner />
   ) : (
@@ -159,7 +160,6 @@ const page = () => {
           onStepChange={setCurrentStep}
         />
       </div>
-
       {component}
     </div>
   );

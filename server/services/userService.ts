@@ -161,7 +161,7 @@ export const loginUser = async (
     throw new ErrorHandler("Invalid credentials", 400);
   }
 
-  return (await sendToken(user)) as {
+  return (await sendToken(user as IUser)) as {
     accessToken: string;
     refreshToken: string;
     user: IUser;
@@ -185,13 +185,15 @@ export const updateAccessToken = async (
     process.env.REFRESH_TOKEN_SECRET as Secret
   ) as JwtPayload;
 
+  console.log("DECODED", decoded);
   if (!decoded) {
     throw new ErrorHandler("Invalid refresh token", 400);
   }
 
   const user = (await userModel.findById(decoded.id as string)) as IUser;
+  console.log("USER", user);
 
-  return (await sendToken(user)) as {
+  return (await sendToken(user as IUser)) as {
     accessToken: string;
     refreshToken: string;
     user: IUser;
