@@ -67,6 +67,13 @@ export const userApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getAllUsers: builder.query<any, void>({
+      query: () => ({
+        url: "/users/get-all-users-admin",
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -74,4 +81,5 @@ export const {
   useUpdateProfilePictureMutation,
   useUpdateUserInfoMutation,
   useUpdatePasswordMutation,
+  useGetAllUsersQuery,
 } = userApi;

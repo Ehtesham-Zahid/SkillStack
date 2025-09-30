@@ -1,8 +1,8 @@
 "use client";
 
-import AdminHeader from "@/src/components/features/admin/user/AdminHeader";
-import AdminSidebar from "@/src/components/features/admin/user/AdminSidebar";
-import HeaderActions from "@/src/components/features/admin/user/HeaderActions";
+import AdminHeader from "@/src/components/features/admin/common/AdminHeader";
+import AdminSidebar from "@/src/components/features/admin/common/AdminSidebar";
+import HeaderActions from "@/src/components/features/admin/common/HeaderActions";
 import { SidebarProvider, SidebarTrigger } from "@/src/shadcn/ui/sidebar";
 
 export default function AdminLayout({
