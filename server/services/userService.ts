@@ -361,12 +361,21 @@ export const socialAuth = async (
 };
 
 // Get All Users --- Admin
-export const getAllUsers = async () => {
+export const getAllUsers = async (
+  page: number,
+  limit: number,
+  skip: number
+) => {
   const users = await userModel
     .find()
+    .skip(skip)
+    .limit(limit)
     .select("-password")
     .sort({ createdAt: -1 });
-  return users;
+
+  const total = await userModel.countDocuments({});
+
+  return { users, total };
 };
 
 interface IUpdateUserRoleBody {

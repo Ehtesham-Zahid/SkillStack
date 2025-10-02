@@ -185,8 +185,19 @@ export const handleUpdateProfilePicture = asyncHandler(
 // Get All Users --- Admin
 export const handleGetAllUsers = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const users = await getAllUsers();
-    res.status(200).json({ success: true, users });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const { users, total } = await getAllUsers(page, limit, skip);
+
+    res.status(200).json({
+      success: true,
+      users,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalUsers: total,
+    });
   }
 );
 
