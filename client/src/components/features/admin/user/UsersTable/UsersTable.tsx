@@ -164,7 +164,7 @@ const UsersTable = <TData, TValue>({
                             onClick={() => setPage(index + 1)}
                             className={`${
                               page === index + 1
-                                ? "dark:text-primary-dark text-primary bg-primary/10"
+                                ? "dark:text-primary-dark text-primary bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/10"
                                 : "dark:text-text1-dark text-text1 hover:bg-surface dark:hover:bg-surface-dark"
                             }  `}
                           >
