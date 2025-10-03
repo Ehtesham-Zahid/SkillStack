@@ -122,7 +122,7 @@ const UsersTable = <TData, TValue>({
               </TableBody>
             </Table>
             <div className="flex items-center justify-between py-4 w-full">
-              {totalUsers > 1 && (
+              {totalUsers > 10 && (
                 <div className="flex items-center gap-2 text-sm w-fit">
                   <span>Show</span>
                   <LimitSelector
@@ -136,34 +136,43 @@ const UsersTable = <TData, TValue>({
                 </div>
               )}
 
-              {totalPages > 0 && (
+              {totalPages > 1 && (
                 <div className="flex items-center justify-center">
                   <Pagination className="dark:text-text2-dark text-text2">
                     <PaginationContent className="">
-                      <PaginationItem>
+                      <PaginationItem className="hover:bg-surface dark:hover:bg-surface-dark">
                         <PaginationPrevious
                           href="#"
                           onClick={() => {
                             let newPage: number = Math.max(page - 1, 1);
                             setPage(newPage as number);
                           }}
+                          className={`${
+                            page === 1
+                              ? "cursor-not-allowed dark:text-text2-dark text-text2  hover:bg-surface dark:hover:bg-surface-dark"
+                              : "dark:text-text1-dark text-text1 hover:bg-surface dark:hover:bg-surface-dark"
+                          }  `}
                         />
                       </PaginationItem>
                       {Array.from({ length: totalPages }).map((_, index) => (
-                        <PaginationItem key={index}>
+                        <PaginationItem
+                          key={index}
+                          className="hover:bg-surface dark:hover:bg-surface-dark"
+                        >
                           <PaginationLink
                             href="#"
                             onClick={() => setPage(index + 1)}
                             className={`${
-                              page === index + 1 ? "active" : ""
-                            }  dark:text-text1-dark text-text1`}
+                              page === index + 1
+                                ? "dark:text-primary-dark text-primary bg-primary/10"
+                                : "dark:text-text1-dark text-text1 hover:bg-surface dark:hover:bg-surface-dark"
+                            }  `}
                           >
                             {index + 1}
                           </PaginationLink>
                         </PaginationItem>
                       ))}
-                      <PaginationEllipsis />
-                      <PaginationItem>
+                      <PaginationItem className="hover:bg-surface dark:hover:bg-surface-dark">
                         <PaginationNext
                           href="#"
                           onClick={() => {
@@ -173,6 +182,11 @@ const UsersTable = <TData, TValue>({
                             );
                             setPage(newPage as number);
                           }}
+                          className={`${
+                            page === totalPages
+                              ? "cursor-not-allowed dark:text-text2-dark text-text2  hover:bg-surface dark:hover:bg-surface-dark"
+                              : "dark:text-text1-dark text-text1 hover:bg-surface dark:hover:bg-surface-dark"
+                          }  `}
                         />
                       </PaginationItem>
                     </PaginationContent>
