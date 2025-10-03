@@ -1,31 +1,7 @@
 "use client";
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/src/shadcn/ui/table";
-import { Button } from "@/src/shadcn/ui/button";
-import { Pagination } from "@/src/shadcn/ui/pagination";
-import { PaginationContent } from "@/src/shadcn/ui/pagination";
-import { PaginationItem } from "@/src/shadcn/ui/pagination";
-import { PaginationPrevious } from "@/src/shadcn/ui/pagination";
-import { PaginationLink } from "@/src/shadcn/ui/pagination";
-import { PaginationNext } from "@/src/shadcn/ui/pagination";
-import { PaginationEllipsis } from "@/src/shadcn/ui/pagination";
-import LimitSelector from "@/src/components/shared/LimitSelector";
-import Spinner from "@/src/components/ui/Spinner";
 import CustomTable from "../../common/Table";
 
 interface DataTableProps<TData, TValue> {
@@ -36,11 +12,11 @@ interface DataTableProps<TData, TValue> {
   limit: string;
   setLimit: (limit: string) => void;
   totalPages: number;
-  totalUsers: number;
+  totalTeam: number;
   isFetching: boolean;
 }
 
-const UsersTable = <TData, TValue>({
+const TeamsTable = <TData, TValue>({
   columns,
   data,
   page,
@@ -48,7 +24,7 @@ const UsersTable = <TData, TValue>({
   limit,
   setLimit,
   totalPages,
-  totalUsers,
+  totalTeam,
   isFetching,
 }: DataTableProps<TData, TValue>) => {
   return (
@@ -56,10 +32,10 @@ const UsersTable = <TData, TValue>({
       <div className="overflow-hidden p-5 bg-surface dark:bg-surface-dark rounded-md border dark:border-text2-dark border-text2  ">
         <div className="flex  flex-col gap-2">
           <h1 className="text-text1 dark:text-text1-dark text-4xl font-bold">
-            User Management
+            Team Management
           </h1>
           <p className="text-text2 dark:text-text2-dark">
-            Manage users and their roles.
+            Manage teams and their members.
           </p>
         </div>
         <CustomTable
@@ -70,7 +46,7 @@ const UsersTable = <TData, TValue>({
           limit={limit}
           setLimit={setLimit}
           totalPages={totalPages}
-          totalEntities={totalUsers}
+          totalEntities={totalTeam}
           isFetching={isFetching}
         />
       </div>
@@ -78,4 +54,4 @@ const UsersTable = <TData, TValue>({
   );
 };
 
-export default UsersTable;
+export default TeamsTable;

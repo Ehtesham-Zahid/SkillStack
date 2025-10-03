@@ -8,7 +8,11 @@ import { useState } from "react";
 const page = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState("10");
-  const { data, isLoading, isFetching } = useGetAllUsersQuery({ page, limit });
+  const { data, isLoading, isFetching } = useGetAllUsersQuery({
+    page,
+    limit,
+    role: "user",
+  });
 
   console.log(data);
   return isLoading ? (

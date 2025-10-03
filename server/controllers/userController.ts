@@ -188,8 +188,8 @@ export const handleGetAllUsers = asyncHandler(
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
-
-    const { users, total } = await getAllUsers(page, limit, skip);
+    const role = req.query.role as string;
+    const { users, total } = await getAllUsers(page, limit, skip, role);
 
     res.status(200).json({
       success: true,

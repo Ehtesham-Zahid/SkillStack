@@ -375,9 +375,20 @@ export const addReplyToReview = async (
 };
 
 // Get All Courses --- Admin
-export const getAllCoursesAdmin = async () => {
-  const courses = await CourseModel.find().sort({ createdAt: -1 });
-  return courses;
+export const getAllCoursesAdmin = async (
+  page: number,
+  limit: number,
+  skip: number
+) => {
+  const courses = await CourseModel.find()
+    .skip(skip)
+    .limit(limit)
+    .select("name ratings purchased createdAt")
+    .sort({ createdAt: -1 });
+
+  const total = await CourseModel.countDocuments({});
+
+  return { courses, total };
 };
 
 // Delete Course --- Admin

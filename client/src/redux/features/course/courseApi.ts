@@ -10,7 +10,15 @@ export const courseApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getAllCoursesAdmin: builder.query<any, { page: number; limit: string }>({
+      query: ({ page, limit }) => ({
+        url: `/courses/get-all-courses-admin?page=${page}&limit=${limit}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCourseMutation } = courseApi;
+export const { useCreateCourseMutation, useGetAllCoursesAdminQuery } =
+  courseApi;

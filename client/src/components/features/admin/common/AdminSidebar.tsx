@@ -52,7 +52,7 @@ const sidebarItems = [
     title: "Data",
     // icon: <Database size={22} />,
     children: [
-      { title: "Users", url: "#", icon: <Users size={18} /> }, // outline
+      { title: "Users", url: "/admin/users", icon: <Users size={18} /> }, // outline
       { title: "Invoices", url: "#", icon: <FileText size={18} /> },
     ],
   },
@@ -60,8 +60,16 @@ const sidebarItems = [
     title: "Content",
     // icon: <Video size={22} />,
     children: [
-      { title: "Create Course", url: "#", icon: <VideoIcon size={18} /> },
-      { title: "Live Courses", url: "#", icon: <VideoIcon size={18} /> },
+      {
+        title: "Create Course",
+        url: "/admin/create-course",
+        icon: <VideoIcon size={18} />,
+      },
+      {
+        title: "Live Courses",
+        url: "/admin/courses",
+        icon: <VideoIcon size={18} />,
+      },
     ],
   },
   {
@@ -77,7 +85,11 @@ const sidebarItems = [
     title: "Controllers",
     // icon: <UserCog size={22} />,
     children: [
-      { title: "Manage Team", url: "#", icon: <UsersRound size={18} /> },
+      {
+        title: "Manage Team",
+        url: "/admin/team",
+        icon: <UsersRound size={18} />,
+      },
     ],
   },
   {

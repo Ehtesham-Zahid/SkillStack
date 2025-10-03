@@ -67,9 +67,12 @@ export const userApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
-    getAllUsers: builder.query<any, { page: number; limit: string }>({
-      query: ({ page, limit }) => ({
-        url: `/users/get-all-users-admin?page=${page}&limit=${limit}`,
+    getAllUsers: builder.query<
+      any,
+      { page: number; limit: string; role: string }
+    >({
+      query: ({ page, limit, role }) => ({
+        url: `/users/get-all-users-admin?page=${page}&limit=${limit}&role=${role}`,
         method: "GET",
         credentials: "include",
       }),

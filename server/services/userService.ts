@@ -364,16 +364,17 @@ export const socialAuth = async (
 export const getAllUsers = async (
   page: number,
   limit: number,
-  skip: number
+  skip: number,
+  role: string
 ) => {
   const users = await userModel
-    .find()
+    .find({ role })
     .skip(skip)
     .limit(limit)
     .select("-password")
     .sort({ createdAt: -1 });
 
-  const total = await userModel.countDocuments({});
+  const total = await userModel.countDocuments({ role });
 
   return { users, total };
 };
@@ -382,6 +383,7 @@ interface IUpdateUserRoleBody {
   id: string;
   role: string;
 }
+
 // Update User Role --- Admin
 export const updateUserRole = async (userData: IUpdateUserRoleBody) => {
   const { id, role } = userData as IUpdateUserRoleBody;

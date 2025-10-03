@@ -4,7 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -16,14 +15,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/shadcn/ui/table";
-import { Button } from "@/src/shadcn/ui/button";
 import { Pagination } from "@/src/shadcn/ui/pagination";
 import { PaginationContent } from "@/src/shadcn/ui/pagination";
 import { PaginationItem } from "@/src/shadcn/ui/pagination";
 import { PaginationPrevious } from "@/src/shadcn/ui/pagination";
 import { PaginationLink } from "@/src/shadcn/ui/pagination";
 import { PaginationNext } from "@/src/shadcn/ui/pagination";
-import { PaginationEllipsis } from "@/src/shadcn/ui/pagination";
 import LimitSelector from "@/src/components/shared/LimitSelector";
 import Spinner from "@/src/components/ui/Spinner";
 import CustomTable from "../../common/Table";
@@ -36,7 +33,7 @@ interface DataTableProps<TData, TValue> {
   limit: string;
   setLimit: (limit: string) => void;
   totalPages: number;
-  totalUsers: number;
+  totalCourses: number;
   isFetching: boolean;
 }
 
@@ -48,7 +45,7 @@ const UsersTable = <TData, TValue>({
   limit,
   setLimit,
   totalPages,
-  totalUsers,
+  totalCourses,
   isFetching,
 }: DataTableProps<TData, TValue>) => {
   return (
@@ -56,10 +53,10 @@ const UsersTable = <TData, TValue>({
       <div className="overflow-hidden p-5 bg-surface dark:bg-surface-dark rounded-md border dark:border-text2-dark border-text2  ">
         <div className="flex  flex-col gap-2">
           <h1 className="text-text1 dark:text-text1-dark text-4xl font-bold">
-            User Management
+            Course Management
           </h1>
           <p className="text-text2 dark:text-text2-dark">
-            Manage users and their roles.
+            Manage courses and their details.
           </p>
         </div>
         <CustomTable
@@ -70,7 +67,7 @@ const UsersTable = <TData, TValue>({
           limit={limit}
           setLimit={setLimit}
           totalPages={totalPages}
-          totalEntities={totalUsers}
+          totalEntities={totalCourses}
           isFetching={isFetching}
         />
       </div>

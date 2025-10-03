@@ -95,8 +95,19 @@ export const handleAddReplyToReview = asyncHandler(
 // Get All Courses --- Admin
 export const handleGetAllCoursesAdmin = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const courses = await getAllCoursesAdmin();
-    res.status(200).json({ success: true, courses });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const { courses, total } = await getAllCoursesAdmin(page, limit, skip);
+
+    res.status(200).json({
+      success: true,
+      courses,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalCourses: total,
+    });
   }
 );
 

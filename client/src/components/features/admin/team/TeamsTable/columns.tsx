@@ -4,8 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/src/utils/formatDate";
 import { Badge } from "@/src/shadcn/ui/badge";
 import { MessageCircleCodeIcon } from "lucide-react";
-import DeleteUserButton from "../DeleteUserButton";
-import ChangeToAdminButton from "../ChangeToAdminButton";
+import ChangeToUserButton from "../ChangeToUserButton";
+import DeleteAdminButton from "../DeleteAdminButton";
 // This type is used to define the shape of our data.
 export interface User {
   _id: string;
@@ -45,11 +45,19 @@ export const columns: ColumnDef<User>[] = [
     header: "Role",
     cell: ({ row }) => {
       const role: string = row.getValue("role");
-      return (
-        <Badge className=" bg-blue-100  text-blue-600 font-bold capitalize">
-          {role || "User"}
-        </Badge>
-      );
+      if (role === "admin") {
+        return (
+          <Badge className=" bg-red-100  text-red-600 font-bold capitalize">
+            {role || "Admin"}
+          </Badge>
+        );
+      } else if (role === "user") {
+        return (
+          <Badge className=" bg-blue-100  text-blue-600 font-bold capitalize">
+            {role || "User"}
+          </Badge>
+        );
+      }
     },
   },
   {
@@ -103,9 +111,9 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const user = row.original;
       return (
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-4 items-center">
           <>
-            <DeleteUserButton user={user} />
+            <DeleteAdminButton user={user} />
           </>
           <a href={`mailto:${user.email}`} title={`Email ${user.name}`}>
             <MessageCircleCodeIcon className="w-6 h-6 rounded-md p-1 dark:text-accent-dark text-accent dark:hover:bg-accent-dark/30 hover:bg-accent-dark/30 cursor-pointer" />
@@ -115,11 +123,11 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
-    id: "makeAdmin",
-    header: "To Admin",
+    id: "makeUser",
+    header: "To User",
     cell: ({ row }) => {
       const user = row.original;
-      return <ChangeToAdminButton />;
+      return <ChangeToUserButton />;
     },
   },
 ];

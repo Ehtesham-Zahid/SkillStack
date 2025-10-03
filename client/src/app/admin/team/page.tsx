@@ -1,16 +1,17 @@
 "use client";
-import { columns } from "@/src/components/features/admin/course/CoursesTable/columns";
-import CoursesTable from "@/src/components/features/admin/course/CoursesTable/CoursesTable";
-import { useGetAllCoursesAdminQuery } from "@/src/redux/features/course/courseApi";
+import { columns } from "@/src/components/features/admin/team/TeamsTable/columns";
+import TeamsTable from "@/src/components/features/admin/team/TeamsTable/TeamsTable";
+import { useGetAllUsersQuery } from "@/src/redux/features/user/userApi";
 import Spinner from "@/src/components/ui/Spinner";
 import { useState } from "react";
 
 const page = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState("10");
-  const { data, isLoading, isFetching } = useGetAllCoursesAdminQuery({
+  const { data, isLoading, isFetching } = useGetAllUsersQuery({
     page,
     limit,
+    role: "admin",
   });
 
   console.log(data);
@@ -18,15 +19,15 @@ const page = () => {
     <Spinner />
   ) : (
     <div className="w-11/12   mx-auto">
-      <CoursesTable
+      <TeamsTable
         columns={columns}
-        data={data.courses}
+        data={data.users}
         page={page}
         setPage={setPage}
         limit={limit}
         setLimit={setLimit}
         totalPages={data.totalPages}
-        totalCourses={data.totalCourses}
+        totalTeam={data.totalUsers}
         isFetching={isFetching}
       />
     </div>
