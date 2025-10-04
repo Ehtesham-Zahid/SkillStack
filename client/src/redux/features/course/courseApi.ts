@@ -16,9 +16,40 @@ export const courseApi = apiSlice.injectEndpoints({
         method: "GET",
         credentials: "include",
       }),
+      providesTags: ["Courses"] as any,
+    }),
+    deleteCourse: builder.mutation({
+      query: (id) => ({
+        url: `/courses/delete-course-admin/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Courses"] as any,
+    }),
+    getSingleCourseAdmin: builder.query<any, string>({
+      query: (id) => ({
+        url: `/courses/get-single-course-admin/${id}`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Course"] as any,
+    }),
+    editCourse: builder.mutation({
+      query: ({ data, id }: { data: any; id: string }) => ({
+        url: `/courses/edit-course/${id}`,
+        method: "PUT",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["Course", "Courses"] as any,
     }),
   }),
 });
 
-export const { useCreateCourseMutation, useGetAllCoursesAdminQuery } =
-  courseApi;
+export const {
+  useCreateCourseMutation,
+  useGetAllCoursesAdminQuery,
+  useDeleteCourseMutation,
+  useGetSingleCourseAdminQuery,
+  useEditCourseMutation,
+} = courseApi;

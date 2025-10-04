@@ -22,7 +22,7 @@ const __dirname = path.resolve();
 export const createCourse = async (data: any): Promise<ICourse> => {
   const thumbnail = data.thumbnail;
   if (thumbnail) {
-    const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
+    const myCloud = await cloudinary.v2.uploader.upload(thumbnail.url, {
       folder: "courses",
       width: 1000,
       crop: "scale",
@@ -41,6 +41,18 @@ export const editCourse = async (
   data: any,
   courseId: string
 ): Promise<ICourse | null> => {
+  const thumbnail = data.thumbnail;
+  if (thumbnail) {
+    const myCloud = await cloudinary.v2.uploader.upload(thumbnail.url, {
+      folder: "courses",
+      width: 1000,
+      crop: "scale",
+    });
+    data.thumbnail = {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
+    };
+  }
   const course = await CourseModel.findByIdAndUpdate(
     courseId,
     { $set: data },
@@ -64,6 +76,16 @@ export const getCourseById = async (id: string): Promise<ICourse | null> => {
     );
     await redis.set(id, JSON.stringify(course), "EX", 604800);
   }
+
+  if (!course) throw new ErrorHandler("Course not found", 404);
+  return course;
+};
+
+// Get Course by ID
+export const getCourseByIdAdmin = async (
+  id: string
+): Promise<ICourse | null> => {
+  const course = await CourseModel.findById(id);
 
   if (!course) throw new ErrorHandler("Course not found", 404);
   return course;

@@ -3,6 +3,7 @@ import {
   createCourse,
   editCourse,
   getCourseById,
+  getCourseByIdAdmin,
   getAllCourses,
   getCourseContent,
   addQuestion,
@@ -82,8 +83,6 @@ export const handleAddReview = asyncHandler(
   }
 );
 
-// --------------EVERYTHING SOLID TILL NOW----------------
-
 // Add Reply to Review
 export const handleAddReplyToReview = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -118,6 +117,14 @@ export const handleDeleteCourse = asyncHandler(
     res
       .status(200)
       .json({ success: true, message: "Course deleted successfully" });
+  }
+);
+
+// Get Single Course --- without purchasing
+export const handleGetSingleCourseAdmin = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const course = await getCourseByIdAdmin(req.params.id);
+    res.status(200).json({ success: true, course });
   }
 );
 

@@ -34,6 +34,7 @@ import {
   LogOut,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Sidebar items config
 const sidebarItems = [
@@ -140,10 +141,10 @@ const AdminSidebar = () => {
                       </div>
                     ) : (
                       <div>
-                        <a href="#" className="flex items-center gap-2">
+                        <p className="flex items-center gap-2">
                           {/* {item.icon} */}
                           <span>{item.title}</span>
-                        </a>
+                        </p>
                       </div>
                     )}
                   </SidebarMenuButton>
@@ -156,10 +157,10 @@ const AdminSidebar = () => {
                             asChild
                             className="dark:hover:bg-gray-700 hover:bg-gray-200  "
                           >
-                            <a href={subItem.url}>
+                            <Link href={subItem.url}>
                               {subItem.icon}
                               <span>{subItem.title}</span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}

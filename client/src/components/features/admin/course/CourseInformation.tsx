@@ -35,7 +35,9 @@ const courseInformationSchema = z.object({
   tags: z.string().min(2),
   level: z.string().min(2),
   demoUrl: z.string().min(2),
-  thumbnail: z.string().min(1, "Please upload a thumbnail"),
+  thumbnail: z.object({
+    url: z.string().min(1, "Please upload a thumbnail"),
+  }),
   category: z.string().min(2),
 });
 
@@ -54,8 +56,6 @@ const CourseInformation = ({
 }: CourseInformationProps) => {
   const [file, setFile] = useState<File | undefined>();
 
-  console.log("THUMBNAIL", courseInfo?.thumbnail);
-
   const form = useForm({
     resolver: zodResolver(courseInformationSchema),
     defaultValues: {
@@ -66,7 +66,7 @@ const CourseInformation = ({
       tags: courseInfo?.tags || "",
       level: courseInfo?.level || "beginner",
       demoUrl: courseInfo?.demoUrl || "",
-      thumbnail: courseInfo?.thumbnail || "",
+      thumbnail: courseInfo?.thumbnail || { url: "" },
       category: courseInfo?.category || "web-development",
     },
   });
@@ -79,7 +79,6 @@ const CourseInformation = ({
       toast.error("Discounted price cannot be greater than or equal to price");
       return;
     }
-    console.log("DATA", data);
     setCourseInfo({ ...courseInfo, ...data });
     onStepChange(currentStep + 1);
   };
@@ -96,10 +95,14 @@ const CourseInformation = ({
           // 🔹 Save it in parent
           setCourseInfo({
             ...courseInfo,
-            thumbnail: preview,
+            thumbnail: { url: preview } as any,
           });
 
-          form.setValue("thumbnail", preview, { shouldValidate: true });
+          form.setValue(
+            "thumbnail",
+            { url: preview },
+            { shouldValidate: true }
+          );
         }
       };
       reader.readAsDataURL(file);
@@ -285,12 +288,12 @@ const CourseInformation = ({
           >
             <DropzoneEmptyState />
             {/* <DropzoneContent> */}
-            {courseInfo?.thumbnail && (
+            {courseInfo?.thumbnail?.url && (
               <div className=" h-[200px] sm:h-[400px] w-full flex flex-col items-center justify-center">
                 <Image
                   alt="Preview"
                   className="absolute top-0 left-0 h-full w-full object-contain"
-                  src={courseInfo?.thumbnail}
+                  src={courseInfo?.thumbnail?.url}
                   width={1000}
                   height={1000}
                 />
@@ -298,7 +301,7 @@ const CourseInformation = ({
             )}
             {/* </DropzoneContent> */}
           </Dropzone>
-          {courseInfo?.thumbnail && (
+          {courseInfo?.thumbnail?.url && (
             <p className="text-sm text-text2 dark:text-text2-dark text-center mt-3 font-semibold">
               Click to change thumbnail.
             </p>
@@ -310,7 +313,7 @@ const CourseInformation = ({
               <FormItem>
                 {/* hidden input to keep it registered */}
                 <FormControl>
-                  <Input type="hidden" {...field} />
+                  <Input type="hidden" {...field} value={field.value.url} />
                 </FormControl>
                 {/* this will show the error */}
                 <FormMessage />

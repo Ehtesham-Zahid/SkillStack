@@ -12,6 +12,7 @@ import {
   handleGetAllCoursesAdmin,
   handleDeleteCourse,
   handleGenerateVideoURL,
+  handleGetSingleCourseAdmin,
 } from "../controllers/courseController";
 import { authorizeRoles, isAuthenticated } from "../middleware/auth";
 import { handleUpdateAccessToken } from "../controllers/userController";
@@ -90,6 +91,14 @@ courseRouter.delete(
   isAuthenticated,
   authorizeRoles("admin"),
   handleDeleteCourse
+);
+
+courseRouter.get(
+  "/get-single-course-admin/:id",
+  handleUpdateAccessToken,
+  isAuthenticated,
+  authorizeRoles("admin"),
+  handleGetSingleCourseAdmin
 );
 
 export default courseRouter;

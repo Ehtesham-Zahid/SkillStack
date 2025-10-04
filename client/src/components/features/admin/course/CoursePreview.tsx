@@ -12,14 +12,14 @@ type CoursePreviewProps = {
   currentStep: number;
   onStepChange: (nextStepIndex: number) => void;
   courseData: any;
-  handleCourseCreate: any;
+  handleCourse: any;
 };
 
 const CoursePreview = ({
   currentStep,
   onStepChange,
   courseData,
-  handleCourseCreate,
+  handleCourse,
 }: CoursePreviewProps) => {
   const totalLessons = Array.isArray(courseData?.sections)
     ? courseData.sections.reduce(
@@ -45,8 +45,7 @@ const CoursePreview = ({
   };
 
   const handleNext = () => {
-    onStepChange(currentStep + 1);
-    handleCourseCreate();
+    handleCourse();
   };
 
   return (
@@ -232,7 +231,7 @@ const CoursePreview = ({
           className=" cursor-pointer mt-2 text-white text-base w-32"
           size="lg"
         >
-          Create Course
+          Submit
         </Button>
       </div>
     </div>

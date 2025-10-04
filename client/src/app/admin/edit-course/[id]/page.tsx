@@ -6,17 +6,28 @@ import CreateCourseStages from "@/src/components/features/admin/course/CreateCou
 import CourseOptions from "@/src/components/features/admin/course/CourseOptions";
 import CourseContent from "@/src/components/features/admin/course/CourseContent";
 import CoursePreview from "@/src/components/features/admin/course/CoursePreview";
-import { useCreateCourseMutation } from "@/src/redux/features/course/courseApi";
+import {
+  useEditCourseMutation,
+  useGetSingleCourseAdminQuery,
+} from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import Spinner from "@/src/components/ui/Spinner";
+
 const page = () => {
-  const [createCourse, { isLoading, isError, isSuccess, error }] =
-    useCreateCourseMutation();
+  const { id } = useParams();
+  const {
+    data: course,
+    isLoading: isCourseLoading,
+    isSuccess: isCourseSuccess,
+  } = useGetSingleCourseAdminQuery(id as string);
+  console.log(course);
+
+  const [editCourse, { isLoading, isSuccess, error }] = useEditCourseMutation();
   const router = useRouter();
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Course created successfully");
+      toast.success("Course edited successfully");
       router.push("/admin/courses");
     }
     if (error) {
@@ -27,47 +38,32 @@ const page = () => {
     }
   }, [isLoading, isSuccess, error]);
 
-  const [courseInfo, setCourseInfo] = useState({
-    name: "",
-    description: "",
-    price: "",
-    discountedPrice: "",
-    tags: "",
-    level: "beginner",
-    category: "web-development",
-    demoUrl: "",
-    thumbnail: { url: "" },
-  });
-  const [benefits, setBenefits] = useState([{ title: "" }]);
-  const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
-  const [courseData, setCourseData] = useState({});
-  const [courseContentData, setCourseContentData] = useState([
-    {
-      title: "Untitled Section",
-      lessons: [
-        {
-          title: "Lesson 1",
-          description: "",
-          videoUrl: "",
-          videoLength: undefined,
-          videoPlayer: "vdocipher", // or default value
-          suggestion: "",
-          links: [
-            {
-              title: "",
-              url: "",
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  const [courseInfo, setCourseInfo] = useState(course?.course);
+  const [benefits, setBenefits] = useState(course?.course.benefits);
+  const [prerequisites, setPrerequisites] = useState(
+    course?.course.prerequisites
+  );
+  const [courseData, setCourseData] = useState(course?.course);
+  const [courseContentData, setCourseContentData] = useState(
+    course?.course.sections
+  );
+
+  useEffect(() => {
+    if (course?.course && isCourseSuccess) {
+      setCourseInfo(course?.course);
+      setBenefits(course?.course.benefits);
+      setPrerequisites(course?.course.prerequisites);
+      setCourseData(course?.course);
+      setCourseContentData(course?.course.sections);
+      console.log(course?.course);
+    }
+  }, [course, isCourseSuccess]);
 
   const handleSubmit = async () => {
-    const formattedBenefits = benefits.map((benefit) => ({
+    const formattedBenefits = benefits.map((benefit: any) => ({
       title: benefit.title,
     }));
-    const formattedPrerequisites = prerequisites.map((prerequisite) => ({
+    const formattedPrerequisites = prerequisites.map((prerequisite: any) => ({
       title: prerequisite.title,
     }));
 
@@ -95,9 +91,9 @@ const page = () => {
 
   const [currentStep, setCurrentStep] = useState(0);
 
-  const handleCourseCreate = async () => {
+  const handleCourseEdit = async () => {
     if (!isLoading) {
-      await createCourse(courseData);
+      await editCourse({ data: courseData, id: id as string });
     }
   };
 
@@ -145,12 +141,12 @@ const page = () => {
         currentStep={currentStep}
         onStepChange={setCurrentStep}
         courseData={courseData}
-        handleCourse={handleCourseCreate}
+        handleCourse={handleCourseEdit}
       />
     );
   }
 
-  return isLoading ? (
+  return isLoading || isCourseLoading || !courseInfo ? (
     <Spinner />
   ) : (
     <div className="w-full flex  flex-col gap-10 mb-10">

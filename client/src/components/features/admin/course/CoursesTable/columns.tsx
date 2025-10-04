@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/src/utils/formatDate";
 import { Badge } from "@/src/shadcn/ui/badge";
 import { PencilIcon, StarIcon } from "lucide-react";
+import Link from "next/link";
 import DeleteCourseButton from "../DeleteCourseButton";
 
 // This type is used to define the shape of our data.
@@ -77,10 +78,13 @@ export const columns: ColumnDef<Course>[] = [
       const course = row.original;
       return (
         <div className="flex gap-4 items-center">
-          <a href={`mailto:${course.name}`} title={`Email ${course.name}`}>
+          <Link
+            className="cursor-pointer"
+            href={`/admin/edit-course/${course._id}`}
+          >
             <PencilIcon className="w-6 h-6 rounded-md p-1 dark:text-accent-dark text-accent dark:hover:bg-accent-dark/30 hover:bg-accent-dark/30 cursor-pointer" />
-          </a>
-          <DeleteCourseButton />
+          </Link>
+          <DeleteCourseButton course={course} />
         </div>
       );
     },
