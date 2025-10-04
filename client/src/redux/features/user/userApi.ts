@@ -96,13 +96,6 @@ export const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Users"] as any,
     }),
-    deleteAdmin: builder.mutation<any, string>({
-      query: (id) => ({
-        url: `/users/delete-admin-admin/${id}`,
-        method: "DELETE",
-        credentials: "include",
-      }),
-    }),
   }),
 });
 

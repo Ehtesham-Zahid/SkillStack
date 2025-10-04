@@ -1,31 +1,19 @@
-import React, { useEffect } from "react";
-import { toast } from "react-hot-toast";
+import React from "react";
 import { useDeleteUserMutation } from "@/src/redux/features/user/userApi";
 import { Loader2Icon, Trash2Icon } from "lucide-react";
 
 const DeleteUserButton = ({ user }: { user: any }) => {
-  const [deleteUser, { isLoading, error, isSuccess }] = useDeleteUserMutation();
+  const [deleteUser, { isLoading }] = useDeleteUserMutation();
 
   const handleDeleteUser = (id: string) => {
     deleteUser(id);
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("User deleted successfully");
-    }
-    if (error) {
-      if ("data" in error) {
-        const errorData = error as any;
-        toast.error(errorData?.data?.message || "Something went wrong");
-      }
-    }
-  }, [isSuccess, error]);
   return (
     <div>
       <>
         {isLoading ? (
-          <Loader2Icon className="w-6 h-6 rounded-md p-1 dark:text-destructive-dark text-destructive dark:hover:bg-destructive-dark/30 hover:bg-destructive-dark/30 cursor-pointer" />
+          <Loader2Icon className="w-6 h-6 rounded-md p-1 dark:text-white text-white  cursor-pointer animate-spin" />
         ) : (
           <Trash2Icon
             onClick={() => handleDeleteUser(user._id)}
