@@ -53,7 +53,11 @@ const sidebarItems = [
     // icon: <Database size={22} />,
     children: [
       { title: "Users", url: "/admin/users", icon: <Users size={18} /> }, // outline
-      { title: "Invoices", url: "#", icon: <FileText size={18} /> },
+      {
+        title: "Invoices",
+        url: "/admin/invoices",
+        icon: <FileText size={18} />,
+      },
     ],
   },
   {

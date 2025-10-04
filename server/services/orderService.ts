@@ -104,7 +104,17 @@ export const createOrder = async (
 };
 
 // Get All Orders --- Admin
-export const getAllOrdersAdmin = async () => {
-  const orders = await OrderModel.find().sort({ createdAt: -1 });
-  return orders;
+export const getAllOrdersAdmin = async (
+  page: number,
+  limit: number,
+  skip: number
+) => {
+  const orders = await OrderModel.find()
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  const total = await OrderModel.countDocuments({});
+
+  return { orders, total };
 };
