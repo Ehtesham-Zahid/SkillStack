@@ -127,7 +127,7 @@ export const columns: ColumnDef<User>[] = [
     header: "To User",
     cell: ({ row }) => {
       const user = row.original;
-      return <ChangeToUserButton />;
+      return <ChangeToUserButton id={user._id} />;
     },
   },
 ];

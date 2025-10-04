@@ -119,7 +119,7 @@ export const columns: ColumnDef<User>[] = [
     header: "To Admin",
     cell: ({ row }) => {
       const user = row.original;
-      return <ChangeToAdminButton />;
+      return <ChangeToAdminButton id={user._id} />;
     },
   },
 ];

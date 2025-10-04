@@ -87,6 +87,22 @@ export const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Users"] as any,
     }),
+    updateUserRole: builder.mutation<any, { id: string; role: string }>({
+      query: ({ id, role }) => ({
+        url: `/users/update-user-role-admin`,
+        method: "PUT",
+        body: { id, role },
+        credentials: "include",
+      }),
+      invalidatesTags: ["Users"] as any,
+    }),
+    deleteAdmin: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/users/delete-admin-admin/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -96,4 +112,5 @@ export const {
   useUpdatePasswordMutation,
   useGetAllUsersQuery,
   useDeleteUserMutation,
+  useUpdateUserRoleMutation,
 } = userApi;
