@@ -1,26 +1,14 @@
-import React, { useEffect } from "react";
-import { toast } from "react-hot-toast";
+import React from "react";
 import { useDeleteUserMutation } from "@/src/redux/features/user/userApi";
 import { Loader2Icon, Trash2Icon } from "lucide-react";
 
 const DeleteAdminButton = ({ user }: { user: any }) => {
-  const [deleteUser, { isLoading, error, isSuccess }] = useDeleteUserMutation();
+  const [deleteUser, { isLoading }] = useDeleteUserMutation();
 
   const handleDeleteAdmin = (id: string) => {
     deleteUser(id);
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Admin deleted successfully");
-    }
-    if (error) {
-      if ("data" in error) {
-        const errorData = error as any;
-        toast.error(errorData?.data?.message || "Something went wrong");
-      }
-    }
-  }, [isSuccess, error]);
   return (
     <div>
       <>
