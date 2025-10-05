@@ -63,7 +63,9 @@ const EditHero = () => {
         </p>
       </div>
       {bannerLoading ? (
-        <Spinner fullPage={false} className="mx-auto w-full" />
+        <div className="flex justify-center items-center h-full">
+          <Spinner fullPage={false} className="mx-auto" />
+        </div>
       ) : (
         <>
           <div className="flex flex-col gap-8 mt-5">

@@ -101,7 +101,9 @@ const EditFaqs = () => {
         </p>
       </div>
       {faqsLoading ? (
-        <Spinner fullPage={false} className="mx-auto w-full" />
+        <div className="flex justify-center items-center h-full">
+          <Spinner fullPage={false} className="mx-auto" />
+        </div>
       ) : (
         <>
           <div className="flex flex-col gap-4 mt-8">
