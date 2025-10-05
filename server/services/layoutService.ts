@@ -9,19 +9,12 @@ export const createLayout = async (data: any) => {
     throw new ErrorHandler(`${type} already exists`, 400);
   }
   if (type === "Banner") {
-    const { image, title, subtitle } = data;
-    const myCloud = await cloudinary.v2.uploader.upload(image, {
-      folder: "layout",
-    });
+    const { title, subtitle } = data;
     const banner = {
-      image: {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      },
       title,
       subtitle,
     };
-    await LayoutModel.create(banner);
+    await LayoutModel.create({ type, banner });
   }
   if (type === "Faqs") {
     const { faq } = data;
@@ -45,23 +38,14 @@ export const editLayout = async (data: any) => {
   const { type } = data;
   if (type === "Banner") {
     const bannerData: any = await LayoutModel.findOne({ type });
-    const { image, title, subtitle } = data;
-    if (bannerData) {
-      await cloudinary.v2.uploader.destroy(bannerData.image.public_id);
-    }
-    const myCloud = await cloudinary.v2.uploader.upload(image, {
-      folder: "layout",
-    });
-    const banner = {
-      type: "Banner",
-      image: {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
+    const { title, subtitle } = data;
+
+    await LayoutModel.findByIdAndUpdate(bannerData._id, {
+      $set: {
+        "banner.title": title,
+        "banner.subtitle": subtitle,
       },
-      title,
-      subtitle,
-    };
-    await LayoutModel.findByIdAndUpdate(bannerData._id, { $set: banner });
+    });
   }
   if (type === "Faqs") {
     const { faq } = data;

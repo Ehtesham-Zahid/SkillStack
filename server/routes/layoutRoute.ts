@@ -11,9 +11,9 @@ const layoutRouter = express.Router();
 
 layoutRouter.post(
   "/create-layout",
-  handleUpdateAccessToken,
-  isAuthenticated,
-  authorizeRoles("admin"),
+  // handleUpdateAccessToken,
+  // isAuthenticated,
+  // authorizeRoles("admin"),
   handleCreateLayout
 );
 

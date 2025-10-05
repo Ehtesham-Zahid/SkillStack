@@ -81,7 +81,7 @@ const sidebarItems = [
     title: "Customization",
     // icon: <LayoutDashboard size={22} />,
     children: [
-      { title: "Hero", url: "#", icon: <Layers size={18} /> },
+      { title: "Hero", url: "/admin/hero", icon: <Layers size={18} /> },
       { title: "FAQs", url: "#", icon: <HelpCircle size={18} /> },
       { title: "Categories", url: "#", icon: <List size={18} /> },
     ],
