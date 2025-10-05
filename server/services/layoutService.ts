@@ -3,6 +3,7 @@ import LayoutModel from "../models/layoutModel";
 import ErrorHandler from "../utils/ErrorHandler";
 
 export const createLayout = async (data: any) => {
+  console.log("data", data);
   const { type } = data;
   const isTypeExist = await LayoutModel.findOne({ type });
   if (isTypeExist) {
@@ -25,6 +26,7 @@ export const createLayout = async (data: any) => {
     await LayoutModel.create({ type, faq: faqData });
   }
   if (type === "Categories") {
+    console.log("categories", data);
     const { categories } = data;
     const categoriesData = categories.map((item: any) => ({
       title: item.title,

@@ -104,57 +104,60 @@ const EditFaqs = () => {
         <Spinner fullPage={false} className="mx-auto w-full" />
       ) : (
         <>
-          <div className="flex flex-col gap-8 mt-8">
-            {faqs?.map((faq: any) => (
-              <Accordion
-                type="single"
-                collapsible
+          <div className="flex flex-col gap-4 mt-8">
+            {faqs?.map((faq: any, index: number) => (
+              <div
                 key={faq._id}
-                className="border-b"
+                className="rounded-md border dark:border-text2-dark border-text2 bg-transparent hover:bg-primary/5 transition-colors"
               >
-                <AccordionItem value={`item-${faq._id}`}>
-                  <AccordionTrigger className="text-xl font-bold dark:text-text2-dark text-text2 flex items-center justify-between">
-                    <input
-                      type="text"
-                      value={faq.question}
-                      onChange={(e) => {
-                        const updatedFaqs = faqs.map((item: any) =>
-                          item._id === faq._id
-                            ? { ...item, question: e.target.value }
-                            : item
-                        );
-                        setFaqs(updatedFaqs);
-                      }}
-                      className="p-0 text-xl font-bold dark:text-text2-dark text-text2 focus:outline-none w-full"
-                    />
-                    <div className="flex items-center gap-2">
-                      <Trash2Icon
-                        className="cursor-pointer w-4 h-4 dark:text-destructive-dark text-destructive"
-                        onClick={() => {
-                          const updatedFaqs = faqs.filter(
-                            (item: any) => item._id !== faq._id
+                <Accordion type="single" collapsible className="">
+                  <AccordionItem value={`item-${faq._id}`}>
+                    <AccordionTrigger className="text-xl font-bold dark:text-text2-dark text-text2 flex items-center justify-between gap-3 px-4">
+                      <span className="shrink-0 inline-flex items-center justify-center h-6 min-w-6 px-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold">
+                        #{index + 1}
+                      </span>
+                      <input
+                        type="text"
+                        value={faq.question}
+                        onChange={(e) => {
+                          const updatedFaqs = faqs.map((item: any) =>
+                            item._id === faq._id
+                              ? { ...item, question: e.target.value }
+                              : item
                           );
                           setFaqs(updatedFaqs);
                         }}
+                        className="p-0 text-xl font-bold dark:text-text2-dark text-text2 focus:outline-none w-full bg-transparent"
                       />
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <Textarea
-                      value={faq.answer}
-                      onChange={(e) => {
-                        const updatedFaqs = faqs.map((item: any) =>
-                          item._id === faq._id
-                            ? { ...item, answer: e.target.value }
-                            : item
-                        );
-                        setFaqs(updatedFaqs);
-                      }}
-                      className="h-32 font-bold resize-none !text-xl placeholder:text-text1 dark:placeholder:text-text1-dark"
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                      <div className="flex items-center gap-2">
+                        <Trash2Icon
+                          className="cursor-pointer w-4 h-4 dark:text-destructive-dark text-destructive"
+                          onClick={() => {
+                            const updatedFaqs = faqs.filter(
+                              (item: any) => item._id !== faq._id
+                            );
+                            setFaqs(updatedFaqs);
+                          }}
+                        />
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4">
+                      <Textarea
+                        value={faq.answer}
+                        onChange={(e) => {
+                          const updatedFaqs = faqs.map((item: any) =>
+                            item._id === faq._id
+                              ? { ...item, answer: e.target.value }
+                              : item
+                          );
+                          setFaqs(updatedFaqs);
+                        }}
+                        className="h-32 font-bold resize-none !text-xl placeholder:text-text1 dark:placeholder:text-text1-dark"
+                      />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
             ))}
           </div>
 

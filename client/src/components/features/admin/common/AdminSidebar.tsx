@@ -82,8 +82,12 @@ const sidebarItems = [
     // icon: <LayoutDashboard size={22} />,
     children: [
       { title: "Hero", url: "/admin/hero", icon: <Layers size={18} /> },
-      { title: "FAQs", url: "#", icon: <HelpCircle size={18} /> },
-      { title: "Categories", url: "#", icon: <List size={18} /> },
+      { title: "FAQs", url: "/admin/faqs", icon: <HelpCircle size={18} /> },
+      {
+        title: "Categories",
+        url: "/admin/categories",
+        icon: <List size={18} />,
+      },
     ],
   },
   {
