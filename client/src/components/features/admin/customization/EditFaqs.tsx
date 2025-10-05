@@ -17,6 +17,7 @@ import {
 } from "@/src/shadcn/ui/accordion";
 import { AccordionContent } from "@/src/shadcn/ui/accordion";
 import isEqual from "lodash.isequal";
+import { v4 as uuidv4 } from "uuid";
 
 const EditFaqs = () => {
   const { data: faqsData, isLoading: faqsLoading } = useGetLayoutByTypeQuery({
@@ -55,6 +56,31 @@ const EditFaqs = () => {
       }
     }
   }, [editLayoutSuccess, editLayoutError]);
+
+  const handleAddFaq = () => {
+    const currentFaqs = faqs || [];
+    if (currentFaqs.length > 0) {
+      const lastFaq = currentFaqs[currentFaqs.length - 1];
+      const isQuestionEmpty =
+        !lastFaq?.question || String(lastFaq.question).trim() === "";
+      const isAnswerEmpty =
+        !lastFaq?.answer || String(lastFaq.answer).trim() === "";
+      if (isQuestionEmpty || isAnswerEmpty) {
+        toast.error(
+          "Please fill the last FAQ's question and answer before adding a new one."
+        );
+        return;
+      }
+    }
+    setFaqs([
+      ...currentFaqs,
+      {
+        _id: uuidv4(),
+        question: "Untitled Question",
+        answer: "Untitled Answer",
+      },
+    ]);
+  };
 
   return (
     <div className="overflow-hidden p-5 bg-surface dark:bg-surface-dark rounded-md border dark:border-text2-dark border-text2  ">
@@ -123,6 +149,13 @@ const EditFaqs = () => {
               </Accordion>
             ))}
           </div>
+
+          <Button
+            onClick={handleAddFaq}
+            className="w-full mt-8 bg-transparent text-primary-foreground  border border-primary border-dashed hover:bg-primary/10 text-primary cursor-pointer"
+          >
+            Add Faq
+          </Button>
           <Separator className="my-10" />
           <div className="flex justify-end gap-4 ">
             <Button
