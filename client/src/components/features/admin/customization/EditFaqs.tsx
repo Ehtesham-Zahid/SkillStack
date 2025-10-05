@@ -31,8 +31,6 @@ const EditFaqs = () => {
     },
   ] = useEditLayoutMutation();
   const [faqs, setFaqs] = useState<any>(faqsData?.layout?.faq);
-  console.log(faqs);
-  console.log(faqsData?.layout?.faq);
 
   useEffect(() => {
     if (faqsData?.layout?.faq) {
@@ -41,8 +39,9 @@ const EditFaqs = () => {
   }, [faqsData]);
 
   const handleSaveChanges = async () => {
-    console.log(faqs);
-    await editLayout({ type: "Faqs", faq: faqs });
+    const data = { type: "Faqs", faq: faqs };
+
+    await editLayout(data);
   };
 
   useEffect(() => {
@@ -91,9 +90,6 @@ const EditFaqs = () => {
                             : item
                         );
                         setFaqs(updatedFaqs);
-                        console.log(updatedFaqs);
-                        console.log(faqs);
-                        console.log(faqsData?.layout?.faq);
                       }}
                       className="p-0 text-xl font-bold dark:text-text2-dark text-text2 focus:outline-none w-full"
                     />

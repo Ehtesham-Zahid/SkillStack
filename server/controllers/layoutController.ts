@@ -19,6 +19,7 @@ export const handleCreateLayout = asyncHandler(
 // Edit Layout
 export const handleEditLayout = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log("req.body", req.body);
     const layout = await editLayout(req.body);
     res
       .status(200)

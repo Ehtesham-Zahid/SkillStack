@@ -35,6 +35,8 @@ export const createLayout = async (data: any) => {
 };
 
 export const editLayout = async (data: any) => {
+  console.log("data", data);
+
   const { type } = data;
   if (type === "Banner") {
     const bannerData: any = await LayoutModel.findOne({ type });

@@ -36,7 +36,8 @@ const EditHero = () => {
 
   const handleSaveChanges = async () => {
     console.log(title, subtitle);
-    await editLayout({ type: "Banner", title, subtitle });
+    const data = { type: "Banner", title, subtitle };
+    await editLayout(data);
   };
 
   useEffect(() => {
