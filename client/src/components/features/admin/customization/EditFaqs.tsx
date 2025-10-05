@@ -57,6 +57,14 @@ const EditFaqs = () => {
     }
   }, [editLayoutSuccess, editLayoutError]);
 
+  const hasEmptyFaqField = Array.isArray(faqs)
+    ? faqs.some(
+        (item: any) =>
+          !String(item?.question || "").trim() ||
+          !String(item?.answer || "").trim()
+      )
+    : false;
+
   const handleAddFaq = () => {
     const currentFaqs = faqs || [];
     if (currentFaqs.length > 0) {
@@ -174,11 +182,15 @@ const EditFaqs = () => {
                 handleSaveChanges();
               }}
               disabled={
-                editLayoutLoading || isEqual(faqs, faqsData?.layout?.faq)
+                editLayoutLoading ||
+                isEqual(faqs, faqsData?.layout?.faq) ||
+                hasEmptyFaqField
               }
               className="  cursor-pointer"
             >
-              {editLayoutLoading ? (
+              {hasEmptyFaqField ? (
+                "Complete All Fields"
+              ) : editLayoutLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 "Save Changes"
