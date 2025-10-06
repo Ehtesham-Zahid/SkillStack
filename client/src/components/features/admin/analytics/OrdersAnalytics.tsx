@@ -2,7 +2,7 @@
 import { BookOpen, TrendingUp, Users } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
 import {
   Card,
@@ -19,7 +19,7 @@ import {
 } from "@/src/shadcn/ui/chart";
 import DataCard from "../common/DataCard";
 
-export const description = "A bar chart";
+export const description = "A line chart";
 
 const OrdersAnalytics = () => {
   const { theme } = useTheme();
@@ -90,14 +90,21 @@ const OrdersAnalytics = () => {
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig}>
-              <BarChart accessibilityLayer data={chartData}>
+              <LineChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  left: 12,
+                  right: 12,
+                }}
+              >
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="month"
                   tickLine={false}
-                  tickMargin={10}
                   axisLine={false}
-                  tickFormatter={(value: string) => value.slice(0, 3)}
+                  tickMargin={8}
+                  tickFormatter={(value) => value.slice(0, 3)}
                 />
                 <ChartTooltip
                   cursor={false}
@@ -108,12 +115,19 @@ const OrdersAnalytics = () => {
                     />
                   }
                 />
-                <Bar
+                <Line
                   dataKey="orders"
-                  fill={chartConfig.orders.color}
-                  radius={8}
+                  type="natural"
+                  stroke={chartConfig.orders.color}
+                  strokeWidth={2}
+                  dot={{
+                    fill: chartConfig.orders.color,
+                  }}
+                  activeDot={{
+                    r: 6,
+                  }}
                 />
-              </BarChart>
+              </LineChart>
             </ChartContainer>
           </CardContent>
         </Card>
