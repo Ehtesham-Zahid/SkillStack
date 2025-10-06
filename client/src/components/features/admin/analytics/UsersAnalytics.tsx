@@ -26,6 +26,7 @@ export const description = "A line chart";
 const UsersAnalytics = () => {
   const { data: usersData, isLoading } = useGetUsersAnalyticsQuery();
   const { theme } = useTheme();
+  console.log(usersData);
 
   const chartData = usersData?.users?.last12Months?.map((month: any) => ({
     month: month.month,
@@ -83,57 +84,57 @@ const UsersAnalytics = () => {
               }}
             />
           </div>
+          <div>
+            <Card className=" mx-auto my-10 ">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold ">
+                  Monthly User Creation Trend
+                </CardTitle>
+                <CardDescription className="text-base text-text2 dark:text-text2-dark">
+                  Last 12 months data
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig}>
+                  <AreaChart
+                    accessibilityLayer
+                    data={chartData}
+                    margin={{
+                      left: 12,
+                      right: 12,
+                    }}
+                  >
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={
+                        <ChartTooltipContent
+                          hideLabel
+                          className="bg-surface dark:bg-surface-dark text-accent-foreground dark:text-accent-dark-foreground"
+                        />
+                      }
+                    />
+                    <Area
+                      dataKey="users"
+                      type="natural"
+                      fill={chartConfig.users.color}
+                      fillOpacity={0.4}
+                      stroke={chartConfig.users.color}
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
         </>
       )}
-      <div>
-        <Card className=" mx-auto my-10 ">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold ">
-              Monthly User Creation Trend
-            </CardTitle>
-            <CardDescription className="text-base text-text2 dark:text-text2-dark">
-              Last 12 months data
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig}>
-              <AreaChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      hideLabel
-                      className="bg-surface dark:bg-surface-dark text-accent-foreground dark:text-accent-dark-foreground"
-                    />
-                  }
-                />
-                <Area
-                  dataKey="users"
-                  type="natural"
-                  fill={chartConfig.users.color}
-                  fillOpacity={0.4}
-                  stroke={chartConfig.users.color}
-                />
-              </AreaChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 };

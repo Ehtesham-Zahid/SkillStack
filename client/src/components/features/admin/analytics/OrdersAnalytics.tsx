@@ -86,62 +86,62 @@ const OrdersAnalytics = () => {
               }}
             />
           </div>
+          <div>
+            <Card className=" mx-auto my-10 ">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold ">
+                  Monthly Order Creation Trend
+                </CardTitle>
+                <CardDescription className="text-base text-text2 dark:text-text2-dark">
+                  Last 12 months data
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig}>
+                  <LineChart
+                    accessibilityLayer
+                    data={chartData}
+                    margin={{
+                      left: 12,
+                      right: 12,
+                    }}
+                  >
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={
+                        <ChartTooltipContent
+                          hideLabel
+                          className="bg-surface dark:bg-surface-dark text-accent-foreground dark:text-accent-dark-foreground"
+                        />
+                      }
+                    />
+                    <Line
+                      dataKey="orders"
+                      type="natural"
+                      stroke={chartConfig.orders.color}
+                      strokeWidth={2}
+                      dot={{
+                        fill: chartConfig.orders.color,
+                      }}
+                      activeDot={{
+                        r: 6,
+                      }}
+                    />
+                  </LineChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
         </>
       )}
-      <div>
-        <Card className=" mx-auto my-10 ">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold ">
-              Monthly Order Creation Trend
-            </CardTitle>
-            <CardDescription className="text-base text-text2 dark:text-text2-dark">
-              Last 12 months data
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig}>
-              <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      hideLabel
-                      className="bg-surface dark:bg-surface-dark text-accent-foreground dark:text-accent-dark-foreground"
-                    />
-                  }
-                />
-                <Line
-                  dataKey="orders"
-                  type="natural"
-                  stroke={chartConfig.orders.color}
-                  strokeWidth={2}
-                  dot={{
-                    fill: chartConfig.orders.color,
-                  }}
-                  activeDot={{
-                    r: 6,
-                  }}
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 };
