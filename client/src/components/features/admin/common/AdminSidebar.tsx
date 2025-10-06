@@ -82,7 +82,7 @@ const sidebarItems = [
     // icon: <LayoutDashboard size={22} />,
     children: [
       { title: "Hero", url: "/admin/hero", icon: <Layers size={18} /> },
-      { title: "FAQs", url: "/admin/faqs", icon: <HelpCircle size={18} /> },
+      { title: "FAQs", url: "/admin/faq", icon: <HelpCircle size={18} /> },
       {
         title: "Categories",
         url: "/admin/categories",
@@ -105,17 +105,28 @@ const sidebarItems = [
     title: "Analytics",
     // icon: <ChartBarBig size={22} />,
     children: [
-      { title: "Courses Analytics", url: "#", icon: <BarChartBig size={18} /> },
-      { title: "Orders Analytics", url: "#", icon: <PieChart size={18} /> },
-      { title: "Users Analytics", url: "#", icon: <ChartBarBig size={18} /> },
+      {
+        title: "Courses Analytics",
+        url: "/admin/courses-analytics",
+        icon: <BarChartBig size={18} />,
+      },
+      {
+        title: "Orders Analytics",
+        url: "/admin/orders-analytics",
+        icon: <PieChart size={18} />,
+      },
+      {
+        title: "Users Analytics",
+        url: "/admin/users-analytics",
+        icon: <ChartBarBig size={18} />,
+      },
     ],
   },
   {
     title: "Extras",
     // icon: <MoreHorizontal size={22} />,
     children: [
-      { title: "Settings", url: "#", icon: <Settings size={18} /> },
-      { title: "Logout", url: "#", icon: <LogOut size={18} /> },
+      { title: "Logout", url: "/admin/logout", icon: <LogOut size={18} /> },
     ],
   },
 ];
