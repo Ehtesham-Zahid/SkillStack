@@ -18,26 +18,19 @@ import {
   ChartTooltipContent,
 } from "@/src/shadcn/ui/chart";
 import DataCard from "../common/DataCard";
+import { useGetUsersAnalyticsQuery } from "@/src/redux/features/analytics/analyticsApi";
+import Spinner from "@/src/components/ui/Spinner";
 
 export const description = "A line chart";
 
 const UsersAnalytics = () => {
+  const { data: usersData, isLoading } = useGetUsersAnalyticsQuery();
   const { theme } = useTheme();
 
-  const chartData = [
-    { month: "January", users: 186 },
-    { month: "February", users: 305 },
-    { month: "March", users: 100 },
-    { month: "April", users: 73 },
-    { month: "May", users: 209 },
-    { month: "June", users: 214 },
-    { month: "July", users: 214 },
-    { month: "August", users: 214 },
-    { month: "September", users: 214 },
-    { month: "October", users: 214 },
-    { month: "November", users: 214 },
-    { month: "December", users: 214 },
-  ];
+  const chartData = usersData?.users?.last12Months?.map((month: any) => ({
+    month: month.month,
+    users: month.count,
+  }));
 
   const chartConfig = {
     users: {
@@ -55,29 +48,43 @@ const UsersAnalytics = () => {
           Analyze your users and their performance.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-        <DataCard
-          title="Total Users"
-          value="4"
-          icon={BookOpen}
-          color="accent"
-          trend={{ value: 12, isPositive: true }}
-        />
-        <DataCard
-          title="Peak Month"
-          value="3"
-          icon={TrendingUp}
-          color="success"
-          trend={{ value: 8, isPositive: true }}
-        />
-        <DataCard
-          title="Monthly Average"
-          value="0.3"
-          icon={Users}
-          color="primary"
-          trend={{ value: 5, isPositive: false }}
-        />
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-full">
+          <Spinner fullPage={false} />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+            <DataCard
+              title="Total Users"
+              value={usersData?.users?.total || 0}
+              icon={BookOpen}
+              color="accent"
+              trend={{ value: usersData?.users?.total || 0, isPositive: true }}
+            />
+            <DataCard
+              title="Peak Month"
+              value={usersData?.users?.peakMonth || 0}
+              icon={TrendingUp}
+              color="success"
+              trend={{
+                value: usersData?.users?.peakMonth || 0,
+                isPositive: true,
+              }}
+            />
+            <DataCard
+              title="Monthly Average"
+              value={usersData?.users?.average || 0}
+              icon={Users}
+              color="primary"
+              trend={{
+                value: usersData?.users?.average || 0,
+                isPositive: false,
+              }}
+            />
+          </div>
+        </>
+      )}
       <div>
         <Card className=" mx-auto my-10 ">
           <CardHeader>

@@ -18,26 +18,19 @@ import {
   ChartTooltipContent,
 } from "@/src/shadcn/ui/chart";
 import DataCard from "../common/DataCard";
+import { useGetOrdersAnalyticsQuery } from "@/src/redux/features/analytics/analyticsApi";
+import Spinner from "@/src/components/ui/Spinner";
 
 export const description = "A line chart";
 
 const OrdersAnalytics = () => {
+  const { data: ordersData, isLoading } = useGetOrdersAnalyticsQuery();
   const { theme } = useTheme();
 
-  const chartData = [
-    { month: "January", orders: 186 },
-    { month: "February", orders: 305 },
-    { month: "March", orders: 100 },
-    { month: "April", orders: 73 },
-    { month: "May", orders: 209 },
-    { month: "June", orders: 214 },
-    { month: "July", orders: 214 },
-    { month: "August", orders: 214 },
-    { month: "September", orders: 214 },
-    { month: "October", orders: 214 },
-    { month: "November", orders: 214 },
-    { month: "December", orders: 214 },
-  ];
+  const chartData = ordersData?.orders?.last12Months?.map((month: any) => ({
+    month: month.month,
+    orders: month.count,
+  }));
 
   const chartConfig = {
     orders: {
@@ -55,29 +48,46 @@ const OrdersAnalytics = () => {
           Analyze your orders and their performance.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-        <DataCard
-          title="Total Orders"
-          value="4"
-          icon={BookOpen}
-          color="accent"
-          trend={{ value: 12, isPositive: true }}
-        />
-        <DataCard
-          title="Peak Month"
-          value="3"
-          icon={TrendingUp}
-          color="success"
-          trend={{ value: 8, isPositive: true }}
-        />
-        <DataCard
-          title="Monthly Average"
-          value="0.3"
-          icon={Users}
-          color="primary"
-          trend={{ value: 5, isPositive: false }}
-        />
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-full">
+          <Spinner fullPage={false} />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+            <DataCard
+              title="Total Orders"
+              value={ordersData?.orders?.total || 0}
+              icon={BookOpen}
+              color="accent"
+              trend={{
+                value: ordersData?.orders?.total || 0,
+                isPositive: true,
+              }}
+            />
+            <DataCard
+              title="Peak Month"
+              value={ordersData?.orders?.peakMonth || 0}
+              icon={TrendingUp}
+              color="success"
+              trend={{
+                value: ordersData?.orders?.peakMonth || 0,
+                isPositive: true,
+              }}
+            />
+            <DataCard
+              title="Monthly Average"
+              value={ordersData?.orders?.average || 0}
+              icon={Users}
+              color="primary"
+              trend={{
+                value: ordersData?.orders?.average || 0,
+                isPositive: false,
+              }}
+            />
+          </div>
+        </>
+      )}
       <div>
         <Card className=" mx-auto my-10 ">
           <CardHeader>

@@ -18,26 +18,19 @@ import {
   ChartTooltipContent,
 } from "@/src/shadcn/ui/chart";
 import DataCard from "../common/DataCard";
+import { useGetCoursesAnalyticsQuery } from "@/src/redux/features/analytics/analyticsApi";
+import Spinner from "@/src/components/ui/Spinner";
 
 export const description = "A bar chart";
 
 const CoursesAnalytics = () => {
+  const { data: coursesData, isLoading } = useGetCoursesAnalyticsQuery();
   const { theme } = useTheme();
 
-  const chartData = [
-    { month: "January", courses: 186 },
-    { month: "February", courses: 305 },
-    { month: "March", courses: 100 },
-    { month: "April", courses: 73 },
-    { month: "May", courses: 209 },
-    { month: "June", courses: 214 },
-    { month: "July", courses: 214 },
-    { month: "August", courses: 214 },
-    { month: "September", courses: 214 },
-    { month: "October", courses: 214 },
-    { month: "November", courses: 214 },
-    { month: "December", courses: 214 },
-  ];
+  const chartData = coursesData?.courses?.last12Months?.map((month: any) => ({
+    month: month.month,
+    courses: month.count,
+  }));
 
   const chartConfig = {
     courses: {
@@ -55,69 +48,86 @@ const CoursesAnalytics = () => {
           Analyze your courses and their performance.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-        <DataCard
-          title="Total Courses"
-          value="4"
-          icon={BookOpen}
-          color="accent"
-          trend={{ value: 12, isPositive: true }}
-        />
-        <DataCard
-          title="Peak Month"
-          value="3"
-          icon={TrendingUp}
-          color="success"
-          trend={{ value: 8, isPositive: true }}
-        />
-        <DataCard
-          title="Monthly Average"
-          value="0.3"
-          icon={Users}
-          color="primary"
-          trend={{ value: 5, isPositive: false }}
-        />
-      </div>
-      <div>
-        <Card className=" mx-auto my-10 ">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold ">
-              Monthly Course Creation Trend
-            </CardTitle>
-            <CardDescription className="text-base text-text2 dark:text-text2-dark">
-              Last 12 months data
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig}>
-              <BarChart accessibilityLayer data={chartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value: string) => value.slice(0, 3)}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      hideLabel
-                      className="bg-surface dark:bg-surface-dark text-accent-foreground dark:text-accent-dark-foreground"
+      {isLoading ? (
+        <div className="flex justify-center items-center h-full">
+          <Spinner fullPage={false} />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+            <DataCard
+              title="Total Courses"
+              value={coursesData?.courses?.total || 0}
+              icon={BookOpen}
+              color="accent"
+              trend={{
+                value: coursesData?.courses?.total || 0,
+                isPositive: true,
+              }}
+            />
+            <DataCard
+              title="Peak Month"
+              value={coursesData?.courses?.peakMonth || 0}
+              icon={TrendingUp}
+              color="success"
+              trend={{
+                value: coursesData?.courses?.peakMonth || 0,
+                isPositive: true,
+              }}
+            />
+            <DataCard
+              title="Monthly Average"
+              value={coursesData?.courses?.average || 0}
+              icon={Users}
+              color="primary"
+              trend={{
+                value: coursesData?.courses?.average || 0,
+                isPositive: false,
+              }}
+            />
+          </div>
+          <div>
+            <Card className=" mx-auto my-10 ">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold ">
+                  Monthly Course Creation Trend
+                </CardTitle>
+                <CardDescription className="text-base text-text2 dark:text-text2-dark">
+                  Last 12 months data
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig}>
+                  <BarChart accessibilityLayer data={chartData || []}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      tickMargin={10}
+                      axisLine={false}
+                      tickFormatter={(value: string) => value.slice(0, 3)}
                     />
-                  }
-                />
-                <Bar
-                  dataKey="courses"
-                  fill={chartConfig.courses.color}
-                  radius={8}
-                />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
+                    <ChartTooltip
+                      cursor={false}
+                      content={
+                        <ChartTooltipContent
+                          hideLabel
+                          className="bg-surface dark:bg-surface-dark text-accent-foreground dark:text-accent-dark-foreground"
+                        />
+                      }
+                    />
+                    <Bar
+                      dataKey="courses"
+                      fill={chartConfig.courses.color}
+                      radius={8}
+                    />
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
     </div>
   );
 };
