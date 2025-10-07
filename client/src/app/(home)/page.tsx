@@ -3,6 +3,8 @@
 import Heading from "../../utils/Heading";
 import Hero from "../../components/features/home/Hero";
 import HomeCoursesSection from "@/src/components/features/home/HomeCoursesSection";
+import TestimonialsSection from "@/src/components/features/home/TestimonialsSection";
+import FaqsSection from "@/src/components/shared/FaqsSection";
 
 interface Props {}
 
@@ -16,6 +18,8 @@ const Page = (props: Props) => {
       />
       <Hero />
       <HomeCoursesSection />
+      <TestimonialsSection />
+      <FaqsSection />
     </>
   );
 };
