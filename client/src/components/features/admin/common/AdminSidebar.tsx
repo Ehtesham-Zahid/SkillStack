@@ -44,7 +44,7 @@ const sidebarItems = [
     children: [
       {
         title: "Dashboard",
-        url: "#",
+        url: "/admin",
         icon: <Home size={18} />, // filled style
       },
     ],

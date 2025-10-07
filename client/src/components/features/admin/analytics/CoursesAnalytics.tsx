@@ -35,7 +35,9 @@ const CoursesAnalytics = () => {
   const chartConfig = {
     courses: {
       label: "Courses",
-      color: theme === "light" ? "#1d4ed8" : "#38bdf8", // accent colors
+      // Blue (accent) per theme
+      color:
+        theme === "light" ? "var(--color-accent)" : "var(--color-accent-dark)",
     },
   } satisfies ChartConfig;
   return (

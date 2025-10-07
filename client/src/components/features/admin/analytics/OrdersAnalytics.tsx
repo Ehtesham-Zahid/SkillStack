@@ -35,7 +35,11 @@ const OrdersAnalytics = () => {
   const chartConfig = {
     orders: {
       label: "Orders",
-      color: theme === "light" ? "#1d4ed8" : "#38bdf8", // accent colors
+      // Orange (primary) per theme
+      color:
+        theme === "light"
+          ? "var(--color-primary)"
+          : "var(--color-primary-dark)",
     },
   } satisfies ChartConfig;
   return (
@@ -59,7 +63,7 @@ const OrdersAnalytics = () => {
               title="Total Orders"
               value={ordersData?.orders?.total || 0}
               icon={BookOpen}
-              color="accent"
+              color="primary"
               trend={{
                 value: ordersData?.orders?.total || 0,
                 isPositive: true,
@@ -79,7 +83,7 @@ const OrdersAnalytics = () => {
               title="Monthly Average"
               value={ordersData?.orders?.average || 0}
               icon={Users}
-              color="primary"
+              color="accent"
               trend={{
                 value: ordersData?.orders?.average || 0,
                 isPositive: false,

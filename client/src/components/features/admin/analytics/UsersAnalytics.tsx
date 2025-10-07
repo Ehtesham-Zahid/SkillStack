@@ -36,7 +36,11 @@ const UsersAnalytics = () => {
   const chartConfig = {
     users: {
       label: "Users",
-      color: theme === "light" ? "#1d4ed8" : "#38bdf8", // accent colors
+      // Green (success) per theme
+      color:
+        theme === "light"
+          ? "var(--color-success)"
+          : "var(--color-success-dark)",
     },
   } satisfies ChartConfig;
   return (
@@ -60,14 +64,14 @@ const UsersAnalytics = () => {
               title="Total Users"
               value={usersData?.users?.total || 0}
               icon={BookOpen}
-              color="accent"
+              color="success"
               trend={{ value: usersData?.users?.total || 0, isPositive: true }}
             />
             <DataCard
               title="Peak Month"
               value={usersData?.users?.peakMonth || 0}
               icon={TrendingUp}
-              color="success"
+              color="accent"
               trend={{
                 value: usersData?.users?.peakMonth || 0,
                 isPositive: true,
