@@ -2,6 +2,7 @@
 
 import Heading from "../../utils/Heading";
 import Hero from "../../components/features/home/Hero";
+import HomeCoursesSection from "@/src/components/features/home/HomeCoursesSection";
 
 interface Props {}
 
@@ -14,6 +15,7 @@ const Page = (props: Props) => {
         keywords="Programming, Web Development, AI, Machine Learning, Data Science"
       />
       <Hero />
+      <HomeCoursesSection />
     </>
   );
 };

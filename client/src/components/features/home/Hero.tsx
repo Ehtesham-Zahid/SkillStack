@@ -5,10 +5,13 @@ import { Button } from "@/src/shadcn/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/src/shadcn/ui/avatar";
 
 import SearchInput from "../../ui/SearchInput";
+import { useGetLayoutByTypeQuery } from "@/src/redux/features/layout/layoutApi";
 
 import animationData from "@/public/lotties/hero.json";
 
 const Hero = () => {
+  const { data: bannerData, isLoading: bannerLoading } =
+    useGetLayoutByTypeQuery({ type: "Banner" });
   return (
     <div className="w-11/12  lg:w-11/12 2xl:w-5/6 mx-auto grid grid-cols-1 lg:grid-cols-2 items-start my-10 2xl:my-16">
       <div className="flex flex-col gap-5 lg:gap-8  2xl:gap-10  ">
@@ -22,8 +25,9 @@ const Hero = () => {
           </Badge>
 
           <p className="text-[clamp(28px,5vw,65px)]  font-bold text-center lg:text-left  text-text1 dark:text-text1-dark">
-            Master Top Notch Skills from{" "}
-            <span className="text-primary border-b-2 border-primary border-dashed  -rotate-5 inline-block ">
+            {bannerData?.layout?.banner?.title}
+            {/* Master Top Notch Skills from{" "} */}
+            <span className=" text-primary ml-4 border-b-2 border-primary border-dashed  -rotate-5 inline-block ">
               Skill
               <span className="text-text1 dark:text-text1-dark">Stack</span>
             </span>
@@ -31,8 +35,7 @@ const Hero = () => {
         </div>
 
         <p className="text-text1 dark:text-text1-dark text-center lg:text-left font-medium text-base sm:text-lg   mx-auto  lg:mx-0 lg:text-lg xl:text-xl  sm:w-2/3 lg:w-4/5 2xl:w-3/4">
-          Learn from experts and build real-world projects. Start your learning
-          journey today with our modern LMS platform.
+          {bannerData?.layout?.banner?.subtitle}
         </p>
         <div className=" flex flex-col  sm:flex-row gap-2 sm:gap-5 justify-center lg:justify-start">
           <Button

@@ -21,13 +21,13 @@ const page = () => {
     <div className="w-11/12   mx-auto">
       <UsersTable
         columns={columns}
-        data={data.users}
+        data={data?.users}
         page={page}
         setPage={setPage}
         limit={limit}
         setLimit={setLimit}
-        totalPages={data.totalPages}
-        totalUsers={data.totalUsers}
+        totalPages={data?.totalPages}
+        totalUsers={data?.totalUsers}
         isFetching={isFetching}
       />
     </div>

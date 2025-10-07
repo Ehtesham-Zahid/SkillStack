@@ -20,13 +20,13 @@ const page = () => {
     <div className="w-11/12   mx-auto">
       <CoursesTable
         columns={columns}
-        data={data.courses}
+        data={data?.courses}
         page={page}
         setPage={setPage}
         limit={limit}
         setLimit={setLimit}
-        totalPages={data.totalPages}
-        totalCourses={data.totalCourses}
+        totalPages={data?.totalPages}
+        totalCourses={data?.totalCourses}
         isFetching={isFetching}
       />
     </div>
