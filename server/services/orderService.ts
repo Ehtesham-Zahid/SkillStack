@@ -1,6 +1,9 @@
 import ejs from "ejs";
 import path from "path";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import OrderModel from "../models/orderModel";
 import CourseModel, { ICourse } from "../models/courseModel";
 import UserModel, { IUser } from "../models/userModel";
@@ -8,6 +11,9 @@ import NotificationModel from "../models/notificationModel";
 import ErrorHandler from "../utils/ErrorHandler";
 import { sendMail } from "../utils/email";
 import { redis } from "../utils/redis";
+
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import stripe from "stripe";
 
 const __dirname = path.resolve();
 
@@ -27,6 +33,18 @@ export const createOrder = async (
     throw new ErrorHandler("User not found", 404);
   }
   const { courseId, payment_info = {} } = data as ICreateOrderData;
+
+  if (payment_info) {
+    if ("id" in payment_info) {
+      const paymentIntentId = payment_info.id;
+      const paymentIntent = await stripe(
+        process.env.STRIPE_SECRET_KEY
+      ).paymentIntents.retrieve(paymentIntentId);
+      if (paymentIntent.status !== "succeeded") {
+        throw new ErrorHandler("Payment failed", 400);
+      }
+    }
+  }
 
   const courseExistInUser = user.courses.some(
     (course: any) => course.courseId.toString() === courseId
@@ -75,8 +93,8 @@ export const createOrder = async (
   });
 
   user.courses.push({ courseId: courseId });
-  await user.save();
   await redis.set(user._id as string, JSON.stringify(user) as any);
+  await user.save();
 
   await NotificationModel.create({
     userId: user._id,

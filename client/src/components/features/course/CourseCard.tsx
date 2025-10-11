@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Ratings from "@/src/components/shared/Ratings";
+import Link from "next/link";
 
 type CourseCardProps = {
+  id: string;
   title: string;
   author: string;
   price: number | string;
@@ -14,6 +16,7 @@ type CourseCardProps = {
 };
 
 const CourseCard = ({
+  id,
   title,
   author,
   price,
@@ -37,7 +40,10 @@ const CourseCard = ({
   };
 
   return (
-    <div className="group w-full rounded-xl overflow-hidden border dark:border-text2-dark border-text2 bg-surface dark:bg-surface-dark transition-all hover:shadow-lg">
+    <Link
+      href={`/courses/${id}`}
+      className="group w-full rounded-xl overflow-hidden border dark:border-text2-dark border-text2 bg-surface dark:bg-surface-dark transition-all hover:shadow-lg"
+    >
       <div className="relative">
         <Image
           src={thumbnailSrc}
@@ -78,7 +84,7 @@ const CourseCard = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -6,8 +6,9 @@ import axios from "axios";
 
 import CourseModel, {
   ICourse,
-  ICourseData,
   IComment,
+  ISection,
+  ILesson,
 } from "../models/courseModel";
 import { IUser } from "../models/userModel";
 import NotificationModel from "../models/notificationModel";
@@ -72,7 +73,7 @@ export const getCourseById = async (id: string): Promise<ICourse | null> => {
     course = JSON.parse(isCacheExist);
   } else {
     course = await CourseModel.findById(id).select(
-      "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+      "-sections.lessons.videoUrl -sections.lessons.description -sections.lessons.videoPlayer -sections.lessons.suggestion -sections.lessons.questions -sections.lessons.links"
     );
     await redis.set(id, JSON.stringify(course), "EX", 604800);
   }
@@ -101,7 +102,7 @@ export const getAllCourses = async (): Promise<ICourse[]> => {
     courses = JSON.parse(isCacheExist);
   } else {
     courses = await CourseModel.find().select(
-      "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+      "-sections.lessons.videoUrl -sections.lessons.description -sections.lessons.videoPlayer -sections.lessons.suggestion -sections.lessons.questions -sections.lessons.links"
     );
     await redis.set("allCourses", JSON.stringify(courses));
   }
@@ -113,7 +114,7 @@ export const getAllCourses = async (): Promise<ICourse[]> => {
 export const getCourseContent = async (
   user: IUser,
   courseId: string
-): Promise<ICourseData[]> => {
+): Promise<ISection[]> => {
   const userCoursesList = user?.courses;
 
   const courseExists = userCoursesList?.find(
@@ -124,7 +125,7 @@ export const getCourseContent = async (
     throw new ErrorHandler("You are not enrolled in this course", 404);
 
   const course = await CourseModel.findById(courseId);
-  const content: ICourseData[] = course?.courseData || [];
+  const content: ISection[] = course?.sections || [];
 
   return content;
 };
@@ -132,29 +133,34 @@ export const getCourseContent = async (
 interface IAddQuestionData {
   question: string;
   courseId: string;
-  contentId: string;
+  sectionId: string;
+  lessonId: string;
 }
 // Add Question to Course
 export const addQuestion = async (
   user: IUser,
   data: IAddQuestionData
 ): Promise<ICourse | null> => {
-  const { question, courseId, contentId } = data;
+  const { question, courseId, sectionId, lessonId } = data;
   const course: ICourse | null = await CourseModel.findById(courseId);
   if (!course) {
     throw new ErrorHandler("Course not found", 404);
   }
 
-  if (!mongoose.Types.ObjectId.isValid(contentId)) {
+  if (!mongoose.Types.ObjectId.isValid(sectionId)) {
     throw new ErrorHandler("Invalid content id", 400);
   }
 
-  const courseContent: ICourseData | undefined = course?.courseData.find(
-    (item: any) => item._id.toString() === contentId
+  const section: ISection | undefined = course?.sections.find(
+    (item: any) => item._id.toString() === sectionId
   );
 
-  if (!courseContent) {
-    throw new ErrorHandler("Content not found", 404);
+  const lesson: ILesson | undefined = section?.lessons.find(
+    (item: any) => item._id.toString() === lessonId
+  );
+
+  if (!section) {
+    throw new ErrorHandler("Section not found", 404);
   }
 
   //   Create a new question object
@@ -165,12 +171,12 @@ export const addQuestion = async (
   };
 
   //   add the question to the course content
-  courseContent.questions.push(newQuestion);
+  lesson?.questions.push(newQuestion);
 
   await NotificationModel.create({
     userId: user._id,
     title: "New Question Received",
-    message: `${user.name} has asked a question in ${courseContent.title}.`,
+    message: `${user.name} has asked a question in ${section?.title} - ${lesson?.title}.`,
   });
 
   //   update the course
@@ -183,14 +189,17 @@ export const addQuestion = async (
 interface IAddAnswerData {
   answer: string;
   courseId: string;
-  contentId: string;
+  sectionId: string;
+  lessonId: string;
   questionId: string;
 }
+
 export const addAnswer = async (
   user: IUser,
   data: IAddAnswerData
 ): Promise<ICourse | null> => {
-  const { answer, courseId, contentId, questionId }: IAddAnswerData = data;
+  const { answer, courseId, sectionId, lessonId, questionId }: IAddAnswerData =
+    data;
 
   const course: ICourse | null = await CourseModel.findById(courseId);
 
@@ -198,19 +207,27 @@ export const addAnswer = async (
     throw new ErrorHandler("Course not found", 404);
   }
 
-  if (!mongoose.Types.ObjectId.isValid(contentId)) {
+  if (!mongoose.Types.ObjectId.isValid(lessonId)) {
     throw new ErrorHandler("Invalid content id", 400);
   }
 
-  const courseContent: ICourseData | undefined = course?.courseData.find(
-    (item: any) => item._id.toString() === contentId
+  const section: ISection | undefined = course?.sections.find(
+    (item: any) => item._id.toString() === sectionId
   );
 
-  if (!courseContent) {
-    throw new ErrorHandler("Content not found", 404);
+  if (!section) {
+    throw new ErrorHandler("Section not found", 404);
   }
 
-  const question: IComment | undefined = courseContent.questions.find(
+  const lesson: ILesson | undefined = section?.lessons.find(
+    (item: any) => item._id.toString() === lessonId
+  );
+
+  if (!lesson) {
+    throw new ErrorHandler("Lesson not found", 404);
+  }
+
+  const question: IComment | undefined = lesson?.questions.find(
     (item: any) => item._id.toString() === questionId
   );
 
@@ -240,7 +257,7 @@ export const addAnswer = async (
   //       name: question.user.name,
   //       title: courseContent.title,
   //       courseId: courseId,
-  //       contentId: contentId,
+  //       sectionId: sectionId,
   //       questionId: questionId,
   //       viewLink: `${process.env.FRONTEND_URL}/course/${courseId}`,
   //       questionText: question.question,
@@ -248,29 +265,13 @@ export const addAnswer = async (
   //       replierName: user.name,
   //     };
 
-  //     const html = await ejs.renderFile(
-  //       path.join(__dirname, "../mails/question-reply.ejs"),
-  //       data
-  //     );
-
-  //     try {
-  //       await sendMail({
-  //         to: question.user.email,
-  //         subject: "New Answer to your question",
-  //         html,
-  //       });
-  //     } catch (error) {
-  //       console.log(error);
-  //       throw new ErrorHandler("Error sending email", 500);
-  //     }
-  //   }
-
   if (user?._id !== question.user._id) {
     const data = {
       name: question.user.name,
-      title: courseContent.title,
+      title: section?.title,
       courseId: courseId,
-      contentId: contentId,
+      sectionId: sectionId,
+      lessonId: lessonId,
       questionId: questionId,
       viewLink: `localhost:5173/course/${courseId}`,
       questionText: question.question,
@@ -376,6 +377,7 @@ export const addReplyToReview = async (
   const review = course.reviews.find(
     (item: any) => item._id.toString() === reviewId
   );
+
   if (!review) {
     throw new ErrorHandler("Review not found", 404);
   }

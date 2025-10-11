@@ -118,3 +118,103 @@ input:checked + .slider:before {
   transform: translateX(100%);
   box-shadow: inset 15px -4px 0px 15px #fff000;
 }
+
+/* Stripe Elements Styling */
+.StripeElement,
+#link-authentication-element,
+#payment-element {
+  box-sizing: border-box;
+  min-height: 50px;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 150ms ease;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #111827;
+}
+
+.StripeElement:hover,
+#link-authentication-element:hover,
+#payment-element:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.StripeElement--focus,
+#link-authentication-element:focus-within,
+#payment-element:focus-within {
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1),
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.StripeElement--invalid,
+#link-authentication-element.StripeElement--invalid,
+#payment-element.StripeElement--invalid {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fef3c7 !important;
+}
+
+/* Dark mode support for Stripe Elements */
+.dark .StripeElement,
+.dark #link-authentication-element,
+.dark #payment-element {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #f9fafb;
+}
+
+.dark .StripeElement:hover,
+.dark #link-authentication-element:hover,
+.dark #payment-element:hover {
+  border-color: #4b5563;
+}
+
+.dark .StripeElement--focus,
+.dark #link-authentication-element:focus-within,
+.dark #payment-element:focus-within {
+  border-color: #ff7a00;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.2);
+}
+
+/* Ensure Stripe Elements are always visible */
+[data-testid="payment-element"],
+[data-testid="link-authentication-element"],
+.StripeElement {
+  min-height: 50px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Input field styling within Stripe Elements */
+.StripeElement input,
+.StripeElement input[type="text"],
+.StripeElement input[type="email"] {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 16px !important;
+  color: inherit !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Placeholder styling */
+.StripeElement input::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+.dark .StripeElement input::placeholder {
+  color: #6b7280 !important;
+}

@@ -1,8 +1,10 @@
 import CourseCard from "@/src/components/features/course/CourseCard";
 import Link from "next/link";
 import { Button } from "@/src/shadcn/ui/button";
+import { useGetAllCoursesQuery } from "@/src/redux/features/course/courseApi";
 
 const HomeCoursesSection = () => {
+  const { data, isLoading, isFetching } = useGetAllCoursesQuery();
   return (
     <section className="overflow-hidden py-16 w-11/12  lg:w-11/12 2xl:w-5/6 mx-auto">
       <div className="text-center max-w-3xl mx-auto px-4">
@@ -19,36 +21,21 @@ const HomeCoursesSection = () => {
       </div>
 
       <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-        <CourseCard
-          title="HTML for Programmers: Build Your Web Basics Right"
-          author="Ahad Ali"
-          price={29}
-          students={3}
-          lessons={1}
-          rating={5}
-          accent="primary"
-          thumbnailSrc="/images/course-thumbnail.webp"
-        />
-        <CourseCard
-          title="CSS for Programmers: Style the Web Like a Pro"
-          author="Ahad Ali"
-          price={49}
-          students={3}
-          lessons={1}
-          rating={0}
-          accent="accent"
-          thumbnailSrc="/images/course-thumbnail.webp"
-        />
-        <CourseCard
-          title="JavaScript for Programmers: From Fundamentals to Real Projects"
-          author="Ahad Ali"
-          price={99}
-          students={2}
-          lessons={1}
-          rating={0}
-          accent="success"
-          thumbnailSrc="/images/course-thumbnail.webp"
-        />
+        {data?.courses?.slice(0, 3).map((course: any) => (
+          <CourseCard
+            key={course._id}
+            id={course._id}
+            title={course.name}
+            author={"Ehtesham Zahid"}
+            price={course.price}
+            students={course.purchased}
+            lessons={course.sections.length}
+            rating={course.ratings}
+            accent="primary"
+            thumbnailSrc={course.thumbnail.url}
+            // authorAvatarSrc={course.instructor.avatar}
+          />
+        ))}
       </div>
       <div className="mt-8 flex justify-center px-4">
         <Link href="/courses">

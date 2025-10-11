@@ -43,6 +43,20 @@ export const courseApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Course", "Courses"] as any,
     }),
+    getSingleCourse: builder.query<any, string>({
+      query: (id) => ({
+        url: `/courses/get-course/${id}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    getAllCourses: builder.query<any, void>({
+      query: () => ({
+        url: `/courses/get-all-courses`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -52,4 +66,6 @@ export const {
   useDeleteCourseMutation,
   useGetSingleCourseAdminQuery,
   useEditCourseMutation,
+  useGetSingleCourseQuery,
+  useGetAllCoursesQuery,
 } = courseApi;
