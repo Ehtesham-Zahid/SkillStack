@@ -5,6 +5,12 @@ import { Button } from "@/src/shadcn/ui/button";
 import { Card, CardContent } from "@/src/shadcn/ui/card";
 import { Badge } from "@/src/shadcn/ui/badge";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/src/shadcn/ui/accordion";
+import {
   Play,
   ChevronLeft,
   ChevronRight,
@@ -21,121 +27,12 @@ import {
 import CoursePlayer from "@/src/components/shared/CoursePlayer";
 import { cn } from "@/lib/utils";
 
-// Dummy data
-const courseData = {
-  id: "1",
-  title: "Complete Guide to CSS",
-  description:
-    "Ready to go from plain layouts to polished, responsive designs? In this video, we'll introduce you to CSS (Cascading Style Sheets) — the styling language that brings your HTML to life.",
-  instructor: "John Doe",
-  rating: 4.8,
-  totalStudents: 1250,
-  duration: "3 hours 45 minutes",
-  lessons: [
-    {
-      id: "1",
-      title: "CSS Mastery",
-      sections: [
-        {
-          id: "s1",
-          title: "CSS Mastery",
-          lessons: [
-            {
-              id: "l1",
-              title: "Complete Guide to CSS",
-              duration: "3 minutes",
-              type: "video",
-              isCompleted: false,
-              isLocked: false,
-              videoUrl: "https://example.com/video1.mp4",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: "2",
-      title: "Getting Started",
-      sections: [
-        {
-          id: "s2",
-          title: "Getting Started",
-          lessons: [
-            {
-              id: "l2",
-              title: "What is AI?",
-              duration: "3 minutes",
-              type: "video",
-              isCompleted: true,
-              isLocked: false,
-              videoUrl: "https://example.com/video2.mp4",
-            },
-            {
-              id: "l3",
-              title: "Applications of AI",
-              duration: "5 minutes",
-              type: "video",
-              isCompleted: false,
-              isLocked: false,
-              videoUrl: "https://example.com/video3.mp4",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: "3",
-      title: "Machine Learning Basics",
-      sections: [
-        {
-          id: "s3",
-          title: "Machine Learning Basics",
-          lessons: [
-            {
-              id: "l4",
-              title: "Introduction to Machine Learning",
-              duration: "7 minutes",
-              type: "video",
-              isCompleted: false,
-              isLocked: false,
-              videoUrl: "https://example.com/video4.mp4",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: "4",
-      title: "Deep Learning",
-      sections: [
-        {
-          id: "s4",
-          title: "Deep Learning",
-          lessons: [
-            {
-              id: "l5",
-              title: "Neural Networks Introduction",
-              duration: "4 minutes",
-              type: "video",
-              isCompleted: false,
-              isLocked: false,
-              videoUrl: "https://example.com/video5.mp4",
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
-
-const CourseAccessSection = () => {
+const CourseAccessSection = ({ course }: { course: any }) => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [currentLesson, setCurrentLesson] = useState("l3");
-  const [expandedSections, setExpandedSections] = useState<string[]>([
-    "s1",
-    "s2",
-    "s3",
-  ]);
+  const [currentSection, setCurrentSection] = useState(course?.sections[0]);
+  const [currentLesson, setCurrentLesson] = useState(
+    course?.sections[0]?.lessons[0]
+  );
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [reviewText, setReviewText] = useState("");
   const [userRating, setUserRating] = useState(0);
@@ -231,59 +128,23 @@ const CourseAccessSection = () => {
     { id: "reviews", label: "Reviews", icon: Star },
   ];
 
-  const toggleSection = (sectionId: string) => {
-    setExpandedSections((prev) =>
-      prev.includes(sectionId)
-        ? prev.filter((id) => id !== sectionId)
-        : [...prev, sectionId]
-    );
-  };
+  //   const getCurrentLessonData = () => {
+  //     for (const lesson of course?.sections[0]?.lessons) {
+  //       for (const section of lesson.sections) {
+  //         const found = section.lessons.find((l) => l.id === currentLesson);
+  //         if (found) return found;
+  //       }
+  //     }
+  //     return null;
+  //   };
 
-  const getCurrentLessonData = () => {
-    for (const lesson of courseData.lessons) {
-      for (const section of lesson.sections) {
-        const found = section.lessons.find((l) => l.id === currentLesson);
-        if (found) return found;
-      }
-    }
-    return null;
-  };
-
-  const getCurrentSectionData = () => {
-    for (const lesson of courseData.lessons) {
-      for (const section of lesson.sections) {
-        const found = section.lessons.find((l) => l.id === currentLesson);
-        if (found) return section;
-      }
-    }
-    return null;
-  };
-
-  const currentLessonData = getCurrentLessonData();
-  const currentSectionData = getCurrentSectionData();
-
-  const totalLessons = courseData.lessons.reduce(
-    (total, lesson) =>
-      total +
-      lesson.sections.reduce(
-        (sectionTotal, section) => sectionTotal + section.lessons.length,
-        0
-      ),
-    0
+  //   const currentLessonData = getCurrentLessonData();
+  const currentSectionData = course?.sections.find(
+    (section: any) => section._id === currentSection
   );
-
-  const completedLessons = courseData.lessons.reduce(
-    (total, lesson) =>
-      total +
-      lesson.sections.reduce(
-        (sectionTotal, section) =>
-          sectionTotal + section.lessons.filter((l) => l.isCompleted).length,
-        0
-      ),
-    0
+  const currentLessonData = currentSectionData?.lessons.find(
+    (lesson: any) => lesson._id === currentLesson
   );
-
-  const progressPercentage = (completedLessons / totalLessons) * 100;
 
   return (
     <div className="min-h-screen bg-background dark:bg-background-dark w-11/12 lg:w-11/12 2xl:w-5/6 mx-auto">
@@ -294,10 +155,10 @@ const CourseAccessSection = () => {
           {/* Video Player Section */}
           <div className="mb-6">
             <div className="relative aspect-video bg-gray-900 dark:bg-gray-800 rounded-lg overflow-hidden mb-4">
-              {currentLessonData ? (
+              {currentLesson ? (
                 <CoursePlayer
-                  videoUrl={currentLessonData.videoUrl}
-                  title={currentLessonData.title}
+                  videoUrl={currentLesson.videoUrl}
+                  title={currentLesson.title}
                 />
               ) : (
                 <div className="flex items-center justify-center h-full">
@@ -329,7 +190,7 @@ const CourseAccessSection = () => {
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                {currentLessonData?.title || courseData.title}
+                {currentLesson?.title}
               </h1>
 
               {/* Tabs */}
@@ -355,24 +216,7 @@ const CourseAccessSection = () => {
               <div className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 {activeTab === "overview" && (
                   <div>
-                    <p className="mb-4">{courseData.description}</p>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                      <div className="flex items-center space-x-2">
-                        <Clock className="h-5 w-5 text-primary dark:text-primary-dark" />
-                        <span className="text-sm">{courseData.duration}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <BookOpen className="h-5 w-5 text-primary dark:text-primary-dark" />
-                        <span className="text-sm">{totalLessons} lessons</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Star className="h-5 w-5 text-primary dark:text-primary-dark" />
-                        <span className="text-sm">
-                          {courseData.rating} ({courseData.totalStudents}{" "}
-                          students)
-                        </span>
-                      </div>
-                    </div>
+                    <p className="mb-4">{currentLesson?.description}</p>
                   </div>
                 )}
 
@@ -444,50 +288,58 @@ const CourseAccessSection = () => {
 
                     {/* Q&A Threads */}
                     <div className="space-y-4">
-                      {questions.map((qa) => (
-                        <div
-                          key={qa.id}
-                          className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                        >
-                          {/* Question */}
-                          <div className="mb-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                {qa.user}
-                              </span>
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {qa.date}
-                              </span>
-                            </div>
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-                              {qa.question}
-                            </h4>
-                          </div>
-
-                          {/* Answer */}
-                          {qa.answer ? (
-                            <div className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md">
+                      {currentLesson?.questions?.length > 0 ? (
+                        currentLesson?.questions?.map((qa: any) => (
+                          <div
+                            key={qa._id}
+                            className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                          >
+                            {/* Question */}
+                            <div className="mb-3">
                               <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
-                                  {qa.answeredBy}
+                                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {qa?.user}
                                 </span>
-                                <span className="text-xs text-orange-600 dark:text-orange-400">
-                                  {qa.answeredDate}
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {qa?.date}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-700 dark:text-gray-300">
-                                {qa.answer}
-                              </p>
+                              <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                                {qa?.question}
+                              </h4>
                             </div>
-                          ) : (
-                            <div className="pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800/50 p-3 rounded-r-md">
-                              <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                                Waiting for instructor response...
-                              </p>
-                            </div>
-                          )}
+
+                            {/* Answer */}
+                            {qa?.answer ? (
+                              <div className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
+                                    {qa?.answeredBy}
+                                  </span>
+                                  <span className="text-xs text-orange-600 dark:text-orange-400">
+                                    {qa?.answeredDate}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-700 dark:text-gray-300">
+                                  {qa?.answer}
+                                </p>
+                              </div>
+                            ) : (
+                              <div className="pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800/50 p-3 rounded-r-md">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                                  Waiting for instructor response...
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                            No questions yet...
+                          </p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 )}
@@ -602,20 +454,22 @@ const CourseAccessSection = () => {
           )}
         >
           {/* Lessons List */}
-          <div className="overflow-y-auto max-h-[calc(100vh-120px)] p-4 space-y-3">
-            {courseData.lessons.map((lesson) => (
-              <div key={lesson.id}>
-                {lesson.sections.map((section) => (
-                  <div
-                    key={section.id}
-                    className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
-                  >
-                    <button
-                      onClick={() => toggleSection(section.id)}
-                      className="w-full flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all duration-200 group"
-                    >
-                      <div className="text-left flex-1">
-                        <h3 className="font-medium text-slate-900 dark:text-white text-sm mb-1 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
+          <div className="overflow-y-auto max-h-[calc(100vh-120px)] p-4">
+            <Accordion
+              type="multiple"
+              defaultValue={["section-1", "section-2", "section-3"]}
+              className="space-y-3"
+            >
+              {course?.sections?.map((section: any, sectionIndex: number) => (
+                <AccordionItem
+                  key={section._id}
+                  value={`section-${sectionIndex + 1}`}
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
+                >
+                  <AccordionTrigger className="px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all duration-200 [&[data-state=open]]:bg-slate-50 dark:[&[data-state=open]]:bg-slate-700/50 hover:no-underline [&[data-state=open]>*]:no-underline">
+                    <div className="flex items-center justify-between w-full text-left">
+                      <div className="flex-1">
+                        <h3 className="font-medium text-slate-900 dark:text-white text-sm mb-1">
                           {section.title}
                         </h3>
                         <div className="flex items-center space-x-3 text-xs text-slate-500 dark:text-slate-400">
@@ -629,8 +483,9 @@ const CourseAccessSection = () => {
                           <span className="flex items-center space-x-1">
                             <Clock className="h-3 w-3" />
                             <span>
-                              {section.lessons.reduce(
-                                (total, l) => total + parseInt(l.duration),
+                              {section?.lessons?.reduce(
+                                (total: number, l: any) =>
+                                  total + parseInt(l.videoLength),
                                 0
                               )}{" "}
                               min
@@ -638,85 +493,75 @@ const CourseAccessSection = () => {
                           </span>
                         </div>
                       </div>
-                      <div className="ml-3">
-                        {expandedSections.includes(section.id) ? (
-                          <ChevronUp className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
-                        )}
-                      </div>
-                    </button>
-
-                    {expandedSections.includes(section.id) && (
-                      <div className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                        {section.lessons.map((lessonItem) => (
-                          <button
-                            key={lessonItem.id}
-                            onClick={() => setCurrentLesson(lessonItem.id)}
-                            className={cn(
-                              "w-full flex items-center space-x-3 p-3 transition-all duration-200 text-left group relative border-b border-slate-200 dark:border-slate-700 last:border-b-0",
-                              currentLesson === lessonItem.id
-                                ? "bg-orange-50 dark:bg-orange-500/10 border-l-2 border-l-orange-500"
-                                : "hover:bg-slate-100 dark:hover:bg-slate-700/50"
-                            )}
-                          >
-                            <div className="flex-shrink-0 relative">
-                              <div
-                                className={cn(
-                                  "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200",
-                                  currentLesson === lessonItem.id
-                                    ? "bg-orange-500 text-white"
-                                    : "bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 group-hover:bg-slate-300 dark:group-hover:bg-slate-500"
-                                )}
-                              >
-                                <Play
-                                  className={cn(
-                                    "h-4 w-4 ml-0.5 transition-colors",
-                                    currentLesson === lessonItem.id
-                                      ? "text-white"
-                                      : "text-slate-600 dark:text-slate-300 group-hover:text-slate-700 dark:group-hover:text-white"
-                                  )}
-                                />
-                              </div>
-                            </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                    <div className="p-0">
+                      {section?.lessons?.map((lessonItem: any) => (
+                        <button
+                          key={lessonItem._id}
+                          onClick={() => setCurrentLesson(lessonItem)}
+                          className={cn(
+                            "w-full flex items-center space-x-3 p-3 transition-all duration-200 text-left group relative border-b border-slate-200 dark:border-slate-700 last:border-b-0",
+                            currentLesson === lessonItem
+                              ? "bg-orange-50 dark:bg-orange-500/10 border-l-2 border-l-orange-500"
+                              : "hover:bg-slate-100 dark:hover:bg-slate-700/50"
+                          )}
+                        >
+                          <div className="flex-shrink-0 relative">
                             <div
                               className={cn(
-                                "flex-1 min-w-0 transition-all duration-200",
-                                currentLesson === lessonItem.id
-                                  ? "pr-28"
-                                  : "pr-3"
+                                "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200",
+                                currentLesson === lessonItem
+                                  ? "bg-orange-500 text-white"
+                                  : "bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 group-hover:bg-slate-300 dark:group-hover:bg-slate-500"
                               )}
                             >
-                              <p
+                              <Play
                                 className={cn(
-                                  "text-sm font-medium transition-colors truncate",
-                                  currentLesson === lessonItem.id
-                                    ? "text-orange-600 dark:text-orange-400"
-                                    : "text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-slate-200"
+                                  "h-4 w-4 ml-0.5 transition-colors",
+                                  currentLesson === lessonItem
+                                    ? "text-white"
+                                    : "text-slate-600 dark:text-slate-300 group-hover:text-slate-700 dark:group-hover:text-white"
                                 )}
-                              >
-                                {lessonItem.title}
-                              </p>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center space-x-1">
-                                <Clock className="h-3 w-3" />
-                                <span>{lessonItem.duration}</span>
-                              </p>
+                              />
                             </div>
-                            {currentLesson === lessonItem.id && (
-                              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10">
-                                <Badge className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full border-0 shadow-sm whitespace-nowrap">
-                                  Currently Playing
-                                </Badge>
-                              </div>
+                          </div>
+                          <div
+                            className={cn(
+                              "flex-1 min-w-0 transition-all duration-200",
+                              currentLesson === lessonItem ? "pr-28" : "pr-3"
                             )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ))}
+                          >
+                            <p
+                              className={cn(
+                                "text-sm font-medium transition-colors truncate",
+                                currentLesson === lessonItem
+                                  ? "text-orange-600 dark:text-orange-400"
+                                  : "text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-slate-200"
+                              )}
+                            >
+                              {lessonItem.title}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center space-x-1">
+                              <Clock className="h-3 w-3" />
+                              <span>{lessonItem.videoLength} minutes</span>
+                            </p>
+                          </div>
+                          {currentLesson === lessonItem && (
+                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10">
+                              <Badge className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full border-0 shadow-sm whitespace-nowrap">
+                                Currently Playing
+                              </Badge>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
         </div>
       </div>

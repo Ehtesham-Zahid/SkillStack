@@ -6,7 +6,7 @@ import {
   handleCreateCourse,
   handleEditCourse,
   handleGetAllCourses,
-  handleGetCourseContent,
+  handleGetCourseWithContent,
   handleGetSingleCourse,
   handleAddReplyToReview,
   handleGetAllCoursesAdmin,
@@ -40,10 +40,10 @@ courseRouter.get("/get-course/:id", handleGetSingleCourse);
 courseRouter.get("/get-all-courses", handleGetAllCourses);
 
 courseRouter.get(
-  "/get-course-content/:id",
+  "/get-course-with-content/:id",
   handleUpdateAccessToken,
   isAuthenticated,
-  handleGetCourseContent
+  handleGetCourseWithContent
 );
 
 courseRouter.put(

@@ -5,7 +5,7 @@ import {
   getCourseById,
   getCourseByIdAdmin,
   getAllCourses,
-  getCourseContent,
+  getCourseWithContent,
   addQuestion,
   addAnswer,
   addReview,
@@ -53,10 +53,10 @@ export const handleGetAllCourses = asyncHandler(
 );
 
 // Get Course Content -- only for valid users
-export const handleGetCourseContent = asyncHandler(
+export const handleGetCourseWithContent = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const content = await getCourseContent(req.user as IUser, req.params.id);
-    res.status(200).json({ success: true, content });
+    const course = await getCourseWithContent(req.user as IUser, req.params.id);
+    res.status(200).json({ success: true, course });
   }
 );
 

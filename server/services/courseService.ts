@@ -111,10 +111,10 @@ export const getAllCourses = async (): Promise<ICourse[]> => {
 };
 
 // Get Course Content -- only for valid users
-export const getCourseContent = async (
+export const getCourseWithContent = async (
   user: IUser,
   courseId: string
-): Promise<ISection[]> => {
+): Promise<ICourse | null> => {
   const userCoursesList = user?.courses;
 
   const courseExists = userCoursesList?.find(
@@ -125,9 +125,10 @@ export const getCourseContent = async (
     throw new ErrorHandler("You are not enrolled in this course", 404);
 
   const course = await CourseModel.findById(courseId);
-  const content: ISection[] = course?.sections || [];
+  if (!course) throw new ErrorHandler("Course not found", 404);
+  // const course: ICourse[] = course?.sections || [];
 
-  return content;
+  return course;
 };
 
 interface IAddQuestionData {
