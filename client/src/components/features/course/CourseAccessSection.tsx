@@ -24,9 +24,13 @@ import {
   ChevronDown,
   ChevronUp,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 import CoursePlayer from "@/src/components/shared/CoursePlayer";
 import { cn } from "@/lib/utils";
+import { useAddQuestionMutation } from "@/src/redux/features/course/courseApi";
+import { toast } from "react-hot-toast";
+import { formatDate } from "@/src/utils/formatDate";
 
 const CourseAccessSection = ({ course }: { course: any }) => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -43,6 +47,36 @@ const CourseAccessSection = ({ course }: { course: any }) => {
   const [reviewText, setReviewText] = useState("");
   const [userRating, setUserRating] = useState(0);
   const [questionText, setQuestionText] = useState("");
+
+  const [
+    addQuestion,
+    {
+      data: AddQuestionCourseData,
+      isLoading: isAddingQuestion,
+      isSuccess: isQuestionAdded,
+      error: questionError,
+    },
+  ] = useAddQuestionMutation();
+
+  console.log(AddQuestionCourseData);
+
+  useEffect(() => {
+    if (isQuestionAdded) {
+      setCurrentLesson(
+        AddQuestionCourseData?.course?.sections
+          .find((section: any) => section._id === currentSection._id)
+          ?.lessons.find((lesson: any) => lesson._id === currentLesson._id)
+      );
+      setQuestionText("");
+      toast.success("Question added successfully");
+    }
+    if (questionError) {
+      if ("data" in questionError) {
+        const errorMessage = questionError as any;
+        toast.error(errorMessage.data.message);
+      }
+    }
+  }, [isQuestionAdded, questionError]);
 
   // Dummy reviews data
   const [reviews, setReviews] = useState([
@@ -69,46 +103,14 @@ const CourseAccessSection = ({ course }: { course: any }) => {
     },
   ]);
 
-  // Dummy Q&A data
-  const [questions, setQuestions] = useState([
-    {
-      id: "1",
-      user: "Alex Thompson",
-      question: "What is the difference between CSS Grid and Flexbox?",
-      answer:
-        "CSS Grid is a two-dimensional layout system that works with rows and columns, while Flexbox is a one-dimensional layout system that works with either rows or columns.",
-      answeredBy: "John Doe (Instructor)",
-      date: "3 days ago",
-      answeredDate: "2 days ago",
-    },
-    {
-      id: "2",
-      user: "Maria Garcia",
-      question: "Can you explain the box model in more detail?",
-      answer:
-        "The CSS box model consists of content, padding, border, and margin. Content is the actual content of the element, padding is the space between content and border, border is the edge of the element, and margin is the space outside the border.",
-      answeredBy: "John Doe (Instructor)",
-      date: "1 week ago",
-      answeredDate: "1 week ago",
-    },
-    {
-      id: "3",
-      user: "David Kim",
-      question: "What's the best way to center a div?",
-      date: "2 days ago",
-    },
-  ]);
-
   const handleSubmitQuestion = () => {
     if (questionText.trim()) {
-      const newQuestion = {
-        id: Date.now().toString(),
-        user: "You",
+      addQuestion({
         question: questionText.trim(),
-        date: "Just now",
-      };
-      setQuestions([newQuestion, ...questions]);
-      setQuestionText("");
+        courseId: course._id,
+        sectionId: currentSection._id,
+        lessonId: currentLesson._id,
+      });
     }
   };
 
@@ -138,25 +140,6 @@ const CourseAccessSection = ({ course }: { course: any }) => {
     setCurrentLesson(course?.sections[0]?.lessons[0]);
     setCurrentSection(course?.sections[0]);
   }, [course]);
-
-  //   const getCurrentLessonData = () => {
-  //     for (const lesson of course?.sections[0]?.lessons) {
-  //       for (const section of lesson.sections) {
-  //         const found = section.lessons.find((l) => l.id === currentLesson);
-  //         if (found) return found;
-  //       }
-  //     }
-  //     return null;
-  //   };
-
-  //   const currentLessonData = getCurrentLessonData();
-  //   const currentSectionData = course?.sections.find(
-  //     (section: any) => section._id === currentSection
-  //   );
-
-  //   const currentLessonData = currentSectionData?.lessons.find(
-  //     (lesson: any) => lesson._id === currentLesson
-  //   );
 
   return (
     <div className="min-h-screen bg-background dark:bg-background-dark w-11/12 lg:w-11/12 2xl:w-5/6 mx-auto">
@@ -301,10 +284,14 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                       {/* Submit Button */}
                       <Button
                         onClick={handleSubmitQuestion}
-                        disabled={!questionText.trim()}
-                        className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={!questionText.trim() || isAddingQuestion}
+                        className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                       >
-                        Ask Question
+                        {isAddingQuestion ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          "Ask Question"
+                        )}
                       </Button>
                     </div>
 
@@ -320,10 +307,10 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                             <div className="mb-3">
                               <div className="flex items-center justify-between mb-2">
                                 <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {qa?.user}
+                                  {qa?.user?.name}
                                 </span>
                                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                                  {qa?.date}
+                                  {formatDate(qa?.createdAt)}
                                 </span>
                               </div>
                               <h4 className="font-medium text-gray-900 dark:text-white mb-2">
@@ -332,7 +319,7 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                             </div>
 
                             {/* Answer */}
-                            {qa?.answer ? (
+                            {qa?.questionReplies.length > 0 ? (
                               <div className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md">
                                 <div className="flex items-center justify-between mb-2">
                                   <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
@@ -349,7 +336,7 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                             ) : (
                               <div className="pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800/50 p-3 rounded-r-md">
                                 <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                                  Waiting for instructor response...
+                                  No answers yet...
                                 </p>
                               </div>
                             )}

@@ -15,7 +15,9 @@ const page = () => {
       {isLoading ? (
         <Spinner />
       ) : (
-        <CourseAccessSection course={course?.course} />
+        <>
+          <CourseAccessSection course={course?.course} />
+        </>
       )}
     </div>
   );

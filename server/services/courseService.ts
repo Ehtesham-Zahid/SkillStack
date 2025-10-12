@@ -144,6 +144,7 @@ export const addQuestion = async (
 ): Promise<ICourse | null> => {
   const { question, courseId, sectionId, lessonId } = data;
   const course: ICourse | null = await CourseModel.findById(courseId);
+
   if (!course) {
     throw new ErrorHandler("Course not found", 404);
   }
@@ -156,12 +157,16 @@ export const addQuestion = async (
     (item: any) => item._id.toString() === sectionId
   );
 
+  if (!section) {
+    throw new ErrorHandler("Section not found", 404);
+  }
+
   const lesson: ILesson | undefined = section?.lessons.find(
     (item: any) => item._id.toString() === lessonId
   );
 
-  if (!section) {
-    throw new ErrorHandler("Section not found", 404);
+  if (!lesson) {
+    throw new ErrorHandler("Lesson not found", 404);
   }
 
   //   Create a new question object
