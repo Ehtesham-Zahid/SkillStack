@@ -25,10 +25,14 @@ import {
   ChevronUp,
   ExternalLink,
   Loader2,
+  ShieldCheck,
 } from "lucide-react";
 import CoursePlayer from "@/src/components/shared/CoursePlayer";
 import { cn } from "@/lib/utils";
-import { useAddQuestionMutation } from "@/src/redux/features/course/courseApi";
+import {
+  useAddAnswerMutation,
+  useAddQuestionMutation,
+} from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
 import { formatDate } from "@/src/utils/formatDate";
 
@@ -47,6 +51,13 @@ const CourseAccessSection = ({ course }: { course: any }) => {
   const [reviewText, setReviewText] = useState("");
   const [userRating, setUserRating] = useState(0);
   const [questionText, setQuestionText] = useState("");
+  const [replyText, setReplyText] = useState("");
+  const [showReplies, setShowReplies] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [showReplyInput, setShowReplyInput] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const [
     addQuestion,
@@ -57,8 +68,35 @@ const CourseAccessSection = ({ course }: { course: any }) => {
       error: questionError,
     },
   ] = useAddQuestionMutation();
+  const [
+    addAnswer,
+    {
+      data: AddAnswerCourseData,
+      isLoading: isAddingAnswer,
+      isSuccess: isAnswerAdded,
+      error: answerError,
+    },
+  ] = useAddAnswerMutation();
 
   console.log(AddQuestionCourseData);
+
+  useEffect(() => {
+    if (isAnswerAdded) {
+      setCurrentLesson(
+        AddAnswerCourseData?.course?.sections
+          .find((section: any) => section._id === currentSection._id)
+          ?.lessons.find((lesson: any) => lesson._id === currentLesson._id)
+      );
+      setReplyText("");
+      toast.success("Answer added successfully");
+    }
+    if (answerError) {
+      if ("data" in answerError) {
+        const errorMessage = answerError as any;
+        toast.error(errorMessage.data.message);
+      }
+    }
+  }, [isAnswerAdded, answerError]);
 
   useEffect(() => {
     if (isQuestionAdded) {
@@ -113,6 +151,44 @@ const CourseAccessSection = ({ course }: { course: any }) => {
       });
     }
   };
+
+  const handleSubmitAnswer = (questionId: string) => {
+    if (replyText.trim()) {
+      addAnswer({
+        answer: replyText.trim(),
+        courseId: course._id,
+        sectionId: currentSection._id,
+        lessonId: currentLesson._id,
+        questionId: questionId,
+      });
+    }
+  };
+
+  const toggleShowReplies = (questionId: string) => {
+    setShowReplies((prev) => ({
+      ...prev,
+      [questionId]: !prev[questionId],
+    }));
+  };
+
+  const toggleReplyInput = (questionId: string) => {
+    setShowReplyInput((prev) => ({
+      ...prev,
+      [questionId]: !prev[questionId],
+    }));
+  };
+
+  //   const handleSubmitReply = (questionId: string) => {
+  //     if (replyText.trim()) {
+  //       // TODO: Implement add reply mutation
+  //       console.log("Submitting reply:", replyText, "for question:", questionId);
+  //       setReplyText("");
+  //       setShowReplyInput((prev) => ({
+  //         ...prev,
+  //         [questionId]: false,
+  //       }));
+  //     }
+  //   };
 
   const handleSubmitReview = () => {
     if (reviewText.trim() && userRating > 0) {
@@ -318,28 +394,152 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                               </h4>
                             </div>
 
-                            {/* Answer */}
-                            {qa?.questionReplies.length > 0 ? (
-                              <div className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md">
-                                <div className="flex items-center justify-between mb-2">
-                                  <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
-                                    {qa?.answeredBy}
-                                  </span>
-                                  <span className="text-xs text-orange-600 dark:text-orange-400">
-                                    {qa?.answeredDate}
-                                  </span>
+                            {/* Replies Section */}
+                            <div className="mt-3">
+                              {qa?.questionReplies.length > 0 ? (
+                                <div>
+                                  <button
+                                    onClick={() => toggleShowReplies(qa._id)}
+                                    className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-medium mb-2 flex items-center space-x-1"
+                                  >
+                                    <span>
+                                      {showReplies[qa._id] ? "Hide" : "Show"}{" "}
+                                      replies ({qa.questionReplies.length})
+                                    </span>
+                                    <ChevronDown
+                                      className={`h-3 w-3 transition-transform ${
+                                        showReplies[qa._id] ? "rotate-180" : ""
+                                      }`}
+                                    />
+                                  </button>
+
+                                  {showReplies[qa._id] && (
+                                    <div className="space-y-3">
+                                      {qa.questionReplies.map(
+                                        (reply: any, index: number) => (
+                                          <div
+                                            key={reply._id || index}
+                                            className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md"
+                                          >
+                                            <div className="flex items-center justify-between mb-2">
+                                              <span className="flex items-center  gap-2 text-sm font-medium text-orange-700 dark:text-orange-300">
+                                                {reply?.user?.name ||
+                                                  "Instructor"}{" "}
+                                                {reply?.user?.role ===
+                                                  "admin" && (
+                                                  <span className="text-xs text-orange-600 dark:text-orange-400">
+                                                    <ShieldCheck className="h-4 w-4" />
+                                                  </span>
+                                                )}
+                                              </span>
+
+                                              <span className="text-xs text-orange-600 dark:text-orange-400">
+                                                {formatDate(
+                                                  reply?.createdAt || ""
+                                                )}
+                                              </span>
+                                            </div>
+                                            <p className="text-sm text-gray-700 dark:text-gray-300">
+                                              {reply?.answer}
+                                            </p>
+                                          </div>
+                                        )
+                                      )}
+
+                                      {/* Add Reply Input */}
+                                      <div className="pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800/50 p-3 rounded-r-md">
+                                        <div className="mb-3">
+                                          <textarea
+                                            value={replyText}
+                                            onChange={(e) =>
+                                              setReplyText(e.target.value)
+                                            }
+                                            placeholder="Add a reply..."
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                                            rows={2}
+                                          />
+                                        </div>
+                                        <div className="flex space-x-2">
+                                          <Button
+                                            onClick={() =>
+                                              handleSubmitAnswer(qa._id)
+                                            }
+                                            disabled={
+                                              !replyText.trim() ||
+                                              isAddingAnswer
+                                            }
+                                            size="sm"
+                                            className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                          >
+                                            {isAddingAnswer ? (
+                                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            ) : (
+                                              "Reply"
+                                            )}
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
-                                <p className="text-sm text-gray-700 dark:text-gray-300">
-                                  {qa?.answer}
-                                </p>
-                              </div>
-                            ) : (
-                              <div className="pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800/50 p-3 rounded-r-md">
-                                <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                                  No answers yet...
-                                </p>
-                              </div>
-                            )}
+                              ) : (
+                                <div className="pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800/50 p-3 rounded-r-md">
+                                  <p className="text-sm text-gray-500 dark:text-gray-400 italic mb-3">
+                                    No replies yet...
+                                  </p>
+                                  {!showReplyInput[qa._id] ? (
+                                    <button
+                                      onClick={() => toggleReplyInput(qa._id)}
+                                      className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-medium"
+                                    >
+                                      Add Reply
+                                    </button>
+                                  ) : (
+                                    <div>
+                                      <div className="mb-3">
+                                        <textarea
+                                          value={replyText}
+                                          onChange={(e) =>
+                                            setReplyText(e.target.value)
+                                          }
+                                          placeholder="Add a reply..."
+                                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                                          rows={2}
+                                        />
+                                      </div>
+                                      <div className="flex space-x-2">
+                                        <Button
+                                          onClick={() =>
+                                            handleSubmitAnswer(qa._id)
+                                          }
+                                          disabled={
+                                            !replyText.trim() || isAddingAnswer
+                                          }
+                                          size="sm"
+                                          className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                          {isAddingAnswer ? (
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                          ) : (
+                                            "Reply"
+                                          )}
+                                        </Button>
+                                        <Button
+                                          onClick={() => {
+                                            setReplyText("");
+                                            toggleReplyInput(qa._id);
+                                          }}
+                                          size="sm"
+                                          className="border border-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                                        >
+                                          Cancel
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         ))
                       ) : (

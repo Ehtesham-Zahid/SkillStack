@@ -244,6 +244,7 @@ export const addAnswer = async (
   const newAnswer: any = {
     user: user,
     answer: answer,
+    createdAt: new Date().toISOString(),
   };
 
   //   add the answer to the question
