@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import {
   useAddAnswerMutation,
   useAddQuestionMutation,
+  useAddReviewMutation,
 } from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
 import { formatDate } from "@/src/utils/formatDate";
@@ -58,6 +59,7 @@ const CourseAccessSection = ({ course }: { course: any }) => {
   const [showReplyInput, setShowReplyInput] = useState<{
     [key: string]: boolean;
   }>({});
+  const [reviews, setReviews] = useState<any[]>(course?.reviews || []);
 
   const [
     addQuestion,
@@ -77,6 +79,16 @@ const CourseAccessSection = ({ course }: { course: any }) => {
       error: answerError,
     },
   ] = useAddAnswerMutation();
+
+  const [
+    addReview,
+    {
+      data: AddReviewCourseData,
+      isLoading: isAddingReview,
+      isSuccess: isReviewAdded,
+      error: reviewError,
+    },
+  ] = useAddReviewMutation();
 
   console.log(AddQuestionCourseData);
 
@@ -116,30 +128,20 @@ const CourseAccessSection = ({ course }: { course: any }) => {
     }
   }, [isQuestionAdded, questionError]);
 
-  // Dummy reviews data
-  const [reviews, setReviews] = useState([
-    {
-      id: "1",
-      user: "Sarah Johnson",
-      rating: 5,
-      text: "Excellent course! The explanations are clear and the examples are practical.",
-      date: "2 days ago",
-    },
-    {
-      id: "2",
-      user: "Mike Chen",
-      rating: 4,
-      text: "Great content and well-structured lessons. Would recommend to anyone learning CSS.",
-      date: "1 week ago",
-    },
-    {
-      id: "3",
-      user: "Emily Davis",
-      rating: 5,
-      text: "Perfect for beginners. The instructor explains everything step by step.",
-      date: "2 weeks ago",
-    },
-  ]);
+  useEffect(() => {
+    if (isReviewAdded) {
+      setReviews(AddReviewCourseData?.course?.reviews || []);
+      setReviewText("");
+      setUserRating(0);
+      toast.success("Review added successfully");
+    }
+    if (reviewError) {
+      if ("data" in reviewError) {
+        const errorMessage = reviewError as any;
+        toast.error(errorMessage.data.message);
+      }
+    }
+  }, [isReviewAdded, reviewError]);
 
   const handleSubmitQuestion = () => {
     if (questionText.trim()) {
@@ -164,6 +166,16 @@ const CourseAccessSection = ({ course }: { course: any }) => {
     }
   };
 
+  const handleSubmitReview = () => {
+    if (reviewText.trim() && userRating > 0) {
+      addReview({
+        review: reviewText.trim(),
+        courseId: course._id,
+        rating: userRating,
+      });
+    }
+  };
+
   const toggleShowReplies = (questionId: string) => {
     setShowReplies((prev) => ({
       ...prev,
@@ -176,33 +188,6 @@ const CourseAccessSection = ({ course }: { course: any }) => {
       ...prev,
       [questionId]: !prev[questionId],
     }));
-  };
-
-  //   const handleSubmitReply = (questionId: string) => {
-  //     if (replyText.trim()) {
-  //       // TODO: Implement add reply mutation
-  //       console.log("Submitting reply:", replyText, "for question:", questionId);
-  //       setReplyText("");
-  //       setShowReplyInput((prev) => ({
-  //         ...prev,
-  //         [questionId]: false,
-  //       }));
-  //     }
-  //   };
-
-  const handleSubmitReview = () => {
-    if (reviewText.trim() && userRating > 0) {
-      const newReview = {
-        id: Date.now().toString(),
-        user: "You",
-        rating: userRating,
-        text: reviewText.trim(),
-        date: "Just now",
-      };
-      setReviews([newReview, ...reviews]);
-      setReviewText("");
-      setUserRating(0);
-    }
   };
 
   const tabs = [
@@ -606,47 +591,63 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                       {/* Submit Button */}
                       <Button
                         onClick={handleSubmitReview}
-                        disabled={!reviewText.trim() || userRating === 0}
+                        disabled={
+                          !reviewText.trim() ||
+                          userRating === 0 ||
+                          isAddingReview
+                        }
                         className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Submit Review
+                        {isAddingReview ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          "Submit Review"
+                        )}
                       </Button>
                     </div>
 
                     {/* Reviews List */}
                     <div className="space-y-4">
-                      {reviews.map((review) => (
-                        <div
-                          key={review.id}
-                          className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center space-x-2">
-                              <div className="flex">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                  <Star
-                                    key={star}
-                                    className={`h-4 w-4 ${
-                                      star <= review.rating
-                                        ? "fill-yellow-400 text-yellow-400"
-                                        : "text-gray-300 dark:text-gray-600"
-                                    }`}
-                                  />
-                                ))}
+                      {reviews?.length > 0 ? (
+                        reviews?.map((review: any) => (
+                          <div
+                            key={review._id}
+                            className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center space-x-2">
+                                <div className="flex">
+                                  {[1, 2, 3, 4, 5].map((star: number) => (
+                                    <Star
+                                      key={star}
+                                      className={`h-4 w-4 ${
+                                        star <= review?.rating
+                                          ? "fill-yellow-400 text-yellow-400"
+                                          : "text-gray-300 dark:text-gray-600"
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {review.user?.name}
+                                </span>
                               </div>
-                              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                {review.user}
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {formatDate(review.createdAt)}
                               </span>
                             </div>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {review.date}
-                            </span>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                              {review.comment}
+                            </p>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            {review.text}
+                        ))
+                      ) : (
+                        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                            No reviews yet...
                           </p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 )}

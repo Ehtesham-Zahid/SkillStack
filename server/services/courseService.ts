@@ -304,13 +304,14 @@ export const addAnswer = async (
 interface IAddReviewData {
   review: string;
   rating: number;
+  courseId: string;
 }
 
 export const addReview = async (
   user: IUser,
-  data: IAddReviewData,
-  courseId: string
+  data: IAddReviewData
 ): Promise<ICourse | null> => {
+  const { rating, review, courseId }: IAddReviewData = data;
   const userCoursesList = user?.courses;
 
   console.log(userCoursesList);
@@ -326,8 +327,6 @@ export const addReview = async (
   if (!course) {
     throw new ErrorHandler("Course not found", 404);
   }
-
-  const { rating, review } = data as IAddReviewData;
 
   const reviewData: any = {
     user: user,

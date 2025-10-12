@@ -61,7 +61,7 @@ courseRouter.put(
 );
 
 courseRouter.put(
-  "/add-review/:id",
+  "/add-review",
   handleUpdateAccessToken,
   isAuthenticated,
   handleAddReview

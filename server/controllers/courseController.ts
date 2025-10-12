@@ -78,7 +78,7 @@ export const handleAddAnswer = asyncHandler(
 // Add Review to Course
 export const handleAddReview = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await addReview(req.user as IUser, req.body, req.params.id);
+    const course = await addReview(req.user as IUser, req.body);
     res.status(200).json({ success: true, course });
   }
 );
