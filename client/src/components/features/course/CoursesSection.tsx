@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/src/shadcn/ui/button";
 import { Input } from "@/src/shadcn/ui/input";
 import { Search, Filter } from "lucide-react";

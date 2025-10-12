@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/src/shadcn/ui/button";
 import { Card, CardContent } from "@/src/shadcn/ui/card";
 import { Badge } from "@/src/shadcn/ui/badge";
@@ -23,16 +23,22 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  ExternalLink,
 } from "lucide-react";
 import CoursePlayer from "@/src/components/shared/CoursePlayer";
 import { cn } from "@/lib/utils";
 
 const CourseAccessSection = ({ course }: { course: any }) => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [currentSection, setCurrentSection] = useState(course?.sections[0]);
-  const [currentLesson, setCurrentLesson] = useState(
+  const [currentSection, setCurrentSection] = useState<any>(
+    course?.sections[0]
+  );
+  const [currentLesson, setCurrentLesson] = useState<any>(
     course?.sections[0]?.lessons[0]
   );
+  console.log(currentLesson);
+  console.log(currentSection);
+  console.log(course);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [reviewText, setReviewText] = useState("");
   const [userRating, setUserRating] = useState(0);
@@ -128,6 +134,11 @@ const CourseAccessSection = ({ course }: { course: any }) => {
     { id: "reviews", label: "Reviews", icon: Star },
   ];
 
+  useEffect(() => {
+    setCurrentLesson(course?.sections[0]?.lessons[0]);
+    setCurrentSection(course?.sections[0]);
+  }, [course]);
+
   //   const getCurrentLessonData = () => {
   //     for (const lesson of course?.sections[0]?.lessons) {
   //       for (const section of lesson.sections) {
@@ -139,12 +150,13 @@ const CourseAccessSection = ({ course }: { course: any }) => {
   //   };
 
   //   const currentLessonData = getCurrentLessonData();
-  const currentSectionData = course?.sections.find(
-    (section: any) => section._id === currentSection
-  );
-  const currentLessonData = currentSectionData?.lessons.find(
-    (lesson: any) => lesson._id === currentLesson
-  );
+  //   const currentSectionData = course?.sections.find(
+  //     (section: any) => section._id === currentSection
+  //   );
+
+  //   const currentLessonData = currentSectionData?.lessons.find(
+  //     (lesson: any) => lesson._id === currentLesson
+  //   );
 
   return (
     <div className="min-h-screen bg-background dark:bg-background-dark w-11/12 lg:w-11/12 2xl:w-5/6 mx-auto">
@@ -226,26 +238,36 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                       Course Resources
                     </h3>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <FileText className="h-5 w-5 text-primary dark:text-primary-dark" />
-                          <span>CSS Cheat Sheet.pdf</span>
+                      {currentLesson?.links &&
+                      currentLesson.links.length > 0 ? (
+                        currentLesson.links.map((link: any) => (
+                          <div
+                            key={link._id}
+                            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <FileText className="h-5 w-5 text-primary dark:text-primary-dark" />
+                              <span className="text-gray-900 dark:text-white">
+                                {link.title}
+                              </span>
+                            </div>
+                            <Button
+                              size="sm"
+                              onClick={() => window.open(link.url, "_blank")}
+                              className="border border-primary dark:border-primary-dark bg-transparent text-primary dark:text-primary-dark hover:bg-primary hover:text-white dark:hover:bg-primary-dark dark:hover:text-white cursor-pointer"
+                            >
+                              <ExternalLink className="h-4 w-4 mr-2" />
+                              Open
+                            </Button>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                            No resources available for this lesson...
+                          </p>
                         </div>
-                        <Button size="sm" variant="outline">
-                          <Download className="h-4 w-4 mr-2" />
-                          Download
-                        </Button>
-                      </div>
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <FileText className="h-5 w-5 text-primary dark:text-primary-dark" />
-                          <span>Code Examples.zip</span>
-                        </div>
-                        <Button size="sm" variant="outline">
-                          <Download className="h-4 w-4 mr-2" />
-                          Download
-                        </Button>
-                      </div>
+                      )}
                     </div>
                   </div>
                 )}
