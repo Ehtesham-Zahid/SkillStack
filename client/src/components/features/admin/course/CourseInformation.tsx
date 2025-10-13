@@ -313,7 +313,7 @@ const CourseInformation = ({
               <FormItem>
                 {/* hidden input to keep it registered */}
                 <FormControl>
-                  <Input type="hidden" {...field} value={field.value.url} />
+                  <Input type="hidden" {...field} value={field.value?.url} />
                 </FormControl>
                 {/* this will show the error */}
                 <FormMessage />

@@ -10,6 +10,7 @@ const SearchInput = () => {
     router.push(`/courses?search=${searchQuery}`);
     setSearchQuery("");
   };
+
   return (
     <div className="flex w-full  sm:max-w-md mx-auto lg:mx-0 items-center gap-2">
       <input
