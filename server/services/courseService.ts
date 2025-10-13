@@ -391,6 +391,7 @@ export const addReplyToReview = async (
   const replyData: any = {
     user: user,
     comment: comment,
+    createdAt: new Date().toISOString(),
   };
 
   if (!review.commentReplies) {

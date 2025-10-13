@@ -33,11 +33,12 @@ import {
   useAddAnswerMutation,
   useAddQuestionMutation,
   useAddReviewMutation,
+  useAddReplyToReviewMutation,
 } from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
 import { formatDate } from "@/src/utils/formatDate";
 
-const CourseAccessSection = ({ course }: { course: any }) => {
+const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [currentSection, setCurrentSection] = useState<any>(
     course?.sections[0]
@@ -53,6 +54,9 @@ const CourseAccessSection = ({ course }: { course: any }) => {
   const [userRating, setUserRating] = useState(0);
   const [questionText, setQuestionText] = useState("");
   const [replyText, setReplyText] = useState("");
+  const [reviewReplyText, setReviewReplyText] = useState<{
+    [key: string]: string;
+  }>({});
   const [showReplies, setShowReplies] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -89,6 +93,16 @@ const CourseAccessSection = ({ course }: { course: any }) => {
       error: reviewError,
     },
   ] = useAddReviewMutation();
+
+  const [
+    addReplyToReview,
+    {
+      data: AddReplyToReviewData,
+      isLoading: isAddingReviewReply,
+      isSuccess: isReviewReplyAdded,
+      error: reviewReplyError,
+    },
+  ] = useAddReplyToReviewMutation();
 
   console.log(AddQuestionCourseData);
 
@@ -143,6 +157,26 @@ const CourseAccessSection = ({ course }: { course: any }) => {
     }
   }, [isReviewAdded, reviewError]);
 
+  useEffect(() => {
+    if (isReviewReplyAdded) {
+      setReviews(AddReplyToReviewData?.course?.reviews || []);
+      // clear text for the review that was replied to
+      const repliedReviewId = AddReplyToReviewData?.course?.reviews?.find(
+        (r: any) => (r.commentReplies || []).length > 0
+      )?._id;
+      if (repliedReviewId) {
+        setReviewReplyText((prev) => ({ ...prev, [repliedReviewId]: "" }));
+      }
+      toast.success("Reply added successfully");
+    }
+    if (reviewReplyError) {
+      if ("data" in reviewReplyError) {
+        const errorMessage = reviewReplyError as any;
+        toast.error(errorMessage.data.message);
+      }
+    }
+  }, [isReviewReplyAdded, reviewReplyError]);
+
   const handleSubmitQuestion = () => {
     if (questionText.trim()) {
       addQuestion({
@@ -172,6 +206,17 @@ const CourseAccessSection = ({ course }: { course: any }) => {
         review: reviewText.trim(),
         courseId: course._id,
         rating: userRating,
+      });
+    }
+  };
+
+  const handleSubmitReviewReply = (reviewId: string) => {
+    const text = (reviewReplyText[reviewId] || "").trim();
+    if (text) {
+      addReplyToReview({
+        comment: text,
+        courseId: course._id,
+        reviewId,
       });
     }
   };
@@ -639,6 +684,79 @@ const CourseAccessSection = ({ course }: { course: any }) => {
                             <p className="text-sm text-gray-600 dark:text-gray-300">
                               {review.comment}
                             </p>
+
+                            {/* Review Replies */}
+                            {review?.commentReplies &&
+                              review.commentReplies.length > 0 && (
+                                <div className="mt-3 space-y-3">
+                                  {review.commentReplies.map(
+                                    (rep: any, idx: number) => (
+                                      <div
+                                        key={rep._id || idx}
+                                        className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md"
+                                      >
+                                        <div className="flex items-center justify-between mb-2">
+                                          <span className="flex items-center gap-2 text-sm font-medium text-orange-700 dark:text-orange-300">
+                                            {rep?.user?.name || "Instructor"}
+                                            {rep?.user?.role === "admin" && (
+                                              <span className="text-xs text-orange-600 dark:text-orange-400">
+                                                <ShieldCheck className="h-4 w-4" />
+                                              </span>
+                                            )}
+                                          </span>
+                                          <span className="text-xs text-orange-600 dark:text-orange-400">
+                                            {formatDate(rep?.createdAt || "")}
+                                          </span>
+                                        </div>
+                                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                                          {rep?.comment}
+                                        </p>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              )}
+
+                            {user?.role === "admin" &&
+                              (!review?.commentReplies ||
+                                review.commentReplies.length === 0) && (
+                                <div className="mt-3 pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800/50 p-3 rounded-r-md">
+                                  <div className="mb-3">
+                                    <textarea
+                                      value={reviewReplyText[review._id] || ""}
+                                      onChange={(e) =>
+                                        setReviewReplyText((prev) => ({
+                                          ...prev,
+                                          [review._id]: e.target.value,
+                                        }))
+                                      }
+                                      placeholder="Add a reply to this review..."
+                                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                                      rows={2}
+                                    />
+                                  </div>
+                                  <div className="flex space-x-2">
+                                    <Button
+                                      onClick={() =>
+                                        handleSubmitReviewReply(review._id)
+                                      }
+                                      disabled={
+                                        !(
+                                          reviewReplyText[review._id] || ""
+                                        ).trim() || isAddingReviewReply
+                                      }
+                                      size="sm"
+                                      className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                      {isAddingReviewReply ? (
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                      ) : (
+                                        "Reply"
+                                      )}
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
                           </div>
                         ))
                       ) : (
