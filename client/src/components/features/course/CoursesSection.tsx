@@ -27,6 +27,7 @@ const CoursesSection = () => {
   console.log("categoriesData", categoriesData);
 
   // Create categories array with "All" category at the start
+
   const categories = categoriesData?.layout?.categories
     ? [
         { id: "all", title: "All" },
@@ -40,6 +41,7 @@ const CoursesSection = () => {
   console.log("categories", categories);
 
   // Filter courses based on category and search query
+  console.log("coursesData?.courses", coursesData?.courses);
   const filteredCourses = coursesData?.courses.filter((course: any) => {
     const matchesCategory =
       activeCategory === "All" ||
@@ -107,7 +109,7 @@ const CoursesSection = () => {
                           ? "default"
                           : "outline"
                       }
-                      className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
+                      className={`capitalize px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
                         activeCategory === category.title
                           ? "bg-primary text-white hover:bg-primary/90 dark:bg-primary-dark dark:hover:bg-primary-dark/90"
                           : "bg-surface dark:bg-surface-dark border-text2 dark:border-text2-dark text-text1 dark:text-text1-dark hover:bg-surface/80 dark:hover:bg-surface-dark/80 hover:border-primary/50 dark:hover:border-primary-dark/50"
