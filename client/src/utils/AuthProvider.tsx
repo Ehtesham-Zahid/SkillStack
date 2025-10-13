@@ -13,14 +13,17 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   const { user } = useSelector((state: any) => state.auth);
-  const { data } = useSession();
+  const { data, status } = useSession();
 
   const [socialAuth, { error, isSuccess, isError, isLoading }] =
     useSocialAuthMutation();
 
   useEffect(() => {
-    if (!user && data) {
-      console.log(data);
+    if (
+      !user &&
+      status === "authenticated" &&
+      !localStorage.getItem("socialSynced")
+    ) {
       const session = data as any;
       socialAuth({
         email: session.user?.email,
@@ -29,11 +32,13 @@ export default function AuthProvider({
         provider: session?.provider,
       });
     }
-  }, [user, data]);
+  }, [user, data, status]);
 
   useEffect(() => {
-    if (isSuccess) toast.success("Logged in successfully");
-    console.log("isSuccess", isSuccess);
+    if (isSuccess) {
+      localStorage.setItem("socialSynced", "true");
+      toast.success("Logged in successfully");
+    }
     if (isError && "data" in error) {
       toast.error((error as any)?.data?.message || "Something went wrong");
     }

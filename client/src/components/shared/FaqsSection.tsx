@@ -25,7 +25,9 @@ const FaqsSection = () => {
 
       <div className="mt-10 px-4">
         {isLoading ? (
-          <Spinner />
+          <div className="flex justify-center items-center h-full w-full my-20">
+            <Spinner fullPage={false} />
+          </div>
         ) : (
           <Accordion type="single" collapsible className="grid gap-4">
             {faqs.map((faq: any) => (

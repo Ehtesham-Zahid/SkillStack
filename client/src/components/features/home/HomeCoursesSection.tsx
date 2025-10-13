@@ -2,10 +2,15 @@ import CourseCard from "@/src/components/features/course/CourseCard";
 import Link from "next/link";
 import { Button } from "@/src/shadcn/ui/button";
 import { useGetAllCoursesQuery } from "@/src/redux/features/course/courseApi";
+import Spinner from "../../ui/Spinner";
 
 const HomeCoursesSection = () => {
   const { data, isLoading, isFetching } = useGetAllCoursesQuery();
-  return (
+  return isLoading ? (
+    <div className="flex justify-center items-center h-full w-full my-20">
+      <Spinner fullPage={false} />
+    </div>
+  ) : (
     <section className="overflow-hidden py-16 w-11/12  lg:w-11/12 2xl:w-5/6 mx-auto">
       <div className="text-center max-w-3xl mx-auto px-4">
         <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-text1 dark:text-text1-dark">
