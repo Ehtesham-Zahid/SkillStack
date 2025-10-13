@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/src/shadcn/ui/button";
 import { Input } from "@/src/shadcn/ui/input";
 import { Search, Filter } from "lucide-react";
@@ -8,10 +8,13 @@ import CourseCard from "./CourseCard";
 import { useGetLayoutByTypeQuery } from "@/src/redux/features/layout/layoutApi";
 import { useGetAllCoursesQuery } from "@/src/redux/features/course/courseApi";
 import Spinner from "@/src/components/ui/Spinner";
+import { useSearchParams } from "next/navigation";
 
 const CoursesSection = () => {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(search || "");
 
   const { data: categoriesData, isLoading: categoriesLoading } =
     useGetLayoutByTypeQuery({ type: "Categories" });
@@ -78,6 +81,11 @@ const CoursesSection = () => {
                   placeholder="Search courses..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setSearchQuery((e.target as HTMLInputElement).value);
+                    }
+                  }}
                   className="pl-10 pr-4 py-3 bg-surface dark:bg-surface-dark border border-text2 dark:border-text2-dark text-text1 dark:text-text1-dark placeholder:text-text2 dark:placeholder:text-text2-dark focus:border-primary dark:focus:border-primary-dark rounded-lg text-base transition-colors duration-200"
                 />
               </div>

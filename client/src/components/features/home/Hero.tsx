@@ -12,6 +12,7 @@ import animationData from "@/public/lotties/hero.json";
 const Hero = () => {
   const { data: bannerData, isLoading: bannerLoading } =
     useGetLayoutByTypeQuery({ type: "Banner" });
+
   return (
     <div className="w-11/12  lg:w-11/12 2xl:w-5/6 mx-auto grid grid-cols-1 lg:grid-cols-2 items-start my-10 2xl:my-16">
       <div className="flex flex-col gap-5 lg:gap-8  2xl:gap-10  ">
