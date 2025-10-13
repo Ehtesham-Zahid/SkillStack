@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { useLoadUserQuery } from "../redux/features/api/apiSlice";
 import AuthProvider from "../utils/AuthProvider";
+import ScrollToTop from "../hooks/ScrollToTop";
 
 export default function RootLayout({
   children,
@@ -28,7 +29,10 @@ export default function RootLayout({
             >
               {/* <Custom> */}
               <Toaster />
-              <AuthProvider>{children}</AuthProvider>
+              <AuthProvider>
+                <ScrollToTop />
+                {children}
+              </AuthProvider>
               {/* </Custom> */}
             </ThemeProvider>
           </SessionProvider>

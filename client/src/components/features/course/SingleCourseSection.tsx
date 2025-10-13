@@ -23,6 +23,7 @@ import {
   ChevronUp,
   UserCheck,
 } from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
 import { calculateDiscountPercentage } from "@/src/utils/calculatePercenatge";
 import CoursePlayer from "@/src/components/shared/CoursePlayer";
@@ -33,6 +34,7 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentDialog from "../payment/PaymentDialog";
+import { useSelector } from "react-redux";
 
 const SingleCourseSection = ({
   course,
@@ -43,6 +45,7 @@ const SingleCourseSection = ({
   stripePromise: any;
   clientSecret: string;
 }) => {
+  const { user } = useSelector((state: any) => state.auth);
   // Calculate discount percentage
   const discountPercentage =
     course?.discountedPrice > 0
@@ -55,7 +58,7 @@ const SingleCourseSection = ({
     { icon: FileText, text: "Certificate of completion" },
     { icon: Headphones, text: "Premium support" },
   ];
-
+  console.log(user);
   return (
     <div className="min-h-screen bg-background dark:bg-background-dark">
       <div className="w-11/12 lg:w-11/12 2xl:w-5/6 mx-auto py-8">
@@ -362,65 +365,79 @@ const SingleCourseSection = ({
               {/* Pricing */}
               <Card className="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary-dark/5 dark:to-primary-dark/10 border-primary/20 dark:border-primary-dark/20 shadow-lg">
                 <CardContent className="p-8">
-                  <div className="text-center space-y-6">
-                    {/* Price Section */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-center gap-3">
-                        {course.discountedPrice > 0 ? (
-                          <>
-                            <span className="text-5xl font-black text-text1 dark:text-text1-dark">
-                              ${course.discountedPrice}
-                            </span>
-                            <div className="flex flex-col items-start">
-                              <span className="text-lg text-text2 dark:text-text2-dark line-through">
-                                ${course.price}
+                  {user?.courses?.find(
+                    (courseItem: any) =>
+                      courseItem.courseId.toString() === course?._id
+                  ) ? (
+                    <Link
+                      href={`/course-access/${course?._id}`}
+                      className="w-full"
+                    >
+                      <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-600 dark:to-green-700 dark:hover:from-green-700 dark:hover:to-green-800 text-white py-6 text-xl font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-green-400 hover:border-green-500 dark:border-green-500 dark:hover:border-green-600 cursor-pointer">
+                        🎓 Access Course
+                      </Button>
+                    </Link>
+                  ) : (
+                    <div className="text-center space-y-6">
+                      {/* Price Section */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-center gap-3">
+                          {course.discountedPrice > 0 ? (
+                            <>
+                              <span className="text-5xl font-black text-text1 dark:text-text1-dark">
+                                ${course.discountedPrice}
                               </span>
-                              <Badge
-                                variant="destructive"
-                                className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 text-sm font-bold shadow-md"
-                              >
-                                {discountPercentage}% OFF
-                              </Badge>
-                            </div>
-                          </>
-                        ) : (
-                          <span className="text-5xl font-black text-text1 dark:text-text1-dark">
-                            ${course.price}
-                          </span>
-                        )}
+                              <div className="flex flex-col items-start">
+                                <span className="text-lg text-text2 dark:text-text2-dark line-through">
+                                  ${course.price}
+                                </span>
+                                <Badge
+                                  variant="destructive"
+                                  className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 text-sm font-bold shadow-md"
+                                >
+                                  {discountPercentage}% OFF
+                                </Badge>
+                              </div>
+                            </>
+                          ) : (
+                            <span className="text-5xl font-black text-text1 dark:text-text1-dark">
+                              ${course.price}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="text-center">
+                          <p className="text-text2 dark:text-text2-dark text-sm">
+                            One-time payment • Lifetime access
+                          </p>
+                        </div>
                       </div>
 
-                      <div className="text-center">
-                        <p className="text-text2 dark:text-text2-dark text-sm">
-                          One-time payment • Lifetime access
-                        </p>
+                      <PaymentDialog
+                        trigger={
+                          <Button className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 dark:from-primary-dark dark:to-primary-dark/80 dark:hover:from-primary-dark/90 dark:hover:to-primary-dark/70 text-white py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                            Buy Now
+                          </Button>
+                        }
+                        stripePromise={stripePromise}
+                        clientSecret={clientSecret}
+                        data={course}
+                      />
+
+                      {/* Trust Indicators */}
+                      <div className="flex items-center justify-center gap-4 pt-2">
+                        <div className="flex items-center gap-1 text-text2 dark:text-text2-dark text-xs">
+                          <Award className="h-3 w-3" />
+                          <span>30-day guarantee</span>
+                        </div>
+                        <div className="w-1 h-1 bg-text2/30 dark:bg-text2-dark/30 rounded-full"></div>
+                        <div className="flex items-center gap-1 text-text2 dark:text-text2-dark text-xs">
+                          <Headphones className="h-3 w-3" />
+                          <span>Support included</span>
+                        </div>
                       </div>
                     </div>
-
-                    <PaymentDialog
-                      trigger={
-                        <Button className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 dark:from-primary-dark dark:to-primary-dark/80 dark:hover:from-primary-dark/90 dark:hover:to-primary-dark/70 text-white py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-                          Buy Now
-                        </Button>
-                      }
-                      stripePromise={stripePromise}
-                      clientSecret={clientSecret}
-                      data={course}
-                    />
-
-                    {/* Trust Indicators */}
-                    <div className="flex items-center justify-center gap-4 pt-2">
-                      <div className="flex items-center gap-1 text-text2 dark:text-text2-dark text-xs">
-                        <Award className="h-3 w-3" />
-                        <span>30-day guarantee</span>
-                      </div>
-                      <div className="w-1 h-1 bg-text2/30 dark:bg-text2-dark/30 rounded-full"></div>
-                      <div className="flex items-center gap-1 text-text2 dark:text-text2-dark text-xs">
-                        <Headphones className="h-3 w-3" />
-                        <span>Support included</span>
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
 
