@@ -1,22 +1,39 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CourseCard from "../course/CourseCard";
 import { useSelector } from "react-redux";
 import { IoBook } from "react-icons/io5";
+import { useGetAllCoursesQuery } from "@/src/redux/features/course/courseApi";
 
 const EnrolledCourses = () => {
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
   const { user } = useSelector((state: any) => state.auth);
-  console.log(user);
+
+  const { data: coursesData, isLoading: coursesLoading } =
+    useGetAllCoursesQuery();
+
+  useEffect(() => {
+    if (coursesData && user?.courses && Array.isArray(user.courses)) {
+      const filteredCourses = user.courses
+        .map((userCourse: any) =>
+          coursesData.courses.find(
+            (course: any) => course._id === userCourse.courseId
+          )
+        )
+        .filter((course: any) => course !== undefined);
+      setEnrolledCourses(filteredCourses);
+    }
+  }, [coursesData, user?.courses]);
   return (
     <div className="w-full  h-full flex flex-col items-start justify-start">
       {/* <h1 className="text-4xl font-bold text-center mb-8">Enrolled Courses</h1> */}
 
-      {user?.courses?.length > 0 ? (
+      {enrolledCourses?.length > 0 ? (
         <div className="w-full gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-          {user?.courses?.map((course: any) => (
+          {enrolledCourses?.map((course: any) => (
             <CourseCard
               key={course._id}
-              id={course.courseId}
+              id={course._id}
               title={course?.name}
               author={"Ehtesham Zahid"}
               price={course?.price}
