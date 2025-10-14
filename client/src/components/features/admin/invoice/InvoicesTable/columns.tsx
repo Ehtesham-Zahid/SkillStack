@@ -5,19 +5,12 @@ import { formatDate } from "@/src/utils/formatDate";
 import { Badge } from "@/src/shadcn/ui/badge";
 import { MessageCircleCodeIcon } from "lucide-react";
 
-interface PaymentInfo {
-  name: string;
-  email: string;
-  courseName: string;
-  price: string;
-}
-
 // This type is used to define the shape of our data.
 export interface Order {
   _id: string;
-  courseId: string;
-  userId: string;
-  payment_info: PaymentInfo;
+  course: object;
+  user: object;
+  payment_info: object;
   createdAt: Date;
 }
 
@@ -33,38 +26,38 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
-    accessorKey: "payment_info.name",
+    accessorKey: "user.name",
     header: "Customer Name",
     cell: ({ row }) => {
-      const paymentInfo: PaymentInfo = row.getValue("payment_info");
-      const name: string = paymentInfo.name;
+      const user: object = row.getValue("user");
+      const name: string = user.name;
       return <div className="capitalize">{name || "N/A"}</div>;
     },
   },
   {
-    accessorKey: "payment_info.email",
+    accessorKey: "user.email",
     header: "Customer Email",
     cell: ({ row }) => {
-      const paymentInfo: PaymentInfo = row.getValue("payment_info");
-      const email: string = paymentInfo.email;
+      const user: object = row.getValue("user");
+      const email: string = user.email;
       return <div className="capitalize">{email || "N/A"}</div>;
     },
   },
   {
-    accessorKey: "payment_info.courseName",
+    accessorKey: "course.name",
     header: "Course Name",
     cell: ({ row }) => {
-      const paymentInfo: PaymentInfo = row.getValue("payment_info");
-      const courseName: string = paymentInfo.courseName;
+      const course: object = row.getValue("course");
+      const courseName: string = course.name;
       return <div className="capitalize">{courseName || "N/A"}</div>;
     },
   },
   {
-    accessorKey: "payment_info.price",
+    accessorKey: "course.price",
     header: "Price",
     cell: ({ row }) => {
-      const paymentInfo: PaymentInfo = row.getValue("payment_info");
-      const price: string = paymentInfo.price;
+      const course: object = row.getValue("course");
+      const price: string = course.price;
       return (
         <Badge className="bg-green-100 text-green-600 font-bold capitalize">
           ${price || "N/A"}
@@ -85,13 +78,10 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const user = row.original;
+      const user: object = row.getValue("user");
       return (
         <div className="flex gap-4 items-center">
-          <a
-            href={`mailto:${user.payment_info.email}`}
-            title={`Email ${user.payment_info.name}`}
-          >
+          <a href={`mailto:${user.email}`} title={`Email ${user.name}`}>
             <MessageCircleCodeIcon className="w-6 h-6 rounded-md p-1 dark:text-accent-dark text-accent dark:hover:bg-accent-dark/30 hover:bg-accent-dark/30 cursor-pointer" />
           </a>
         </div>

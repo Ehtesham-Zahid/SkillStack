@@ -37,9 +37,9 @@ export const createOrder = async (
   if (payment_info) {
     if ("id" in payment_info) {
       const paymentIntentId = payment_info.id;
-      const paymentIntent = await stripe(
-        process.env.STRIPE_SECRET_KEY
-      ).paymentIntents.retrieve(paymentIntentId);
+      const paymentIntent = await new stripe(
+        process.env.STRIPE_SECRET_KEY as string
+      ).paymentIntents.retrieve(paymentIntentId as string);
       if (paymentIntent.status !== "succeeded") {
         throw new ErrorHandler("Payment failed", 400);
       }
@@ -61,8 +61,8 @@ export const createOrder = async (
   }
 
   const orderData: any = {
-    courseId: courseId,
-    userId: user._id,
+    course: { courseId: course._id, name: course.name, price: course.price },
+    user: { userId: user._id, name: user.name, email: user.email },
     payment_info: payment_info || {},
   };
 
@@ -70,7 +70,7 @@ export const createOrder = async (
 
   const mailData = {
     order: {
-      _id: courseId.slice(0, 6),
+      _id: order._id.toString().slice(0, 6),
       name: course?.name,
       price: course?.price,
       date: new Date().toLocaleDateString("en-US", {

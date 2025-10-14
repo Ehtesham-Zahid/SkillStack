@@ -33,9 +33,7 @@ const CheckoutForm = ({ data }: { data: any }) => {
     },
   ] = useCreateOrderMutation();
   const [loadUser, setLoadUser] = useState<boolean>(false);
-  const {} = useLoadUserQuery({
-    skip: loadUser ? false : true,
-  });
+  const { refetch } = useLoadUserQuery(undefined, { skip: true });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: any) => {
@@ -75,18 +73,29 @@ const CheckoutForm = ({ data }: { data: any }) => {
     checkElementsReady();
   }, [stripe, elements]);
 
-  useEffect(() => {
-    if (orderData) {
-      setLoadUser(true);
-      redirect(`/course-access/${data?._id}`);
-    }
-    if (isCreateOrderError) {
-      if ("data" in createOrderError) {
-        const errorMessage = createOrderError as any;
-        toast.error(errorMessage.data.message || "Payment failed");
-      }
-    }
-  }, [isCreateOrderError, orderData]);
+  const fetchUser = async () => {
+    await refetch();
+  };
+
+  //   ---------------THIS SHIT Down below in not wokring, i think we can use rtk query onQueryStarted thing to solve this
+
+  //   useEffect(() => {
+  //     (async () => {
+  //       if (orderData) {
+  //         await fetchUser();
+  //         toast.success("Payment successful");
+  //         setTimeout(() => {
+  //           redirect(`/course-access/${data?._id}`);
+  //         }, 500);
+  //       }
+  //       if (isCreateOrderError) {
+  //         if ("data" in createOrderError) {
+  //           const errorMessage = createOrderError as any;
+  //           toast.error(errorMessage.data.message || "Payment failed");
+  //         }
+  //       }
+  //     })();
+  //   }, [isCreateOrderError, orderData]);
 
   return (
     <div className="space-y-4">
@@ -148,10 +157,16 @@ const CheckoutForm = ({ data }: { data: any }) => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading || !stripe || !elements || !isElementsReady}
+          disabled={
+            isLoading ||
+            isCreateOrderLoading ||
+            !stripe ||
+            !elements ||
+            !isElementsReady
+          }
           className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 dark:from-primary-dark dark:to-primary-dark/90 dark:hover:from-primary-dark/90 dark:hover:to-primary-dark/80 text-white py-3 px-4 rounded-xl font-bold text-base shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg flex items-center justify-center space-x-2 group"
         >
-          {isLoading ? (
+          {isLoading || isCreateOrderLoading ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
               <span>Processing...</span>
