@@ -6,13 +6,13 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVER_URL }),
   tagTypes: ["Users", "Courses", "Layout"],
   endpoints: (builder) => ({
-    refreshToken: builder.query({
-      query: () => ({
-        url: "/users/update-access-token",
-        method: "GET",
-        credentials: "include",
-      }),
-    }),
+    // refreshToken: builder.query({
+    //   query: () => ({
+    //     url: "/users/update-access-token",
+    //     method: "GET",
+    //     credentials: "include",
+    //   }),
+    // }),
     loadUser: builder.query({
       query: () => ({
         url: "/users/me",

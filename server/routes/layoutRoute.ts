@@ -25,11 +25,6 @@ layoutRouter.put(
   handleEditLayout
 );
 
-layoutRouter.get(
-  "/get-layout-by-type",
-  isAuthenticated,
-  authorizeRoles("admin"),
-  handleGetLayoutByType
-);
+layoutRouter.get("/get-layout-by-type", handleGetLayoutByType);
 
 export default layoutRouter;

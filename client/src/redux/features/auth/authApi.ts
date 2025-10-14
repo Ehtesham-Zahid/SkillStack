@@ -3,7 +3,6 @@ import {
   userRegistration,
   userLoggedIn,
   userLoggedOut,
-  setShowOtpDialog,
   setShowAuthDialog,
 } from "./authSlice";
 
@@ -101,6 +100,7 @@ export const authApi = apiSlice.injectEndpoints({
           await queryFulfilled;
           console.log("logged out");
           dispatch(userLoggedOut());
+          localStorage.removeItem("socialSynced");
         } catch (error) {
           console.log(error);
         }
