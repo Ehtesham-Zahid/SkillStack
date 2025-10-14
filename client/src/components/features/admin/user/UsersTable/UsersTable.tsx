@@ -27,6 +27,8 @@ import { PaginationEllipsis } from "@/src/shadcn/ui/pagination";
 import LimitSelector from "@/src/components/shared/LimitSelector";
 import Spinner from "@/src/components/ui/Spinner";
 import CustomTable from "../../common/Table";
+import DataCard from "../../common/DataCard";
+import { BookOpen, TrendingUp } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -62,6 +64,7 @@ const UsersTable = <TData, TValue>({
             Manage users and their roles.
           </p>
         </div>
+
         <CustomTable
           columns={columns}
           data={data}

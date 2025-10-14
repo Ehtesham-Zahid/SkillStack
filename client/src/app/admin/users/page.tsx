@@ -15,9 +15,7 @@ const page = () => {
   });
 
   console.log(data);
-  return isLoading ? (
-    <Spinner />
-  ) : (
+  return (
     <div className="w-11/12   mx-auto">
       <UsersTable
         columns={columns}

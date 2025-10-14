@@ -41,7 +41,6 @@ const AdminDashboardMain = () => {
     useGetOrdersAnalyticsQuery();
   const { data: coursesData, isLoading: coursesLoading } =
     useGetCoursesAnalyticsQuery();
-  console.log(usersData, ordersData, coursesData);
 
   const chartDataUsers = usersData?.users?.last12Months?.map((month: any) => ({
     month: month.month,
