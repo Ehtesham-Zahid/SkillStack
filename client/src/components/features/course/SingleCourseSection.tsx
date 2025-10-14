@@ -35,6 +35,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentDialog from "../payment/PaymentDialog";
 import { useSelector } from "react-redux";
+import Ratings from "@/src/components/shared/Ratings";
 
 const SingleCourseSection = ({
   course,
@@ -46,7 +47,6 @@ const SingleCourseSection = ({
   clientSecret: string;
 }) => {
   const { user } = useSelector((state: any) => state.auth);
-  console.log("USER", user);
   // Calculate discount percentage
   const discountPercentage =
     course?.discountedPrice > 0
@@ -74,17 +74,8 @@ const SingleCourseSection = ({
 
               <div className="flex flex-wrap items-center gap-6 text-sm">
                 <div className="flex items-center gap-2">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
-                  </div>
-                  <span className="font-semibold text-text1 dark:text-text1-dark">
-                    {course.ratings}
-                  </span>
+                  <Ratings rating={course.ratings} />
+
                   <span className="text-text2 dark:text-text2-dark">
                     ({course.reviews.length} Reviews)
                   </span>
