@@ -29,6 +29,7 @@ export const userApi = apiSlice.injectEndpoints({
           console.log(error);
         }
       },
+      invalidatesTags: ["Users"] as any,
     }),
     updateUserInfo: builder.mutation<any, UpdateUserInfoData>({
       query: (data) => ({
@@ -41,15 +42,12 @@ export const userApi = apiSlice.injectEndpoints({
         try {
           const result = await queryFulfilled;
           console.log(result.data);
-          dispatch(
-            setUser({
-              user: result.data.user,
-            })
-          );
+          dispatch(setUser(result.data.user));
         } catch (error) {
           console.log(error);
         }
       },
+      invalidatesTags: ["Users"] as any,
     }),
     updatePassword: builder.mutation({
       query: ({ oldPassword, newPassword }) => ({
