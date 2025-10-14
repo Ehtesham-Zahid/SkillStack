@@ -18,6 +18,7 @@ const page = () => {
     isLoading: isCourseLoading,
     isFetching,
   } = useGetSingleCourseQuery(id as string);
+  console.log("COURSE", course);
   const { data: config } = useGetStripePublishableKeyQuery();
   const [createPaymentIntent, { data: paymentIntentData }] =
     useNewPaymentMutation();

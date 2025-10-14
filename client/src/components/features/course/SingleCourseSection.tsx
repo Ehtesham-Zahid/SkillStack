@@ -46,6 +46,7 @@ const SingleCourseSection = ({
   clientSecret: string;
 }) => {
   const { user } = useSelector((state: any) => state.auth);
+  console.log("USER", user);
   // Calculate discount percentage
   const discountPercentage =
     course?.discountedPrice > 0

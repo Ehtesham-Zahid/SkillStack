@@ -39,6 +39,7 @@ const HomeCoursesSection = () => {
             accent="primary"
             thumbnailSrc={course.thumbnail.url}
             // authorAvatarSrc={course.instructor.avatar}
+            enrolled={false}
           />
         ))}
       </div>

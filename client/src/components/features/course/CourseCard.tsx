@@ -13,6 +13,7 @@ type CourseCardProps = {
   thumbnailSrc?: string;
   authorAvatarSrc?: string;
   accent?: "primary" | "success" | "accent";
+  enrolled?: boolean;
 };
 
 const CourseCard = ({
@@ -26,6 +27,7 @@ const CourseCard = ({
   thumbnailSrc = "/images/course-thumbnail.webp",
   authorAvatarSrc = "/images/user3.jpg",
   accent = "accent",
+  enrolled = false,
 }: CourseCardProps) => {
   const accentMap: Record<string, string> = {
     primary: "from-[var(--color-primary)]",
@@ -41,7 +43,7 @@ const CourseCard = ({
 
   return (
     <Link
-      href={`/courses/${id}`}
+      href={enrolled ? `/course-access/${id}` : `/courses/${id}`}
       className="group w-full rounded-xl overflow-hidden border dark:border-text2-dark border-text2 bg-surface dark:bg-surface-dark transition-all hover:shadow-lg"
     >
       <div className="relative">

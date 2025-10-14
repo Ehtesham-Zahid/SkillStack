@@ -16,7 +16,7 @@ const EnrolledCourses = () => {
           {user?.courses?.map((course: any) => (
             <CourseCard
               key={course._id}
-              id={course._id}
+              id={course.courseId}
               title={course?.name}
               author={"Ehtesham Zahid"}
               price={course?.price}
@@ -25,6 +25,7 @@ const EnrolledCourses = () => {
               rating={course?.ratings || 0}
               accent={"primary"}
               thumbnailSrc={course?.thumbnail?.url}
+              enrolled={true}
             />
           ))}
         </div>
