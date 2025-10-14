@@ -8,6 +8,7 @@ export const orderApi = apiSlice.injectEndpoints({
         method: "GET",
         credentials: "include",
       }),
+      providesTags: ["Orders"] as any,
     }),
     getStripePublishableKey: builder.query<any, void>({
       query: () => ({
@@ -31,6 +32,7 @@ export const orderApi = apiSlice.injectEndpoints({
         body: { courseId, payment_info: paymentInfo },
         credentials: "include",
       }),
+      invalidatesTags: ["Orders"] as any,
     }),
   }),
 });

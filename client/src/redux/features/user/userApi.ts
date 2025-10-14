@@ -1,6 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
 import { setUser } from "../auth/authSlice";
-// import { userRegistration } from "./profileSlice";
 
 type UpdateProfilePictureData = {
   avatar: string;
@@ -24,12 +23,8 @@ export const userApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
-          console.log(result.data);
-          dispatch(
-            setUser({
-              user: result.data.user,
-            })
-          );
+          console.log(result.data.user);
+          dispatch(setUser(result.data.user));
         } catch (error) {
           console.log(error);
         }

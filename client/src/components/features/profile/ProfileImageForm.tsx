@@ -11,6 +11,7 @@ import Spinner from "../../ui/Spinner";
 
 const ProfileImageForm = () => {
   const { user } = useSelector((state: any) => state.auth);
+  console.log("USER", user);
   const dispatch = useDispatch();
   const [avatar, setAvatar] = useState<string>("");
 
