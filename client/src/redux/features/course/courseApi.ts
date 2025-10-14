@@ -9,6 +9,7 @@ export const courseApi = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ["Courses"] as any,
     }),
     getAllCoursesAdmin: builder.query<any, { page: number; limit: string }>({
       query: ({ page, limit }) => ({
@@ -49,6 +50,7 @@ export const courseApi = apiSlice.injectEndpoints({
         method: "GET",
         credentials: "include",
       }),
+      providesTags: ["Course"] as any,
     }),
     getAllCourses: builder.query<any, void>({
       query: () => ({
@@ -56,6 +58,7 @@ export const courseApi = apiSlice.injectEndpoints({
         method: "GET",
         credentials: "include",
       }),
+      providesTags: ["Courses"] as any,
     }),
     getCourseWithContent: builder.query<any, string>({
       query: (id) => ({
@@ -63,6 +66,7 @@ export const courseApi = apiSlice.injectEndpoints({
         method: "GET",
         credentials: "include",
       }),
+      providesTags: ["Course"] as any,
     }),
     addQuestion: builder.mutation({
       query: (data) => ({
@@ -71,6 +75,7 @@ export const courseApi = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ["Course"] as any,
     }),
     addAnswer: builder.mutation({
       query: (data) => ({
@@ -79,6 +84,7 @@ export const courseApi = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ["Course"] as any,
     }),
     addReview: builder.mutation({
       query: (data) => ({
@@ -87,6 +93,7 @@ export const courseApi = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ["Course"] as any,
     }),
     addReplyToReview: builder.mutation({
       query: (data) => ({
@@ -95,6 +102,7 @@ export const courseApi = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
+      invalidatesTags: ["Course"] as any,
     }),
   }),
 });

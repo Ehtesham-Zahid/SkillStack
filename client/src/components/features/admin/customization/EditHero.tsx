@@ -1,19 +1,19 @@
 "use client";
-import { Input } from "@/src/shadcn/ui/input";
 import { useEffect, useState } from "react";
 import { Label } from "@/src/shadcn/ui/label";
 import { Separator } from "@/src/shadcn/ui/separator";
 import { Button } from "@/src/shadcn/ui/button";
 import Spinner from "@/src/components/ui/Spinner";
 import { Textarea } from "@/src/shadcn/ui/textarea";
-import { useGetLayoutByTypeQuery } from "@/src/redux/features/layout/layoutApi";
+import { useGetBannerLayoutQuery } from "@/src/redux/features/layout/layoutApi";
 import { useEditLayoutMutation } from "@/src/redux/features/layout/layoutApi";
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 
 const EditHero = () => {
   const { data: bannerData, isLoading: bannerLoading } =
-    useGetLayoutByTypeQuery({ type: "Banner" });
+    useGetBannerLayoutQuery();
+
   const [
     editLayout,
     {

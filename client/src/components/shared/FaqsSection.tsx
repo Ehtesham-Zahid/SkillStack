@@ -1,13 +1,11 @@
 "use client";
 import { Accordion } from "@/src/shadcn/ui/accordion";
 import FaqAccordian from "@/src/components/shared/FaqAccordian";
-import { useGetLayoutByTypeQuery } from "@/src/redux/features/layout/layoutApi";
+import { useGetFaqsLayoutQuery } from "@/src/redux/features/layout/layoutApi";
 import Spinner from "../ui/Spinner";
 
 const FaqsSection = () => {
-  const { data: faqsData, isLoading } = useGetLayoutByTypeQuery({
-    type: "Faqs",
-  });
+  const { data: faqsData, isLoading } = useGetFaqsLayoutQuery();
   const faqs = faqsData?.layout?.faq || [];
 
   return (

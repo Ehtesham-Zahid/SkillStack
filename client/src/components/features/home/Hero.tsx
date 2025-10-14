@@ -5,7 +5,7 @@ import { Button } from "@/src/shadcn/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/src/shadcn/ui/avatar";
 
 import SearchInput from "../../ui/SearchInput";
-import { useGetLayoutByTypeQuery } from "@/src/redux/features/layout/layoutApi";
+import { useGetBannerLayoutQuery } from "@/src/redux/features/layout/layoutApi";
 
 import animationData from "@/public/lotties/hero.json";
 import Link from "next/link";
@@ -13,7 +13,7 @@ import Spinner from "../../ui/Spinner";
 
 const Hero = () => {
   const { data: bannerData, isLoading: bannerLoading } =
-    useGetLayoutByTypeQuery({ type: "Banner" });
+    useGetBannerLayoutQuery();
 
   return bannerLoading ? (
     <Spinner />

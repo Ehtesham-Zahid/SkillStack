@@ -6,7 +6,7 @@ import { Separator } from "@/src/shadcn/ui/separator";
 import { Button } from "@/src/shadcn/ui/button";
 import Spinner from "@/src/components/ui/Spinner";
 import { Textarea } from "@/src/shadcn/ui/textarea";
-import { useGetLayoutByTypeQuery } from "@/src/redux/features/layout/layoutApi";
+import { useGetCategoriesLayoutQuery } from "@/src/redux/features/layout/layoutApi";
 import { useEditLayoutMutation } from "@/src/redux/features/layout/layoutApi";
 import { toast } from "react-hot-toast";
 import { DeleteIcon, Loader2, Trash2Icon } from "lucide-react";
@@ -16,9 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const EditCategories = () => {
   const { data: categoriesData, isLoading: categoriesLoading } =
-    useGetLayoutByTypeQuery({
-      type: "Categories",
-    });
+    useGetCategoriesLayoutQuery();
   const [
     editLayout,
     {

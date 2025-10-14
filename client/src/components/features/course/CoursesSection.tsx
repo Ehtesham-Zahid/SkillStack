@@ -5,7 +5,7 @@ import { Button } from "@/src/shadcn/ui/button";
 import { Input } from "@/src/shadcn/ui/input";
 import { Search, Filter } from "lucide-react";
 import CourseCard from "./CourseCard";
-import { useGetLayoutByTypeQuery } from "@/src/redux/features/layout/layoutApi";
+import { useGetCategoriesLayoutQuery } from "@/src/redux/features/layout/layoutApi";
 import { useGetAllCoursesQuery } from "@/src/redux/features/course/courseApi";
 import Spinner from "@/src/components/ui/Spinner";
 import { useSearchParams } from "next/navigation";
@@ -17,7 +17,7 @@ const CoursesSection = () => {
   const [searchQuery, setSearchQuery] = useState(search || "");
 
   const { data: categoriesData, isLoading: categoriesLoading } =
-    useGetLayoutByTypeQuery({ type: "Categories" });
+    useGetCategoriesLayoutQuery();
 
   const { data: coursesData, isLoading: coursesLoading } =
     useGetAllCoursesQuery();

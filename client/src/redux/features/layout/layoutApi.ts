@@ -2,14 +2,29 @@ import { apiSlice } from "@/src/redux/features/api/apiSlice";
 
 export const layoutApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getLayoutByType: builder.query<any, { type: string }>({
-      query: ({ type }) => ({
-        url: `/layouts/get-layout-by-type?type=${type}`,
+    getBannerLayout: builder.query<any, void>({
+      query: () => ({
+        url: `/layouts/get-layout-by-type?type=Banner`,
         method: "GET",
         credentials: "include",
       }),
       providesTags: ["Layout"] as any,
-      keepUnusedDataFor: 0,
+    }),
+    getFaqsLayout: builder.query<any, void>({
+      query: () => ({
+        url: `/layouts/get-layout-by-type?type=Faqs`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Layout"] as any,
+    }),
+    getCategoriesLayout: builder.query<any, void>({
+      query: () => ({
+        url: `/layouts/get-layout-by-type?type=Categories`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Layout"] as any,
     }),
     editLayout: builder.mutation<any, any>({
       query: (data) => ({
@@ -23,4 +38,9 @@ export const layoutApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetLayoutByTypeQuery, useEditLayoutMutation } = layoutApi;
+export const {
+  useGetBannerLayoutQuery,
+  useEditLayoutMutation,
+  useGetFaqsLayoutQuery,
+  useGetCategoriesLayoutQuery,
+} = layoutApi;
