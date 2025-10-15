@@ -253,24 +253,13 @@ export const addAnswer = async (
   //   update the course content
   await course?.save();
 
-  //   if (user?._id === question.user._id) {
-  //     await NotificationModel.create({
-  //       userId: user._id,
-  //       title: "New Question Reply Received",
-  //       message: `${user.name} has replied to your question in ${courseContent.title}.`,
-  //     });
-  //   } else {
-  //     const data = {
-  //       name: question.user.name,
-  //       title: courseContent.title,
-  //       courseId: courseId,
-  //       sectionId: sectionId,
-  //       questionId: questionId,
-  //       viewLink: `${process.env.FRONTEND_URL}/course/${courseId}`,
-  //       questionText: question.question,
-  //       answerText: answer,
-  //       replierName: user.name,
-  //     };
+  // if (user?._id !== question.user._id) {
+  await NotificationModel.create({
+    userId: user._id,
+    title: "New Question Reply Received",
+    message: `${user.name} has replied to question in ${section?.title} - ${lesson?.title}.`,
+  });
+  // }
 
   if (user?._id !== question.user._id) {
     const data = {
@@ -293,7 +282,7 @@ export const addAnswer = async (
 
     await sendMail({
       to: question.user.email,
-      subject: "New Answer to your question",
+      subject: "Your Question Has Been Answered - Learneazy LMS",
       html,
     });
   }
