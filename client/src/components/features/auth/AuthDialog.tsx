@@ -13,8 +13,9 @@ import {
 } from "@/src/shadcn/ui/dialog";
 import AuthForm from "./AuthForm";
 import { setShowAuthDialog } from "../../../redux/features/auth/authSlice";
+import { Button } from "@/src/shadcn/ui/button";
 
-const AuthDialog = () => {
+const AuthDialog = ({ singleCourse = false }: { singleCourse?: boolean }) => {
   const { showAuthDialog } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
@@ -25,9 +26,15 @@ const AuthDialog = () => {
     >
       <form>
         <DialogTrigger asChild>
-          <div className=" items-center justify-center cursor-pointer lg:flex hidden">
-            <UserCircle2Icon size={26} />
-          </div>
+          {singleCourse ? (
+            <Button className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 dark:from-primary-dark dark:to-primary-dark/80 dark:hover:from-primary-dark/90 dark:hover:to-primary-dark/70 text-white py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+              Sign in to continue
+            </Button>
+          ) : (
+            <div className=" items-center justify-center cursor-pointer lg:flex hidden">
+              <UserCircle2Icon size={26} />
+            </div>
+          )}
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] bg-surface dark:bg-surface-dark border-text2 dark:border-text2-dark">
           <DialogHeader className=" mb-2">

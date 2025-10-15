@@ -36,6 +36,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import PaymentDialog from "../payment/PaymentDialog";
 import { useSelector } from "react-redux";
 import Ratings from "@/src/components/shared/Ratings";
+import AuthDialog from "../auth/AuthDialog";
 
 const SingleCourseSection = ({
   course,
@@ -405,16 +406,20 @@ const SingleCourseSection = ({
                         </div>
                       </div>
 
-                      <PaymentDialog
-                        trigger={
-                          <Button className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 dark:from-primary-dark dark:to-primary-dark/80 dark:hover:from-primary-dark/90 dark:hover:to-primary-dark/70 text-white py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-                            Buy Now
-                          </Button>
-                        }
-                        stripePromise={stripePromise}
-                        clientSecret={clientSecret}
-                        data={course}
-                      />
+                      {user ? (
+                        <PaymentDialog
+                          trigger={
+                            <Button className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 dark:from-primary-dark dark:to-primary-dark/80 dark:hover:from-primary-dark/90 dark:hover:to-primary-dark/70 text-white py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                              Buy Now
+                            </Button>
+                          }
+                          stripePromise={stripePromise}
+                          clientSecret={clientSecret}
+                          data={course}
+                        />
+                      ) : (
+                        <AuthDialog singleCourse={true} />
+                      )}
 
                       {/* Trust Indicators */}
                       <div className="flex items-center justify-center gap-4 pt-2">
