@@ -6,7 +6,6 @@ import {
 } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { useCreateOrderMutation } from "@/src/redux/features/order/orderApi";
-import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
 import { redirect } from "next/navigation";
 import { toast } from "react-hot-toast";
 import {
@@ -16,6 +15,7 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
+import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
 
 const CheckoutForm = ({ data }: { data: any }) => {
   const stripe = useStripe();
@@ -32,10 +32,8 @@ const CheckoutForm = ({ data }: { data: any }) => {
       error: createOrderError,
     },
   ] = useCreateOrderMutation();
-  const [loadUser, setLoadUser] = useState<boolean>(false);
-  const { refetch } = useLoadUserQuery(undefined, { skip: true });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const { data: userData, refetch } = useLoadUserQuery(undefined, {});
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     if (!stripe || !elements) {
@@ -73,29 +71,21 @@ const CheckoutForm = ({ data }: { data: any }) => {
     checkElementsReady();
   }, [stripe, elements]);
 
-  const fetchUser = async () => {
-    await refetch();
-  };
-
-  //   ---------------THIS SHIT Down below in not wokring, i think we can use rtk query onQueryStarted thing to solve this
-
-  //   useEffect(() => {
-  //     (async () => {
-  //       if (orderData) {
-  //         await fetchUser();
-  //         toast.success("Payment successful");
-  //         setTimeout(() => {
-  //           redirect(`/course-access/${data?._id}`);
-  //         }, 500);
-  //       }
-  //       if (isCreateOrderError) {
-  //         if ("data" in createOrderError) {
-  //           const errorMessage = createOrderError as any;
-  //           toast.error(errorMessage.data.message || "Payment failed");
-  //         }
-  //       }
-  //     })();
-  //   }, [isCreateOrderError, orderData]);
+  useEffect(() => {
+    if (orderData) {
+      refetch();
+      toast.success("Payment successful");
+      setTimeout(() => {
+        redirect(`/course-access/${data?._id}`);
+      }, 500);
+    }
+    if (isCreateOrderError) {
+      if ("data" in createOrderError) {
+        const errorMessage = createOrderError as any;
+        toast.error(errorMessage.data.message || "Payment failed");
+      }
+    }
+  }, [isCreateOrderError, orderData]);
 
   return (
     <div className="space-y-4">

@@ -13,7 +13,7 @@ const page = () => {
     id as string
   );
 
-  const { data: user } = useLoadUserQuery({});
+  const { data: user } = useLoadUserQuery(undefined, {});
   console.log(user);
 
   useEffect(() => {
