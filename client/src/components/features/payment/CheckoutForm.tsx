@@ -17,6 +17,14 @@ import {
 } from "lucide-react";
 import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
 
+import socketIO from "socket.io-client";
+const ENDPOINT =
+  process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || "http://localhost:5000";
+
+const socketId = socketIO(ENDPOINT, {
+  transports: ["websocket"],
+});
+
 const CheckoutForm = ({ data }: { data: any }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -74,6 +82,11 @@ const CheckoutForm = ({ data }: { data: any }) => {
   useEffect(() => {
     if (orderData) {
       refetch();
+      socketId.emit("notification", {
+        title: "New Order",
+        message: `You have a new order from ${data.name}`,
+        userId: userData?._id,
+      });
       toast.success("Payment successful");
       setTimeout(() => {
         redirect(`/course-access/${data?._id}`);

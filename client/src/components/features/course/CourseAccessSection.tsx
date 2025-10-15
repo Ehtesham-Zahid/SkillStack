@@ -37,6 +37,13 @@ import {
 } from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
 import { formatDate } from "@/src/utils/formatDate";
+import socketIO from "socket.io-client";
+import { useSelector } from "react-redux";
+const ENDPOINT =
+  process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || "http://localhost:5000";
+const socketId = socketIO(ENDPOINT, {
+  transports: ["websocket"],
+});
 
 const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -115,6 +122,13 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
       );
       setReplyText("");
       toast.success("Answer added successfully");
+      if (user.role !== "admin") {
+        socketId.emit("notification", {
+          title: "New Reply Received",
+          message: `You have a new question reply in ${currentLesson?.title}`,
+          userId: user?._id,
+        });
+      }
     }
     if (answerError) {
       if ("data" in answerError) {
@@ -132,7 +146,18 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
           ?.lessons.find((lesson: any) => lesson._id === currentLesson._id)
       );
       setQuestionText("");
+
       toast.success("Question added successfully");
+
+      let lesson = AddQuestionCourseData?.course?.sections
+        .find((section: any) => section._id === currentSection._id)
+        ?.lessons.find((lesson: any) => lesson._id === currentLesson._id);
+
+      socketId.emit("notification", {
+        title: "New Question",
+        message: `You have a new question in ${lesson?.title}`,
+        userId: user?._id,
+      });
     }
     if (questionError) {
       if ("data" in questionError) {
@@ -148,6 +173,11 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
       setReviewText("");
       setUserRating(0);
       toast.success("Review added successfully");
+      socketId.emit("notification", {
+        title: "New Review",
+        message: `You have a new review in ${course?.name}`,
+        userId: user?._id,
+      });
     }
     if (reviewError) {
       if ("data" in reviewError) {

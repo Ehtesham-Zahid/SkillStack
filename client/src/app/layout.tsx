@@ -10,12 +10,25 @@ import { SessionProvider } from "next-auth/react";
 import { useLoadUserQuery } from "../redux/features/api/apiSlice";
 import AuthProvider from "../utils/AuthProvider";
 import ScrollToTop from "../hooks/ScrollToTop";
+import { useEffect } from "react";
+import socketIO from "socket.io-client";
+const ENDPOINT =
+  process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || "http://localhost:5000";
+const socketId = socketIO(ENDPOINT, {
+  transports: ["websocket"],
+});
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    socketId.on("newNotification", (data: any) => {
+      console.log(data);
+    });
+  }, []);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased bg-background dark:bg-background-dark`}>
