@@ -29,50 +29,39 @@ export const createOrder = async (
   userId: string
 ): Promise<ICourse> => {
   const user = await UserModel.findById(userId);
-  if (!user) {
-    throw new ErrorHandler("User not found", 404);
-  }
-  const { courseId, payment_info = {} } = data as ICreateOrderData;
+  if (!user) throw new ErrorHandler("User not found", 404);
 
-  if (payment_info) {
-    if ("id" in payment_info) {
-      const paymentIntentId = payment_info.id;
-      const paymentIntent = await new stripe(
-        process.env.STRIPE_SECRET_KEY as string
-      ).paymentIntents.retrieve(paymentIntentId as string);
-      if (paymentIntent.status !== "succeeded") {
-        throw new ErrorHandler("Payment failed", 400);
-      }
+  const { courseId, payment_info = {} } = data;
+
+  if (payment_info && "id" in payment_info) {
+    const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY as string);
+    const paymentIntent = await stripeClient.paymentIntents.retrieve(
+      payment_info.id
+    );
+    if (paymentIntent.status !== "succeeded") {
+      throw new ErrorHandler("Payment failed", 400);
     }
   }
 
-  const courseExistInUser = user.courses.some(
-    (course: any) => course.courseId.toString() === courseId
-  );
-
-  if (courseExistInUser) {
+  if (user.courses.some((c) => c.courseId.toString() === courseId)) {
     throw new ErrorHandler("You have already enrolled in this course", 400);
   }
 
   const course = await CourseModel.findById(courseId);
+  if (!course) throw new ErrorHandler("Course not found", 404);
 
-  if (!course) {
-    throw new ErrorHandler("Course not found", 404);
-  }
-
-  const orderData: any = {
+  const order = await OrderModel.create({
     course: { courseId: course._id, name: course.name, price: course.price },
     user: { userId: user._id, name: user.name, email: user.email },
-    payment_info: payment_info || {},
-  };
+    payment_info,
+  });
 
-  const order = await OrderModel.create(orderData);
-
+  // send confirmation email
   const mailData = {
     order: {
       _id: order._id.toString().slice(0, 6),
-      name: course?.name,
-      price: course?.price,
+      name: course.name,
+      price: course.price,
       date: new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -85,38 +74,24 @@ export const createOrder = async (
     path.join(__dirname, "./mails/order-confirmation.ejs"),
     { data: mailData }
   );
+  await sendMail({ to: user.email, subject: "Order Confirmation", html });
 
-  await sendMail({
-    to: user.email,
-    subject: "Order Confirmation",
-    html,
-  });
-
-  user.courses.push({ courseId: courseId });
-  await redis.set(user._id as string, JSON.stringify(user) as any);
+  user.courses.push({ courseId });
   await user.save();
 
   await NotificationModel.create({
     userId: user._id,
     title: "New Order",
-    message: `${user.name} has purchased the course ${course?.name}.`,
+    message: `${user.name} purchased ${course.name}.`,
   });
 
   if (course.purchased !== undefined) course.purchased += 1;
-
   await course.save();
-  await redis.set(course._id as string, JSON.stringify(course) as any);
 
-  // Update the specific course in allCourses cache
-  const allCoursesCache = await redis.get("allCourses");
-  if (allCoursesCache) {
-    const allCourses = JSON.parse(allCoursesCache);
-    const courseIndex = allCourses.findIndex((c: any) => c._id === course._id);
-    if (courseIndex !== -1) {
-      allCourses[courseIndex] = course;
-      await redis.set("allCourses", JSON.stringify(allCourses));
-    }
-  }
+  // 🔥 Invalidate caches
+  await redis.del("allCourses"); // course list
+  await redis.del(courseId); // single course cache
+  await redis.del(userId); // cached user info if applicable
 
   return course;
 };

@@ -37,7 +37,7 @@ const createActivationToken = (user: IRegistrationBody): IActivationToken => {
     },
     process.env.ACTIVATION_SECRET as Secret,
     {
-      expiresIn: "5m",
+      expiresIn: "10m",
     }
   );
 
@@ -237,7 +237,13 @@ export const updatePassword = async (
   user.password = newPassword;
   await user.save();
 
-  await redis.set(userId as string, JSON.stringify(user as IUser));
+  await redis.del(userId);
+  await redis.set(
+    userId as string,
+    JSON.stringify(user as IUser),
+    "EX",
+    604800
+  ); // 7days
 
   return user as IUser;
 };
@@ -262,7 +268,13 @@ export const updateUserInfo = async (
 
   await user?.save();
 
-  await redis.set(user._id as string, JSON.stringify(user as IUser));
+  await redis.del(userId);
+  await redis.set(
+    user._id as string,
+    JSON.stringify(user as IUser),
+    "EX",
+    604800
+  ); // 7days
 
   return user as IUser;
 };
@@ -303,7 +315,13 @@ export const updateProfilePicture = async (
   console.log(user);
   await user?.save();
 
-  await redis.set(user._id as string, JSON.stringify(user as IUser));
+  await redis.del(user._id as string);
+  await redis.set(
+    user._id as string,
+    JSON.stringify(user as IUser),
+    "EX",
+    604800
+  ); // 7days
 
   return user as IUser;
 };
@@ -391,7 +409,13 @@ export const updateUserRole = async (userData: IUpdateUserRoleBody) => {
   if (!user) {
     throw new ErrorHandler("User not found", 404);
   }
-  await redis.set(user._id as string, JSON.stringify(user as IUser));
+  await redis.del(user._id as string);
+  await redis.set(
+    user._id as string,
+    JSON.stringify(user as IUser),
+    "EX",
+    604800
+  ); // 7days
   return user;
 };
 

@@ -34,6 +34,7 @@ export const createCourse = async (data: any): Promise<ICourse> => {
     };
   }
   const course = await CourseModel.create(data);
+  await redis.del("allCourses"); // refresh all courses
   return course;
 };
 
@@ -60,6 +61,8 @@ export const editCourse = async (
     { new: true }
   );
   if (!course) throw new ErrorHandler("Course not found", 404);
+  await redis.del(courseId);
+  await redis.del("allCourses");
   return course;
 };
 
@@ -188,6 +191,9 @@ export const addQuestion = async (
   //   update the course
   await course?.save();
 
+  await redis.del(courseId);
+  await redis.del("allCourses");
+
   return course;
 };
 
@@ -252,6 +258,9 @@ export const addAnswer = async (
 
   //   update the course content
   await course?.save();
+
+  await redis.del(courseId);
+  await redis.del("allCourses");
 
   // if (user?._id !== question.user._id) {
   await NotificationModel.create({
@@ -336,6 +345,9 @@ export const addReview = async (
 
   await course.save();
 
+  await redis.del(courseId);
+  await redis.del("allCourses");
+
   const notification = {
     title: "New Review Received",
     message: `${user.name} has reviewed your course ${course.name}.`,
@@ -391,6 +403,9 @@ export const addReplyToReview = async (
 
   await course?.save();
 
+  await redis.del(courseId);
+  await redis.del("allCourses");
+
   return course;
 };
 
@@ -414,19 +429,15 @@ export const getAllCoursesAdmin = async (
 // Delete Course --- Admin
 export const deleteCourse = async (courseId: string) => {
   const course = await CourseModel.findById(courseId);
+
   if (!course) {
     throw new ErrorHandler("Course not found", 404);
   }
-  await course.deleteOne();
-  await redis.del(courseId as string);
 
-  // Delete the specific course in allCourses cache
-  const allCoursesCache = await redis.get("allCourses");
-  if (allCoursesCache) {
-    const allCourses = JSON.parse(allCoursesCache);
-    const filteredCourses = allCourses.filter((c: any) => c._id !== courseId);
-    await redis.set("allCourses", JSON.stringify(filteredCourses));
-  }
+  await course.deleteOne();
+
+  await redis.del(courseId);
+  await redis.del("allCourses");
 };
 
 // Generate Video URL
