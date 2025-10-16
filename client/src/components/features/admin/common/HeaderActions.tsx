@@ -34,7 +34,7 @@ const HeaderActions = () => {
   const [notifications, setNotifications] = useState<any>([]);
   const [open, setOpen] = useState(false);
 
-  const [audio] = useState(new Audio("/sounds/notification.mp3"));
+  const [audio] = useState(new Audio("/audios/notification.mp3"));
 
   const playNotificationSound = () => {
     audio.play();
