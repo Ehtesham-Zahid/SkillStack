@@ -100,6 +100,9 @@ export const handleUpdateAccessToken = asyncHandler(
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
     req.user = user as IUser;
 
+    req.cookies.accessToken = accessToken;
+    req.cookies.refreshToken = refreshToken;
+
     console.log(
       "---------------------UPDATE ACCESS TOKEN---------------------"
     );

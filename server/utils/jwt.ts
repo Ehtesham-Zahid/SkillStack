@@ -18,7 +18,12 @@ export const sendToken = async (user: IUser) => {
   const refreshToken = user.signRefreshToken();
 
   //   upload session to redis
-  await redis.set(user._id as string, JSON.stringify(user) as any);
+  await redis.set(
+    user._id as string,
+    JSON.stringify(user) as any,
+    "EX",
+    604800
+  ); // 7days
 
   //   options for cookies
   const accessTokenOptions: ITokenOptions = {
