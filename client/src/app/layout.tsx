@@ -24,9 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   useEffect(() => {
-    socketId.on("newNotification", (data: any) => {
-      console.log(data);
-    });
+    socketId.on("newNotification", (data: any) => {});
   }, []);
 
   return (

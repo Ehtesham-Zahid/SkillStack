@@ -42,8 +42,6 @@ const ChangePasswordForm = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
-
     await updatePassword({
       oldPassword: data.oldPassword,
       newPassword: data.password,

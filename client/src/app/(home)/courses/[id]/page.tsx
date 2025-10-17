@@ -18,7 +18,6 @@ const page = () => {
     isLoading: isCourseLoading,
     isFetching,
   } = useGetSingleCourseQuery(id as string);
-  console.log("COURSE", course);
   const { data: config } = useGetStripePublishableKeyQuery();
   const [createPaymentIntent, { data: paymentIntentData }] =
     useNewPaymentMutation();
@@ -28,21 +27,16 @@ const page = () => {
   useEffect(() => {
     if (config) {
       const publishablekey = config?.key;
-      console.log("Stripe config loaded:", config);
-      console.log("Publishable key:", publishablekey);
       setStripePromise(loadStripe(publishablekey));
     }
     if (course) {
       const amount = Math.round(course.course.price * 100);
-      console.log("Creating payment intent for amount:", amount);
       createPaymentIntent({ amount });
     }
   }, [config, course]);
 
   useEffect(() => {
     if (paymentIntentData) {
-      console.log("Payment intent created:", paymentIntentData);
-      console.log("Client secret:", paymentIntentData?.client_secret);
       setClientSecret(paymentIntentData?.client_secret);
     }
   }, [paymentIntentData]);

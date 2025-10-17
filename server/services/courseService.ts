@@ -312,8 +312,6 @@ export const addReview = async (
   const { rating, review, courseId }: IAddReviewData = data;
   const userCoursesList = user?.courses;
 
-  console.log(userCoursesList);
-
   const courseExists = userCoursesList?.some(
     (course: any) => course.courseId.toString() === courseId.toString()
   );

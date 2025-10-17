@@ -22,10 +22,6 @@ const CoursesSection = () => {
   const { data: coursesData, isLoading: coursesLoading } =
     useGetAllCoursesQuery();
 
-  console.log("coursesData", coursesData);
-
-  console.log("categoriesData", categoriesData);
-
   // Create categories array with "All" category at the start
 
   const categories = categoriesData?.layout?.categories
@@ -38,10 +34,7 @@ const CoursesSection = () => {
       ]
     : [{ id: "all", title: "All" }];
 
-  console.log("categories", categories);
-
   // Filter courses based on category and search query
-  console.log("coursesData?.courses", coursesData?.courses);
   const filteredCourses = coursesData?.courses.filter((course: any) => {
     const matchesCategory =
       activeCategory === "All" ||

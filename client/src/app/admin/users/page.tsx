@@ -14,7 +14,6 @@ const page = () => {
     role: "user",
   });
 
-  console.log(data);
   return (
     <div className="w-11/12   mx-auto">
       <UsersTable

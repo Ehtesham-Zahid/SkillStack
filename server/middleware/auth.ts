@@ -8,19 +8,12 @@ import UserModel, { IUser } from "../models/userModel";
 // authenticate user
 export const isAuthenticated = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log("isAuthenticated");
-    console.log(req.cookies);
     const accessToken = req.cookies.accessToken as string;
     if (!accessToken) {
       return next(
         new ErrorHandler("Please login to access this resource", 401)
       );
     }
-
-    console.log("---------------------IS AUTHENTICATED---------------------");
-    console.log("ACCESS TOKEN", accessToken);
-    console.log("ACCESS TOKEN SECRET", process.env.ACCESS_TOKEN_SECRET);
-    console.log("USER", req.user);
 
     let decoded: JwtPayload;
     try {
@@ -29,7 +22,6 @@ export const isAuthenticated = asyncHandler(
         process.env.ACCESS_TOKEN_SECRET as string
       ) as JwtPayload;
     } catch {
-      console.log("INVALIDD ACCESS TOKENNN");
       return next(new ErrorHandler("Invalid access token", 401));
     }
 

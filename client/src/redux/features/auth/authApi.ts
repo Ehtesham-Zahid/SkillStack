@@ -30,7 +30,6 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
-          console.log(result.data);
           dispatch(userRegistration({ token: result.data.activationToken }));
         } catch (error) {
           console.log(error);
@@ -82,7 +81,6 @@ export const authApi = apiSlice.injectEndpoints({
               token: result.data.accessToken,
             })
           );
-          console.log(result.data);
           dispatch(setShowAuthDialog(false));
         } catch (error) {
           console.log(error);
@@ -98,7 +96,6 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           await queryFulfilled;
-          console.log("logged out");
           dispatch(userLoggedOut());
           localStorage.removeItem("socialSynced");
         } catch (error) {

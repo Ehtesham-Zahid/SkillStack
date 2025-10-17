@@ -54,9 +54,6 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
   const [currentLesson, setCurrentLesson] = useState<any>(
     course?.sections[0]?.lessons[0]
   );
-  console.log(currentLesson);
-  console.log(currentSection);
-  console.log(course);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [reviewText, setReviewText] = useState("");
   const [userRating, setUserRating] = useState(0);

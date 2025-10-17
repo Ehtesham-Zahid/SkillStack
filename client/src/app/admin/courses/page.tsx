@@ -13,7 +13,6 @@ const page = () => {
     limit,
   });
 
-  console.log(data);
   return isLoading ? (
     <Spinner />
   ) : (

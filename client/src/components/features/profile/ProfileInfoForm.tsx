@@ -45,7 +45,6 @@ const ProfileInfoForm = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     await updateUserInfo({ name: data.name, email: user?.email });
   };
 

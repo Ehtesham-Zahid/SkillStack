@@ -150,14 +150,12 @@ export const loginUser = async (
     .select("+password")) as IUser;
 
   if (!user) {
-    console.log("Invalid credentials 1");
     throw new ErrorHandler("Invalid credentials", 400);
   }
 
   const isPasswordCorrect = (await user.comparePassword(password)) as boolean;
 
   if (!isPasswordCorrect) {
-    console.log("Invalid credentials 2");
     throw new ErrorHandler("Invalid credentials", 400);
   }
 
@@ -185,13 +183,11 @@ export const updateAccessToken = async (
     process.env.REFRESH_TOKEN_SECRET as Secret
   ) as JwtPayload;
 
-  console.log("DECODED", decoded);
   if (!decoded) {
     throw new ErrorHandler("Invalid refresh token", 400);
   }
 
   const user = (await userModel.findById(decoded.id as string)) as IUser;
-  console.log("USER", user);
 
   return (await sendToken(user as IUser)) as {
     accessToken: string;
@@ -312,7 +308,6 @@ export const updateProfilePicture = async (
     }
   }
 
-  console.log(user);
   await user?.save();
 
   await redis.del(user._id as string);

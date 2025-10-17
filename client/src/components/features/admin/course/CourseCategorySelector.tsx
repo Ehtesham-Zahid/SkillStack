@@ -23,8 +23,6 @@ const CourseCategorySelector = ({
 
   const categories = categoriesData?.layout?.categories;
 
-  console.log("categories", categories);
-
   return categoriesLoading ? (
     <Spinner />
   ) : (

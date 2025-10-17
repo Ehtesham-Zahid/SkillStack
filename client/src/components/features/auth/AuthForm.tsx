@@ -83,7 +83,6 @@ const AuthForm = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     if (isLogin) {
       await login({ email: data.email, password: data.password });
     } else {

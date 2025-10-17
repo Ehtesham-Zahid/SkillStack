@@ -62,7 +62,6 @@ const SingleCourseSection = ({
     { icon: FileText, text: "Certificate of completion" },
     { icon: Headphones, text: "Premium support" },
   ];
-  console.log(user);
   return (
     <div className="min-h-screen bg-background dark:bg-background-dark">
       <div className="w-11/12 lg:w-11/12 2xl:w-5/6 mx-auto py-8">

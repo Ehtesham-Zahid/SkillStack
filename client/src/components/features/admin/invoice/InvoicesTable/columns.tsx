@@ -29,7 +29,6 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "user",
     header: "Customer Name",
     cell: ({ row }) => {
-      console.log(row.getValue("user"));
       const user: any = row.getValue("user");
       const name: string = user.name;
       return <div className="capitalize">{name || "N/A"}</div>;

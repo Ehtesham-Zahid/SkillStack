@@ -26,7 +26,6 @@ export const description = "A line chart";
 const UsersAnalytics = () => {
   const { data: usersData, isLoading } = useGetUsersAnalyticsQuery();
   const { theme } = useTheme();
-  console.log(usersData);
 
   const chartData = usersData?.users?.last12Months?.map((month: any) => ({
     month: month.month,

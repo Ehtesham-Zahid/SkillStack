@@ -14,7 +14,6 @@ const page = () => {
     role: "admin",
   });
 
-  console.log(data);
   return isLoading ? (
     <Spinner />
   ) : (

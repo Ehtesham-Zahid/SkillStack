@@ -23,7 +23,6 @@ export const userApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
-          console.log(result.data.user);
           dispatch(setUser(result.data.user));
         } catch (error) {
           console.log(error);
@@ -41,7 +40,6 @@ export const userApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
-          console.log(result.data);
           dispatch(setUser(result.data.user));
         } catch (error) {
           console.log(error);

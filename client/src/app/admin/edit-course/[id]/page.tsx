@@ -21,7 +21,6 @@ const page = () => {
     isLoading: isCourseLoading,
     isSuccess: isCourseSuccess,
   } = useGetSingleCourseAdminQuery(id as string);
-  console.log(course);
 
   const [editCourse, { isLoading, isSuccess, error }] = useEditCourseMutation();
   const router = useRouter();
@@ -55,7 +54,6 @@ const page = () => {
       setPrerequisites(course?.course.prerequisites);
       setCourseData(course?.course);
       setCourseContentData(course?.course.sections);
-      console.log(course?.course);
     }
   }, [course, isCourseSuccess]);
 
