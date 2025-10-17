@@ -376,20 +376,20 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
               </h1>
 
               {/* Tabs */}
-              <div className="flex space-x-1 mb-6 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+              <div className="flex flex-wrap gap-1 mb-6 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={cn(
-                      "flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                      "flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors flex-1 sm:flex-none min-w-0",
                       activeTab === tab.id
                         ? "bg-white dark:bg-gray-600 text-primary dark:text-primary-dark shadow-sm"
                         : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                     )}
                   >
-                    <tab.icon className="h-4 w-4" />
-                    <span>{tab.label}</span>
+                    <tab.icon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="truncate">{tab.label}</span>
                   </button>
                 ))}
               </div>
