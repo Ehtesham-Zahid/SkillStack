@@ -37,6 +37,7 @@ import PaymentDialog from "../payment/PaymentDialog";
 import { useSelector } from "react-redux";
 import Ratings from "@/src/components/shared/Ratings";
 import AuthDialog from "../auth/AuthDialog";
+import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
 
 const SingleCourseSection = ({
   course,
@@ -416,6 +417,7 @@ const SingleCourseSection = ({
                           stripePromise={stripePromise}
                           clientSecret={clientSecret}
                           data={course}
+                          user={user}
                         />
                       ) : (
                         <>

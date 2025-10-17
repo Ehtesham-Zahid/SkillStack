@@ -1,37 +1,40 @@
 "use client";
 import CourseAccessSection from "@/src/components/features/course/CourseAccessSection";
 import { useGetCourseWithContentQuery } from "@/src/redux/features/course/courseApi";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Spinner from "@/src/components/ui/Spinner";
 import { useEffect } from "react";
 import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
-import { redirect } from "next/navigation";
 
 const page = () => {
+  const router = useRouter();
   const { id } = useParams();
   const { data: course, isLoading } = useGetCourseWithContentQuery(
     id as string
   );
 
-  const { data: user } = useLoadUserQuery(undefined, {});
+  const { data: user, isLoading: isUserLoading } = useLoadUserQuery(
+    undefined,
+    {}
+  );
   console.log(user);
 
   useEffect(() => {
-    if (
-      user?.user?.courses?.find(
-        (course: any) => course.courseId.toString() === (id as string)
-      )
-    ) {
-      console.log("User has access to this course");
-    } else {
-      redirect("/");
-    }
-  }, [user, id]);
+    if (isUserLoading || !user) return;
 
-  console.log(course);
+    const hasAccess = user?.user?.courses?.some(
+      (course: any) => course.courseId.toString() === id
+    );
+
+    if (!hasAccess) {
+      // Add a small timeout to ensure refetch has completed
+      setTimeout(() => router.push("/"), 300);
+    }
+  }, [user, id, isUserLoading]);
+
   return (
     <div className="">
-      {isLoading ? (
+      {isLoading || isUserLoading ? (
         <Spinner />
       ) : (
         <>

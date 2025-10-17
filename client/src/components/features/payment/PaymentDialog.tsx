@@ -19,6 +19,7 @@ interface PaymentDialogProps {
   stripePromise: any;
   clientSecret: string;
   data: any;
+  user: any;
 }
 
 const PaymentDialog = ({
@@ -26,6 +27,7 @@ const PaymentDialog = ({
   stripePromise,
   clientSecret,
   data,
+  user,
 }: PaymentDialogProps) => {
   return (
     <Dialog>
@@ -82,7 +84,7 @@ const PaymentDialog = ({
         <div className="px-4 pb-4">
           {stripePromise && clientSecret ? (
             <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <CheckoutForm data={data} />
+              <CheckoutForm data={data} user={user} />
             </Elements>
           ) : (
             <div className="flex items-center justify-center py-8">

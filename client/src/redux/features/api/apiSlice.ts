@@ -4,7 +4,15 @@ import { userLoggedIn } from "../auth/authSlice";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVER_URL }),
-  tagTypes: ["Users", "Courses", "Layout", "Course", "Orders", "Notifications"],
+  tagTypes: [
+    "Users",
+    "Courses",
+    "Layout",
+    "Course",
+    "Orders",
+    "Notifications",
+    "User",
+  ],
   endpoints: (builder) => ({
     loadUser: builder.query({
       query: () => ({
@@ -12,6 +20,7 @@ export const apiSlice = createApi({
         method: "GET",
         credentials: "include",
       }),
+      providesTags: ["User"] as any,
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;

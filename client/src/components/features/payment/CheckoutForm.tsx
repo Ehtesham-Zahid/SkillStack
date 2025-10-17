@@ -15,7 +15,6 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
-import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
 
 import socketIO from "socket.io-client";
 const ENDPOINT =
@@ -25,7 +24,7 @@ const socketId = socketIO(ENDPOINT, {
   transports: ["websocket"],
 });
 
-const CheckoutForm = ({ data }: { data: any }) => {
+const CheckoutForm = ({ data, user }: { data: any; user: any }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState<string>("");
@@ -41,7 +40,6 @@ const CheckoutForm = ({ data }: { data: any }) => {
     },
   ] = useCreateOrderMutation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { data: userData, refetch } = useLoadUserQuery(undefined, {});
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     if (!stripe || !elements) {
@@ -81,11 +79,10 @@ const CheckoutForm = ({ data }: { data: any }) => {
 
   useEffect(() => {
     if (orderData) {
-      refetch();
       socketId.emit("notification", {
         title: "New Order",
         message: `You have a new order from ${data.name}`,
-        userId: userData?._id,
+        userId: user?._id,
       });
       toast.success("Payment successful");
       setTimeout(() => {

@@ -38,6 +38,7 @@ const page = () => {
     demoUrl: "",
     thumbnail: { url: "" },
   });
+
   const [benefits, setBenefits] = useState([{ title: "" }]);
   const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
   const [courseData, setCourseData] = useState({});

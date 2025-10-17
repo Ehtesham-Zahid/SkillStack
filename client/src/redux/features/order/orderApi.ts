@@ -32,7 +32,7 @@ export const orderApi = apiSlice.injectEndpoints({
         body: { courseId, payment_info: paymentInfo },
         credentials: "include",
       }),
-      invalidatesTags: ["Orders"] as any,
+      invalidatesTags: ["Orders", "User"] as any,
     }),
   }),
 });
