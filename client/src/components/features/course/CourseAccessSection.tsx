@@ -111,8 +111,6 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
     },
   ] = useAddReplyToReviewMutation();
 
-  console.log(AddQuestionCourseData);
-
   useEffect(() => {
     if (isAnswerAdded) {
       setCurrentLesson(
@@ -277,6 +275,54 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
     setCurrentSection(course?.sections[0]);
   }, [course]);
 
+  const handleNextLesson = () => {
+    const currentSectionIndex = course?.sections.findIndex(
+      (section: any) => section._id === currentSection._id
+    );
+    const currentLessonIndex = currentSection?.lessons.findIndex(
+      (lesson: any) => lesson._id === currentLesson._id
+    );
+
+    if (currentLessonIndex < currentSection?.lessons.length - 1) {
+      setCurrentLesson(
+        course?.sections[currentSectionIndex]?.lessons[currentLessonIndex + 1]
+      );
+    } else {
+      if (currentSectionIndex < course?.sections.length - 1) {
+        setCurrentLesson(course?.sections[currentSectionIndex + 1]?.lessons[0]);
+        setCurrentSection(course?.sections[currentSectionIndex + 1]);
+      } else {
+        toast.error("No more lessons in this course");
+      }
+    }
+  };
+
+  const handlePrevLesson = () => {
+    const currentSectionIndex = course?.sections.findIndex(
+      (section: any) => section._id === currentSection._id
+    );
+    const currentLessonIndex = currentSection?.lessons.findIndex(
+      (lesson: any) => lesson._id === currentLesson._id
+    );
+
+    if (currentLessonIndex > 0) {
+      setCurrentLesson(
+        course?.sections[currentSectionIndex]?.lessons[currentLessonIndex - 1]
+      );
+    } else {
+      if (currentSectionIndex > 0) {
+        setCurrentLesson(
+          course?.sections[currentSectionIndex - 1]?.lessons[
+            course?.sections[currentSectionIndex - 1]?.lessons.length - 1
+          ]
+        );
+        setCurrentSection(course?.sections[currentSectionIndex - 1]);
+      } else {
+        toast.error("No previous lessons in this course");
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background dark:bg-background-dark w-11/12 lg:w-11/12 2xl:w-5/6 mx-auto">
       {/* Main Content */}
@@ -306,11 +352,15 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
               <Button
                 variant="outline"
                 className="flex items-center space-x-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                onClick={handlePrevLesson}
               >
                 <ChevronLeft className="h-4 w-4" />
                 <span>Prev Lesson</span>
               </Button>
-              <Button className="flex items-center space-x-2 bg-primary hover:bg-primary/90 dark:bg-primary-dark dark:hover:bg-primary-dark/90">
+              <Button
+                className="flex items-center space-x-2 bg-primary hover:bg-primary/90 dark:bg-primary-dark dark:hover:bg-primary-dark/90"
+                onClick={handleNextLesson}
+              >
                 <span>Next Lesson</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
