@@ -140,7 +140,7 @@ const SingleCourseSection = ({
 
             {/* Course Overview */}
             <Card className="bg-surface dark:bg-surface-dark border-text2 dark:border-text2-dark shadow-sm">
-              <CardContent className="p-8">
+              <CardContent className="p-6 sm:p-8">
                 <h3 className="text-2xl font-bold text-text1 dark:text-text1-dark mb-6">
                   Course Overview
                 </h3>
@@ -151,16 +151,16 @@ const SingleCourseSection = ({
                       value={section._id}
                       className="border border-text2/60 dark:border-text2-dark/60 rounded-xl overflow-hidden bg-surface/30 dark:bg-surface-dark/30 hover:bg-surface/50 dark:hover:bg-surface-dark/50 transition-all duration-200 "
                     >
-                      <AccordionTrigger className="w-full p-6 flex items-center justify-between hover:bg-primary/5 dark:hover:bg-primary-dark/5 transition-colors group hover:no-underline [&>svg]:hidden">
-                        <div className="flex items-center gap-4">
+                      <AccordionTrigger className="w-full p-4 sm:p-6 flex items-center justify-between hover:bg-primary/5 dark:hover:bg-primary-dark/5 transition-colors group hover:no-underline [&>svg]:hidden">
+                        <div className="flex items-center gap-4 min-w-0 flex-1">
                           <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 dark:bg-primary-dark/10 flex items-center justify-center group-hover:bg-primary/20 dark:group-hover:bg-primary-dark/20 transition-colors group-data-[state=open]:bg-primary/20 dark:group-data-[state=open]:bg-primary-dark/20">
                             <ChevronDown className="h-5 w-5 text-primary dark:text-primary-dark group-data-[state=open]:rotate-180 transition-transform duration-200" />
                           </div>
-                          <div className="text-left">
-                            <h4 className="font-bold text-text1 dark:text-text1-dark text-lg group-hover:text-primary dark:group-hover:text-primary-dark transition-colors">
+                          <div className="text-left min-w-0">
+                            <h4 className="font-bold text-text1 dark:text-text1-dark text-lg group-hover:text-primary dark:group-hover:text-primary-dark transition-colors break-words leading-snug">
                               {section.title}
                             </h4>
-                            <div className="flex items-center gap-3 mt-1">
+                            <div className="flex items-center gap-3 gap-y-1 mt-1 flex-wrap">
                               <div className="flex items-center gap-1 text-text2 dark:text-text2-dark text-sm">
                                 <FileText className="h-4 w-4" />
                                 <span>{section.lessons.length} Lessons</span>
@@ -179,7 +179,7 @@ const SingleCourseSection = ({
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 shrink-0">
                           <Badge
                             variant="secondary"
                             className="bg-primary/10 text-primary dark:text-primary-dark"
@@ -190,7 +190,7 @@ const SingleCourseSection = ({
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="border-t border-text2/40 dark:border-text2-dark/40 bg-surface/20 dark:bg-surface-dark/20">
-                        <div className="p-6 space-y-3">
+                        <div className="p-4 sm:p-6 space-y-3">
                           <div className="text-sm text-text2 dark:text-text2-dark font-medium mb-3">
                             Course Content:
                           </div>
@@ -198,17 +198,17 @@ const SingleCourseSection = ({
                             (lesson: any, index: number) => (
                               <div
                                 key={index}
-                                className="flex items-center gap-4 p-4 bg-surface dark:bg-surface-dark rounded-lg border border-text2/40 dark:border-text2-dark/40 hover:border-primary/50 dark:hover:border-primary-dark/50 transition-colors group"
+                                className="flex flex-wrap items-center gap-4 p-4 bg-surface dark:bg-surface-dark rounded-lg border border-text2/40 dark:border-text2-dark/40 hover:border-primary/50 dark:hover:border-primary-dark/50 transition-colors group"
                               >
                                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 dark:bg-primary-dark/10 flex items-center justify-center group-hover:bg-primary/20 dark:group-hover:bg-primary-dark/20 transition-colors">
                                   <Play className="h-4 w-4 text-primary dark:text-primary-dark" />
                                 </div>
-                                <div className="flex-1">
-                                  <p className="text-text1 dark:text-text1-dark font-semibold group-hover:text-primary dark:group-hover:text-primary-dark transition-colors">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-text1 dark:text-text1-dark font-semibold group-hover:text-primary dark:group-hover:text-primary-dark transition-colors truncate">
                                     {lesson?.title}
                                   </p>
                                 </div>
-                                <div className="flex items-center gap-1 text-text2 dark:text-text2-dark text-sm">
+                                <div className="flex items-center gap-1 text-text2 dark:text-text2-dark text-sm ml-auto shrink-0">
                                   <Clock className="h-3 w-3" />
                                   <span>{lesson?.videoLength} minutes</span>
                                 </div>
@@ -275,20 +275,20 @@ const SingleCourseSection = ({
               <Card className="bg-surface dark:bg-surface-dark border-text2 dark:border-text2-dark shadow-sm">
                 <CardContent className="p-8">
                   {/* Reviews Header */}
-                  <div className="flex items-center gap-3 mb-8">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-8">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className="h-6 w-6 fill-yellow-400 text-yellow-400"
+                          className="h-5 w-5 sm:h-6 sm:w-6 fill-yellow-400 text-yellow-400"
                         />
                       ))}
                     </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-text1 dark:text-text1-dark">
+                    <div className="min-w-0">
+                      <h3 className="text-xl sm:text-2xl font-bold text-text1 dark:text-text1-dark">
                         Reviews
                       </h3>
-                      <p className="text-text2 dark:text-text2-dark">
+                      <p className="text-text2 dark:text-text2-dark text-sm sm:text-base">
                         {course?.ratings} Course Rating •{" "}
                         {course?.reviews?.length} Reviews
                       </p>
@@ -300,37 +300,39 @@ const SingleCourseSection = ({
                     {course?.reviews?.map((review: any) => (
                       <div
                         key={review.id}
-                        className="flex gap-4 pb-6 border-b border-text2/20 dark:border-text2-dark/20 last:border-b-0 last:pb-0"
+                        className="flex flex-col sm:flex-row gap-3 sm:gap-4 pb-6 border-b border-text2/20 dark:border-text2-dark/20 last:border-b-0 last:pb-0"
                       >
                         <Image
                           src={review?.user?.avatar?.url}
                           alt={review.name}
-                          width={50}
-                          height={50}
-                          className="rounded-full w-12 h-12 object-cover flex-shrink-0"
+                          width={48}
+                          height={48}
+                          className="rounded-full w-10 h-10 sm:w-12 sm:h-12 object-cover flex-shrink-0"
                         />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h4 className="font-semibold text-text1 dark:text-text1-dark">
-                              {review?.user?.name}
-                            </h4>
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < review?.rating
-                                      ? "fill-yellow-400 text-yellow-400"
-                                      : "text-gray-300 dark:text-gray-600"
-                                  }`}
-                                />
-                              ))}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1 sm:mb-2">
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
+                              <h4 className="font-semibold text-text1 dark:text-text1-dark truncate">
+                                {review?.user?.name}
+                              </h4>
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={`h-4 w-4 sm:h-5 sm:w-5 ${
+                                      i < review?.rating
+                                        ? "fill-yellow-400 text-yellow-400"
+                                        : "text-gray-300 dark:text-gray-600"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
                             </div>
-                            <span className="text-text2 dark:text-text2-dark text-sm">
+                            <span className="text-text2 dark:text-text2-dark text-xs sm:text-sm whitespace-nowrap ml-2">
                               {formatDate(review?.createdAt)}
                             </span>
                           </div>
-                          <p className="text-text2 dark:text-text2-dark leading-relaxed">
+                          <p className="text-text2 dark:text-text2-dark leading-relaxed break-words">
                             {review?.comment}
                           </p>
                         </div>
