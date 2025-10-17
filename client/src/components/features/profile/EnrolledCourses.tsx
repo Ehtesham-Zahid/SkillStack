@@ -29,7 +29,7 @@ const EnrolledCourses = () => {
     <div className="w-full  h-full flex flex-col items-start justify-start">
       {/* <h1 className="text-4xl font-bold text-center mb-8">Enrolled Courses</h1> */}
 
-      {enrolledCourses?.length < 0 ? (
+      {enrolledCourses?.length > 0 ? (
         <div className="w-full gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {enrolledCourses?.map((course: any) => (
             <CourseCard
@@ -67,7 +67,6 @@ const EnrolledCourses = () => {
               Start your learning journey by exploring our amazing courses and
               enrolling in the ones that interest you most.
             </p>
-
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/courses">
                 <button className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 dark:from-primary-dark dark:to-primary-dark/90 dark:hover:from-primary-dark/90 dark:hover:to-primary-dark/80 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
