@@ -28,7 +28,9 @@ import DataCard from "../common/DataCard";
 import { BookOpen } from "lucide-react";
 import { TrendingUp } from "lucide-react";
 import Spinner from "@/src/components/ui/Spinner";
-
+import { useGetAllOrdersAdminQuery } from "@/src/redux/features/order/orderApi";
+import RecentInvoicesTable from "../invoice/RecentInvoicesTable/RecentInvoicesTable";
+import { columns } from "../invoice/RecentInvoicesTable/columns";
 export const description = "A bar chart";
 
 const AdminDashboardMain = () => {
@@ -41,6 +43,11 @@ const AdminDashboardMain = () => {
     useGetOrdersAnalyticsQuery();
   const { data: coursesData, isLoading: coursesLoading } =
     useGetCoursesAnalyticsQuery();
+
+  const { data, isLoading, isFetching } = useGetAllOrdersAdminQuery({
+    page: 1,
+    limit: "10",
+  });
 
   const chartDataUsers = usersData?.users?.last12Months?.map((month: any) => ({
     month: month.month,
@@ -131,7 +138,19 @@ const AdminDashboardMain = () => {
               }}
             />
           </div>{" "}
-          <div className="my-6">
+          <div className="my-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+            <RecentInvoicesTable
+              columns={columns}
+              data={data?.orders || []}
+              page={1}
+              setPage={() => {}}
+              limit={"10"}
+              setLimit={() => {}}
+              totalPages={1}
+              totalInvoices={data?.totalOrders > 10 ? 10 : data?.totalOrders}
+              isFetching={isFetching}
+            />
             <div>
               <Card className=" mx-auto  ">
                 <CardHeader>
@@ -183,8 +202,7 @@ const AdminDashboardMain = () => {
                 </CardContent>
               </Card>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+
             <div>
               <Card className=" mx-auto ">
                 <CardHeader>
