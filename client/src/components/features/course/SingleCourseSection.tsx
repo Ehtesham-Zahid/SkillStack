@@ -418,7 +418,11 @@ const SingleCourseSection = ({
                           data={course}
                         />
                       ) : (
-                        <AuthDialog singleCourse={true} />
+                        <>
+                          <AuthDialog singleCourse={true} />
+                          {/* Mount OTP dialog at app level so Redux-controlled open works here too */}
+                          {/* Import inline to avoid unused in pages where user is already logged in */}
+                        </>
                       )}
 
                       {/* Trust Indicators */}

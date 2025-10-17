@@ -27,7 +27,7 @@ const OtpDialog = () => {
     >
       <form>
         <DialogTrigger asChild>
-          <MailIcon size={26} className="cursor-pointer" />
+          <MailIcon size={26} className="cursor-pointer hidden" />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] bg-surface dark:bg-surface-dark border-text2 dark:border-text2-dark">
           <DialogHeader>

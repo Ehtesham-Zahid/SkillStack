@@ -29,7 +29,7 @@ import {
 } from "../../../redux/features/auth/authSlice";
 
 const FormSchema = z.object({
-  pin: z.number().min(4, {
+  pin: z.string().min(4, {
     message: "Your one-time password must be 4 characters.",
   }),
 });
@@ -44,13 +44,13 @@ const OtpForm = () => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      pin: 0,
+      pin: "",
     },
   });
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Account activated");
+      toast.success("Account activated, Please login to continue");
       dispatch(setShowOtpDialog(false));
       dispatch(setShowAuthDialog(true));
     }
@@ -79,7 +79,7 @@ const OtpForm = () => {
           render={({ field }) => (
             <FormItem className=" ">
               <FormControl>
-                <InputOTP maxLength={4} {...field}>
+                <InputOTP maxLength={4} {...field} type="text">
                   <InputOTPGroup className="w-full gap-5 mt-5">
                     <InputOTPSlot
                       index={0}

@@ -5,6 +5,7 @@ import ThemeToggle from "../ui/ThemeToggle";
 import Sidebar from "./Sidebar";
 
 import AuthDialog from "../features/auth/AuthDialog";
+import OtpDialog from "../features/auth/OtpDialog";
 
 import Image from "next/image";
 import { NAV_ITEMS } from "@/src/constants";
@@ -38,7 +39,10 @@ const Header = () => {
               />
             </Link>
           ) : (
-            <AuthDialog />
+            <>
+              <AuthDialog />
+              <OtpDialog />
+            </>
           )}
           <Sidebar />
         </div>
