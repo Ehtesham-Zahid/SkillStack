@@ -40,7 +40,9 @@ const Header = () => {
             </Link>
           ) : (
             <>
-              <AuthDialog />
+              <div className="hidden lg:block">
+                <AuthDialog />
+              </div>
               <OtpDialog />
             </>
           )}

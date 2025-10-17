@@ -35,9 +35,25 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { useLogoutMutation } from "@/src/redux/features/auth/authApi";
+import { toast } from "react-hot-toast";
 
 // Sidebar items config
-const sidebarItems = [
+interface SidebarSubItem {
+  title: string;
+  url?: string;
+  icon: React.ReactNode;
+  isLogout?: boolean;
+}
+
+interface SidebarItem {
+  title: string;
+  children: SidebarSubItem[];
+}
+
+const sidebarItems: SidebarItem[] = [
   {
     title: "Overview",
     // icon: <Video size={22} />,
@@ -126,12 +142,36 @@ const sidebarItems = [
     title: "Extras",
     // icon: <MoreHorizontal size={22} />,
     children: [
-      { title: "Logout", url: "/admin/logout", icon: <LogOut size={18} /> },
+      {
+        title: "Logout",
+        icon: <LogOut size={18} />,
+        isLogout: true,
+      },
     ],
   },
 ];
 
 const AdminSidebar = () => {
+  const router = useRouter();
+  const [
+    logout,
+    {
+      isLoading: logoutLoading,
+      isSuccess: logoutSuccess,
+      isError: logoutError,
+    },
+  ] = useLogoutMutation();
+
+  const logoutHandler = async () => {
+    try {
+      router.push("/");
+      await signOut({ redirect: false });
+      await logout().unwrap(); // unwrap throws if request fails
+      toast.success("Logged out successfully");
+    } catch (err) {
+      toast.error("Logout failed");
+    }
+  };
   return (
     <Sidebar className=" border-0 border-r-2 dark:border-background-dark">
       <SidebarContent className="dark:bg-surface-dark bg-surface dark:text-text1-dark text-text1  border-0  ">
@@ -168,15 +208,35 @@ const AdminSidebar = () => {
                     <SidebarMenuSub className="dark:border-text2-dark border-text2">
                       {item.children.map((subItem, subIdx) => (
                         <SidebarMenuSubItem key={subIdx} className="">
-                          <SidebarMenuSubButton
-                            asChild
-                            className="dark:hover:bg-gray-700 hover:bg-gray-200  "
-                          >
-                            <Link href={subItem.url}>
-                              {subItem.icon}
-                              <span>{subItem.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
+                          {subItem.isLogout ? (
+                            <button
+                              onClick={logoutHandler}
+                              disabled={logoutLoading}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md dark:hover:bg-gray-700 hover:bg-gray-200 text-red-600 dark:text-red-400 disabled:opacity-50 transition-colors"
+                            >
+                              {logoutLoading ? (
+                                <>
+                                  <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                                  <span>Logging out...</span>
+                                </>
+                              ) : (
+                                <>
+                                  {subItem.icon}
+                                  <span>{subItem.title}</span>
+                                </>
+                              )}
+                            </button>
+                          ) : (
+                            <SidebarMenuSubButton
+                              asChild
+                              className="dark:hover:bg-gray-700 hover:bg-gray-200"
+                            >
+                              <Link href={subItem.url || "#"}>
+                                {subItem.icon}
+                                <span>{subItem.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          )}
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>

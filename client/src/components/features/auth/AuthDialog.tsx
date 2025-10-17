@@ -15,7 +15,13 @@ import AuthForm from "./AuthForm";
 import { setShowAuthDialog } from "../../../redux/features/auth/authSlice";
 import { Button } from "@/src/shadcn/ui/button";
 
-const AuthDialog = ({ singleCourse = false }: { singleCourse?: boolean }) => {
+const AuthDialog = ({
+  singleCourse = false,
+  mobile = false,
+}: {
+  singleCourse?: boolean;
+  mobile?: boolean;
+}) => {
   const { showAuthDialog } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
@@ -31,8 +37,9 @@ const AuthDialog = ({ singleCourse = false }: { singleCourse?: boolean }) => {
               Sign in to continue
             </Button>
           ) : (
-            <div className=" items-center justify-center cursor-pointer lg:flex hidden">
-              <UserCircle2Icon size={26} />
+            <div className=" items-center justify-center cursor-pointer flex flex-row gap-2">
+              <UserCircle2Icon size={26} />{" "}
+              {mobile ? "Sign in to continue" : null}
             </div>
           )}
         </DialogTrigger>

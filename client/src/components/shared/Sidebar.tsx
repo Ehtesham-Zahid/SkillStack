@@ -67,8 +67,8 @@ const Sidebar = () => {
               </Link>
             ) : (
               <>
-                {" "}
-                <AuthDialog />
+                <AuthDialog mobile={true} />
+
                 <OtpDialog />
               </>
             )}
