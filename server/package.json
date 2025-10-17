@@ -1,6 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "type": "commonjs",
   "main": "dist/server.js",
   "types": "dist/server.d.ts",
   "scripts": {
