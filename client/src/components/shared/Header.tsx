@@ -29,7 +29,7 @@ const Header = () => {
           </ul>
           <ThemeToggle />
           {user ? (
-            <Link href="/profile">
+            <Link href="/profile" className="hidden lg:block">
               <Image
                 src={user?.avatar?.url || "/images/user.webp"}
                 alt="user"
