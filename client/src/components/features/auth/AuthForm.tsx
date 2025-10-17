@@ -9,6 +9,7 @@ import { LuLoaderCircle } from "react-icons/lu";
 import toast from "react-hot-toast";
 import { signIn, useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/src/shadcn/ui/button";
 import {
@@ -43,8 +44,15 @@ const registerSchema = z.object({
   password: z.string().min(8),
 });
 
+type AuthFormValues = {
+  email: string;
+  password: string;
+  name?: string;
+};
+
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const [
     register,
@@ -65,7 +73,7 @@ const AuthForm = () => {
     },
   ] = useLoginMutation();
 
-  const form = useForm({
+  const form = useForm<AuthFormValues>({
     resolver: zodResolver(isLogin ? loginSchema : registerSchema),
     defaultValues: {
       email: "",
@@ -156,7 +164,28 @@ const AuthForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="********" {...field} type="password" />
+                <div className="relative">
+                  <Input
+                    placeholder="********"
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                  />
+                  <button
+                    type="button"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                    className="absolute inset-y-0 right-2 flex items-center text-text2 dark:text-text2-dark"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -203,7 +232,7 @@ const AuthForm = () => {
         <p className="text-xs text-center text-text2 dark:text-text2-dark mt-2">
           Don't have an account?
           <span
-            className="text-primary  cursor-pointer hover:underline"
+            className="text-primary  cursor-pointer hover:underline ml-0.5"
             onClick={() => setIsLogin(false)}
           >
             Register
@@ -213,7 +242,7 @@ const AuthForm = () => {
         <p className="text-xs text-center text-text2 dark:text-text2-dark mt-2">
           Already have an account?
           <span
-            className="text-primary  cursor-pointer hover:underline"
+            className="text-primary  cursor-pointer hover:underline ml-0.5"
             onClick={() => setIsLogin(true)}
           >
             Login
