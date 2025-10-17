@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import CoursePlayer from "@/src/components/shared/CoursePlayer";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/shadcn/ui/avatar";
 import {
   useAddAnswerMutation,
   useAddQuestionMutation,
@@ -492,9 +493,23 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
                             {/* Question */}
                             <div className="mb-3">
                               <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {qa?.user?.name}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <Avatar className="w-8 h-8">
+                                    <AvatarImage
+                                      src={
+                                        qa?.user?.avatar?.url ||
+                                        "/images/user.webp"
+                                      }
+                                      alt={qa?.user?.name || "User"}
+                                    />
+                                    <AvatarFallback>
+                                      {qa?.user?.name?.charAt(0) || "U"}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                    {qa?.user?.name}
+                                  </span>
+                                </div>
                                 <span className="text-xs text-gray-500 dark:text-gray-400">
                                   {formatDate(qa?.createdAt)}
                                 </span>
@@ -532,16 +547,36 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
                                             className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md"
                                           >
                                             <div className="flex items-center justify-between mb-2">
-                                              <span className="flex items-center  gap-2 text-sm font-medium text-orange-700 dark:text-orange-300">
-                                                {reply?.user?.name ||
-                                                  "Instructor"}{" "}
+                                              <div className="flex items-center gap-2 text-sm font-medium text-orange-700 dark:text-orange-300">
+                                                <Avatar className="w-7 h-7">
+                                                  <AvatarImage
+                                                    src={
+                                                      reply?.user?.avatar
+                                                        ?.url ||
+                                                      "/images/user.webp"
+                                                    }
+                                                    alt={
+                                                      reply?.user?.name ||
+                                                      "Instructor"
+                                                    }
+                                                  />
+                                                  <AvatarFallback>
+                                                    {reply?.user?.name?.charAt(
+                                                      0
+                                                    ) || "I"}
+                                                  </AvatarFallback>
+                                                </Avatar>
+                                                <span>
+                                                  {reply?.user?.name ||
+                                                    "Instructor"}
+                                                </span>
                                                 {reply?.user?.role ===
                                                   "admin" && (
                                                   <span className="text-xs text-orange-600 dark:text-orange-400">
                                                     <ShieldCheck className="h-4 w-4" />
                                                   </span>
                                                 )}
-                                              </span>
+                                              </div>
 
                                               <span className="text-xs text-orange-600 dark:text-orange-400">
                                                 {formatDate(
@@ -746,22 +781,38 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
                             className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
                           >
                             <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center space-x-2">
-                                <div className="flex">
-                                  {[1, 2, 3, 4, 5].map((star: number) => (
-                                    <Star
-                                      key={star}
-                                      className={`h-4 w-4 ${
-                                        star <= review?.rating
-                                          ? "fill-yellow-400 text-yellow-400"
-                                          : "text-gray-300 dark:text-gray-600"
-                                      }`}
-                                    />
-                                  ))}
+                              <div className="flex items-center gap-3">
+                                <Avatar className="w-9 h-9">
+                                  <AvatarImage
+                                    src={
+                                      review?.user?.avatar?.url ||
+                                      "/images/user.webp"
+                                    }
+                                    alt={review.user?.name || "User"}
+                                  />
+                                  <AvatarFallback>
+                                    {review?.user?.name?.charAt(0) || "U"}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                      {review.user?.name}
+                                    </span>
+                                    <div className="flex">
+                                      {[1, 2, 3, 4, 5].map((star: number) => (
+                                        <Star
+                                          key={star}
+                                          className={`h-4 w-4 ${
+                                            star <= review?.rating
+                                              ? "fill-yellow-400 text-yellow-400"
+                                              : "text-gray-300 dark:text-gray-600"
+                                          }`}
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
                                 </div>
-                                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {review.user?.name}
-                                </span>
                               </div>
                               <span className="text-xs text-gray-500 dark:text-gray-400">
                                 {formatDate(review.createdAt)}
@@ -782,14 +833,32 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
                                         className="pl-4 border-l-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10 p-3 rounded-r-md"
                                       >
                                         <div className="flex items-center justify-between mb-2">
-                                          <span className="flex items-center gap-2 text-sm font-medium text-orange-700 dark:text-orange-300">
-                                            {rep?.user?.name || "Instructor"}
+                                          <div className="flex items-center gap-2 text-sm font-medium text-orange-700 dark:text-orange-300">
+                                            <Avatar className="w-7 h-7">
+                                              <AvatarImage
+                                                src={
+                                                  rep?.user?.avatar?.url ||
+                                                  "/images/user.webp"
+                                                }
+                                                alt={
+                                                  rep?.user?.name ||
+                                                  "Instructor"
+                                                }
+                                              />
+                                              <AvatarFallback>
+                                                {rep?.user?.name?.charAt(0) ||
+                                                  "I"}
+                                              </AvatarFallback>
+                                            </Avatar>
+                                            <span>
+                                              {rep?.user?.name || "Instructor"}
+                                            </span>
                                             {rep?.user?.role === "admin" && (
                                               <span className="text-xs text-orange-600 dark:text-orange-400">
                                                 <ShieldCheck className="h-4 w-4" />
                                               </span>
                                             )}
-                                          </span>
+                                          </div>
                                           <span className="text-xs text-orange-600 dark:text-orange-400">
                                             {formatDate(rep?.createdAt || "")}
                                           </span>

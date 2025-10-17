@@ -38,6 +38,7 @@ import { useSelector } from "react-redux";
 import Ratings from "@/src/components/shared/Ratings";
 import AuthDialog from "../auth/AuthDialog";
 import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
+import { formatDate } from "@/src/utils/formatDate";
 
 const SingleCourseSection = ({
   course,
@@ -302,7 +303,7 @@ const SingleCourseSection = ({
                         className="flex gap-4 pb-6 border-b border-text2/20 dark:border-text2-dark/20 last:border-b-0 last:pb-0"
                       >
                         <Image
-                          src={review?.user?.avatar}
+                          src={review?.user?.avatar?.url}
                           alt={review.name}
                           width={50}
                           height={50}
@@ -326,7 +327,7 @@ const SingleCourseSection = ({
                               ))}
                             </div>
                             <span className="text-text2 dark:text-text2-dark text-sm">
-                              {review?.createdAt}
+                              {formatDate(review?.createdAt)}
                             </span>
                           </div>
                           <p className="text-text2 dark:text-text2-dark leading-relaxed">
