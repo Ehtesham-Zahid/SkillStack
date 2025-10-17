@@ -26,25 +26,26 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
-    accessorKey: "user.name",
+    accessorKey: "user",
     header: "Customer Name",
     cell: ({ row }) => {
-      const user: object = row.getValue("user");
+      console.log(row.getValue("user"));
+      const user: any = row.getValue("user");
       const name: string = user.name;
       return <div className="capitalize">{name || "N/A"}</div>;
     },
   },
   {
-    accessorKey: "user.email",
+    accessorKey: "user",
     header: "Customer Email",
     cell: ({ row }) => {
       const user: object = row.getValue("user");
       const email: string = user.email;
-      return <div className="capitalize">{email || "N/A"}</div>;
+      return <div className="">{email || "N/A"}</div>;
     },
   },
   {
-    accessorKey: "course.name",
+    accessorKey: "course",
     header: "Course Name",
     cell: ({ row }) => {
       const course: object = row.getValue("course");
@@ -53,7 +54,7 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
-    accessorKey: "course.price",
+    accessorKey: "course",
     header: "Price",
     cell: ({ row }) => {
       const course: object = row.getValue("course");
