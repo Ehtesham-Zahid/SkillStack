@@ -620,66 +620,72 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
                     </h3>
 
                     {/* Add Review Section */}
-                    <div className="mb-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                      <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">
-                        Write a Review
-                      </h4>
 
-                      {/* Rating */}
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Rating
-                        </label>
-                        <div className="flex space-x-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              onClick={() => setUserRating(star)}
-                              className="focus:outline-none"
-                            >
-                              <Star
-                                className={`h-6 w-6 transition-colors ${
-                                  star <= userRating
-                                    ? "fill-yellow-400 text-yellow-400"
-                                    : "text-gray-300 dark:text-gray-600 hover:text-yellow-400"
-                                }`}
-                              />
-                            </button>
-                          ))}
+                    {!course?.reviews?.some(
+                      (review: any) => review.user?._id === user?._id
+                    ) &&
+                      !isAddingReview && (
+                        <div className="mb-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                          <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">
+                            Write a Review
+                          </h4>
+
+                          {/* Rating */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                              Rating
+                            </label>
+                            <div className="flex space-x-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                  key={star}
+                                  onClick={() => setUserRating(star)}
+                                  className="focus:outline-none"
+                                >
+                                  <Star
+                                    className={`h-6 w-6 transition-colors ${
+                                      star <= userRating
+                                        ? "fill-yellow-400 text-yellow-400"
+                                        : "text-gray-300 dark:text-gray-600 hover:text-yellow-400"
+                                    }`}
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Review Text */}
+                          <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                              Your Review
+                            </label>
+                            <textarea
+                              value={reviewText}
+                              onChange={(e) => setReviewText(e.target.value)}
+                              placeholder="Share your thoughts about this course..."
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                              rows={3}
+                            />
+                          </div>
+
+                          {/* Submit Button */}
+                          <Button
+                            onClick={handleSubmitReview}
+                            disabled={
+                              !reviewText.trim() ||
+                              userRating === 0 ||
+                              isAddingReview
+                            }
+                            className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {isAddingReview ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              "Submit Review"
+                            )}
+                          </Button>
                         </div>
-                      </div>
-
-                      {/* Review Text */}
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Your Review
-                        </label>
-                        <textarea
-                          value={reviewText}
-                          onChange={(e) => setReviewText(e.target.value)}
-                          placeholder="Share your thoughts about this course..."
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
-                          rows={3}
-                        />
-                      </div>
-
-                      {/* Submit Button */}
-                      <Button
-                        onClick={handleSubmitReview}
-                        disabled={
-                          !reviewText.trim() ||
-                          userRating === 0 ||
-                          isAddingReview
-                        }
-                        className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isAddingReview ? (
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        ) : (
-                          "Submit Review"
-                        )}
-                      </Button>
-                    </div>
+                      )}
 
                     {/* Reviews List */}
                     <div className="space-y-4">

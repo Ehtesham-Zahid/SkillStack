@@ -6,6 +6,14 @@ import Spinner from "../../ui/Spinner";
 
 const HomeCoursesSection = () => {
   const { data, isLoading, isFetching } = useGetAllCoursesQuery();
+  const countTotalCourseLessons = (course: any) => {
+    return (
+      course?.sections?.reduce(
+        (acc: number, section: any) => acc + (section?.lessons?.length || 0),
+        0
+      ) || 0
+    );
+  };
   return isLoading ? (
     <div className="flex justify-center items-center h-full w-full my-20">
       <Spinner fullPage={false} />
@@ -34,7 +42,7 @@ const HomeCoursesSection = () => {
             author={"Ehtesham Zahid"}
             price={course.price}
             students={course.purchased}
-            lessons={course.sections.length}
+            lessons={countTotalCourseLessons(course)}
             rating={course.ratings}
             accent="primary"
             thumbnailSrc={course.thumbnail.url}

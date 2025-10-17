@@ -52,6 +52,15 @@ const CoursesSection = () => {
     return matchesCategory && matchesSearch;
   });
 
+  const countTotalCourseLessons = (course: any) => {
+    return (
+      course?.sections?.reduce(
+        (acc: number, section: any) => acc + (section?.lessons?.length || 0),
+        0
+      ) || 0
+    );
+  };
+
   return (
     <>
       {coursesLoading ? (
@@ -146,7 +155,7 @@ const CoursesSection = () => {
                   author={"Ehtesham Zahid"}
                   price={course.price}
                   students={course.purchased}
-                  lessons={course.sections.length}
+                  lessons={countTotalCourseLessons(course)}
                   rating={course.ratings}
                   accent={"primary"}
                   thumbnailSrc={course.thumbnail.url}
