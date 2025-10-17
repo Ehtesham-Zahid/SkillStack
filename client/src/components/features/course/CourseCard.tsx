@@ -54,9 +54,9 @@ const CourseCard = ({
           height={600}
           className="w-full h-56 object-cover"
         />
-        <div
+        {/* <div
           className={`absolute inset-0 bg-gradient-to-tr to-transparent opacity-60 transition-opacity group-hover:opacity-70 ${accentMap[accent]} dark:${accentDarkMap[accent]}`}
-        />
+        /> */}
         <span className="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-surface dark:bg-surface-dark/90 border dark:border-text2-dark border-text2 text-text1 dark:text-text1-dark">
           ${price}
         </span>
