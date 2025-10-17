@@ -4,7 +4,7 @@ import {
   createLayout,
   editLayout,
   getLayoutByType,
-} from "../services/layoutService";
+} from "../services/layoutService.js";
 
 // Create Layout
 export const handleCreateLayout = asyncHandler(
