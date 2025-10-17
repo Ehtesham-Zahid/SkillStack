@@ -25,6 +25,7 @@ export default function AuthProvider({
       !localStorage.getItem("socialSynced")
     ) {
       const session = data as any;
+      console.log("YEAH THIS GUY IS RUNNING");
       socialAuth({
         email: session.user?.email,
         name: session.user?.name,

@@ -34,7 +34,13 @@ const HeaderActions = () => {
   const [notifications, setNotifications] = useState<any>([]);
   const [open, setOpen] = useState(false);
 
-  const [audio] = useState(new Audio("/audios/notification.mp3"));
+  // const [audio] = useState(new Audio("/audios/notification.mp3"));
+  const [audio] = useState<any>(
+    typeof window !== "undefined" &&
+      new Audio(
+        "https://res.cloudinary.com/dnrxdohf7/video/upload/v1754043411/mixkit-gaming-lock-2848_utxeax.wav"
+      )
+  );
 
   const playNotificationSound = () => {
     audio.play();

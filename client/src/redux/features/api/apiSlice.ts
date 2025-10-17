@@ -4,15 +4,8 @@ import { userLoggedIn } from "../auth/authSlice";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVER_URL }),
-  tagTypes: ["Users", "Courses", "Layout", "Course", "Orders"],
+  tagTypes: ["Users", "Courses", "Layout", "Course", "Orders", "Notifications"],
   endpoints: (builder) => ({
-    // refreshToken: builder.query({
-    //   query: () => ({
-    //     url: "/users/update-access-token",
-    //     method: "GET",
-    //     credentials: "include",
-    //   }),
-    // }),
     loadUser: builder.query({
       query: () => ({
         url: "/users/me",

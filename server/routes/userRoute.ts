@@ -22,13 +22,13 @@ userRouter.post("/activate-user", handleActivateUser);
 userRouter.post("/login", handleLoginUser);
 userRouter.get("/logout", isAuthenticated, handleLogoutUser);
 userRouter.get("/update-access-token", handleUpdateAccessToken);
+userRouter.post("/social-auth", handleSocialAuth);
 userRouter.get(
   "/me",
   handleUpdateAccessToken,
   isAuthenticated,
   handleGetUserInfo
 );
-userRouter.post("/social-auth", handleSocialAuth);
 userRouter.put(
   "/update-user-info",
   handleUpdateAccessToken,
