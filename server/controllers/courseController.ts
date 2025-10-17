@@ -13,9 +13,9 @@ import {
   getAllCoursesAdmin,
   deleteCourse,
   generateVideoURL,
-} from "../services/courseService";
+} from "../services/courseService.js";
 import asyncHandler from "express-async-handler";
-import { IUser } from "../models/userModel";
+import { IUser } from "../models/userModel.js";
 
 // Create Course
 export const handleCreateCourse = asyncHandler(
@@ -29,7 +29,7 @@ export const handleCreateCourse = asyncHandler(
 export const handleEditCourse = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const data = req.body;
-    const courseId = req.params.id;
+    const courseId = req.params.id as string;
 
     const course = await editCourse(data, courseId);
     res.status(201).json({ success: true, course });
@@ -39,7 +39,7 @@ export const handleEditCourse = asyncHandler(
 // Get Single Course --- without purchasing
 export const handleGetSingleCourse = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await getCourseById(req.params.id);
+    const course = await getCourseById(req.params.id as string);
     res.status(200).json({ success: true, course });
   }
 );
@@ -55,7 +55,10 @@ export const handleGetAllCourses = asyncHandler(
 // Get Course Content -- only for valid users
 export const handleGetCourseWithContent = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await getCourseWithContent(req.user as IUser, req.params.id);
+    const course = await getCourseWithContent(
+      req.user as IUser,
+      req.params.id as string
+    );
     res.status(200).json({ success: true, course });
   }
 );
@@ -63,14 +66,14 @@ export const handleGetCourseWithContent = asyncHandler(
 // Add Question to Course
 export const handleAddQuestion = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await addQuestion(req.user as IUser, req.body);
+    const course = await addQuestion(req.user as IUser, req.body as any);
     res.status(200).json({ success: true, course });
   }
 );
 
 export const handleAddAnswer = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await addAnswer(req.user as IUser, req.body);
+    const course = await addAnswer(req.user as IUser, req.body as any);
     res.status(200).json({ success: true, course });
   }
 );
@@ -78,7 +81,7 @@ export const handleAddAnswer = asyncHandler(
 // Add Review to Course
 export const handleAddReview = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await addReview(req.user as IUser, req.body);
+    const course = await addReview(req.user as IUser, req.body as any);
     res.status(200).json({ success: true, course });
   }
 );
@@ -86,7 +89,7 @@ export const handleAddReview = asyncHandler(
 // Add Reply to Review
 export const handleAddReplyToReview = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await addReplyToReview(req.user as IUser, req.body);
+    const course = await addReplyToReview(req.user as IUser, req.body as any);
     res.status(200).json({ success: true, course });
   }
 );
@@ -113,7 +116,7 @@ export const handleGetAllCoursesAdmin = asyncHandler(
 // Delete Course --- Admin
 export const handleDeleteCourse = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    await deleteCourse(req.params.id);
+    await deleteCourse(req.params.id as string);
     res
       .status(200)
       .json({ success: true, message: "Course deleted successfully" });
@@ -123,7 +126,7 @@ export const handleDeleteCourse = asyncHandler(
 // Get Single Course --- without purchasing
 export const handleGetSingleCourseAdmin = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const course = await getCourseByIdAdmin(req.params.id);
+    const course = await getCourseByIdAdmin(req.params.id as string);
     res.status(200).json({ success: true, course });
   }
 );
@@ -131,7 +134,7 @@ export const handleGetSingleCourseAdmin = asyncHandler(
 // Generate Video URL
 export const handleGenerateVideoURL = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const videoURL = await generateVideoURL(req.body.videoId);
+    const videoURL = await generateVideoURL(req.body.videoId as string);
     res.status(200).json({ success: true, videoURL });
   }
 );

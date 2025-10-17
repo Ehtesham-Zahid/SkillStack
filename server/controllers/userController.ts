@@ -3,9 +3,9 @@ import asyncHandler from "express-async-handler";
 import dotenv from "dotenv";
 dotenv.config();
 
-import { IUser } from "../models/userModel";
-import { ITokenOptions } from "../utils/jwt";
-import { redis } from "../utils/redis";
+import { IUser } from "../models/userModel.js";
+import { ITokenOptions } from "../utils/jwt.js";
+import { redis } from "../utils/redis.js";
 import {
   activateUser,
   loginUser,
@@ -18,7 +18,7 @@ import {
   getAllUsers,
   updateUserRole,
   deleteUser,
-} from "../services/userService";
+} from "../services/userService.js";
 
 // Register User
 export const handleRegisterUser = asyncHandler(
@@ -150,7 +150,7 @@ export const handleUpdateUserInfo = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = (await updateUserInfo(
       req.body,
-      req.user._id as string
+      req.user?._id as string
     )) as IUser;
     res.status(200).json({ success: true, user });
   }
@@ -159,7 +159,7 @@ export const handleUpdateUserInfo = asyncHandler(
 // update user password
 export const handleUpdatePassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?._id;
+    const userId = req.user?._id as string;
     const user = await updatePassword(req.body, userId as string);
     res.status(200).json({ success: true, user });
   }
@@ -206,7 +206,7 @@ export const handleUpdateUserRole = asyncHandler(
 // Delete User --- Admin
 export const handleDeleteUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    await deleteUser(req.params.id);
+    await deleteUser(req.params.id as string);
     res
       .status(200)
       .json({ success: true, message: "User deleted successfully" });

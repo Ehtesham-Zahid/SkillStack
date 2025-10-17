@@ -4,9 +4,9 @@ import {
   handleGetAllOrdersAdmin,
   handleNewPayment,
   handleSendStripePublishableKey,
-} from "../controllers/orderController";
-import { isAuthenticated, authorizeRoles } from "../middleware/auth";
-import { handleUpdateAccessToken } from "../controllers/userController";
+} from "../controllers/orderController.js";
+import { isAuthenticated, authorizeRoles } from "../middleware/auth.js";
+import { handleUpdateAccessToken } from "../controllers/userController.js";
 const orderRouter = express.Router();
 
 orderRouter.post("/create-order", isAuthenticated, handleCreateOrder);

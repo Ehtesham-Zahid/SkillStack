@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import { createOrder, getAllOrdersAdmin } from "../services/orderService";
+import { createOrder, getAllOrdersAdmin } from "../services/orderService.js";
 import dotenv from "dotenv";
 dotenv.config();
 // const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -40,8 +40,8 @@ export const handleSendStripePublishableKey = asyncHandler(
 
 export const handleNewPayment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const mypayment = await stripe(
-      process.env.STRIPE_SECRET_KEY
+    const mypayment = await new stripe(
+      process.env.STRIPE_SECRET_KEY as string
     ).paymentIntents.create({
       amount: req.body.amount,
       currency: "USD",

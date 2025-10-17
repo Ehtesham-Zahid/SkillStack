@@ -5,13 +5,13 @@ import express, { Request, Response, NextFunction } from "express";
 export const app = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { ErrorMiddleware } from "./middleware/error";
-import userRouter from "./routes/userRoute";
-import courseRouter from "./routes/courseRoute";
-import orderRouter from "./routes/orderRoute";
-import notificationRouter from "./routes/notificationRoute";
-import analyticsRouter from "./routes/analyticsRoute";
-import layoutRouter from "./routes/layoutRoute";
+import { ErrorMiddleware } from "./middleware/error.js";
+import userRouter from "./routes/userRoute.js";
+import courseRouter from "./routes/courseRoute.js";
+import orderRouter from "./routes/orderRoute.js";
+import notificationRouter from "./routes/notificationRoute.js";
+import analyticsRouter from "./routes/analyticsRoute.js";
+import layoutRouter from "./routes/layoutRoute.js";
 import { rateLimit } from "express-rate-limit";
 
 // body parser

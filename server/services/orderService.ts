@@ -4,13 +4,14 @@ import path from "path";
 import dotenv from "dotenv";
 dotenv.config();
 
-import OrderModel from "../models/orderModel";
-import CourseModel, { ICourse } from "../models/courseModel";
-import UserModel, { IUser } from "../models/userModel";
-import NotificationModel from "../models/notificationModel";
-import ErrorHandler from "../utils/ErrorHandler";
-import { sendMail } from "../utils/email";
-import { redis } from "../utils/redis";
+import OrderModel from "../models/orderModel.js";
+import CourseModel, { ICourse } from "../models/courseModel.js";
+import UserModel, { IUser } from "../models/userModel.js";
+import NotificationModel from "../models/notificationModel.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
+import { sendMail } from "../utils/email.js";
+import { redis } from "../utils/redis.js";
+import { ObjectId } from "mongoose";
 
 // const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 import stripe from "stripe";
@@ -36,7 +37,7 @@ export const createOrder = async (
   if (payment_info && "id" in payment_info) {
     const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY as string);
     const paymentIntent = await stripeClient.paymentIntents.retrieve(
-      payment_info.id
+      payment_info.id as string
     );
     if (paymentIntent.status !== "succeeded") {
       throw new ErrorHandler("Payment failed", 400);
@@ -59,7 +60,7 @@ export const createOrder = async (
   // send confirmation email
   const mailData = {
     order: {
-      _id: order._id.toString().slice(0, 6),
+      _id: (order._id as ObjectId).toString().slice(0, 6),
       name: course.name,
       price: course.price,
       date: new Date().toLocaleDateString("en-US", {

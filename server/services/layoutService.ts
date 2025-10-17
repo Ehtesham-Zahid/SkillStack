@@ -1,7 +1,7 @@
 import cloudinary from "cloudinary";
-import LayoutModel from "../models/layoutModel";
-import ErrorHandler from "../utils/ErrorHandler";
-import { redis } from "../utils/redis";
+import LayoutModel from "../models/layoutModel.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
+import { redis } from "../utils/redis.js";
 
 // Create Layout
 export const createLayout = async (data: any) => {

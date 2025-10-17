@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import { generateLast12MonthsData } from "../utils/analyticsGenerator";
-import OrderModel from "../models/orderModel";
-import UserModel from "../models/userModel";
-import CourseModel from "../models/courseModel";
+import { generateLast12MonthsData } from "../utils/analyticsGenerator.js";
+import OrderModel from "../models/orderModel.js";
+import UserModel from "../models/userModel.js";
+import CourseModel from "../models/courseModel.js";
 
 // Get Users Analytics --- Admin
 export const handleUsersAnalytics = asyncHandler(

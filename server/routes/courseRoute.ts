@@ -13,9 +13,9 @@ import {
   handleDeleteCourse,
   handleGenerateVideoURL,
   handleGetSingleCourseAdmin,
-} from "../controllers/courseController";
-import { authorizeRoles, isAuthenticated } from "../middleware/auth";
-import { handleUpdateAccessToken } from "../controllers/userController";
+} from "../controllers/courseController.js";
+import { authorizeRoles, isAuthenticated } from "../middleware/auth.js";
+import { handleUpdateAccessToken } from "../controllers/userController.js";
 
 const courseRouter: Router = express.Router();
 

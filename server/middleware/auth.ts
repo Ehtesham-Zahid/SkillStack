@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import ErrorHandler from "../utils/ErrorHandler";
-import { redis } from "../utils/redis";
+import ErrorHandler from "../utils/ErrorHandler.js";
+import { redis } from "../utils/redis.js";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
-import UserModel, { IUser } from "../models/userModel";
+import UserModel, { IUser } from "../models/userModel.js";
 
 // authenticate user
 export const isAuthenticated = asyncHandler(

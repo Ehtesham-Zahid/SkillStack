@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { Request, Response, NextFunction } from "express";
-import { IUser } from "../models/userModel";
-import { redis } from "./redis";
+import { IUser } from "../models/userModel.js";
+import { redis } from "./redis.js";
 import ms from "ms";
 
 export interface ITokenOptions {

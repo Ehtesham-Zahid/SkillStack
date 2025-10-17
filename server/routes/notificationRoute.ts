@@ -2,9 +2,9 @@ import express from "express";
 import {
   handleGetAllNotifications,
   handleUpdateNotificationStatus,
-} from "../controllers/notificationController";
-import { authorizeRoles, isAuthenticated } from "../middleware/auth";
-import { handleUpdateAccessToken } from "../controllers/userController";
+} from "../controllers/notificationController.js";
+import { authorizeRoles, isAuthenticated } from "../middleware/auth.js";
+import { handleUpdateAccessToken } from "../controllers/userController.js";
 
 const notificationRouter = express.Router();
 

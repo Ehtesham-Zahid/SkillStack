@@ -3,9 +3,9 @@ import {
   handleCreateLayout,
   handleEditLayout,
   handleGetLayoutByType,
-} from "../controllers/layoutController";
-import { isAuthenticated, authorizeRoles } from "../middleware/auth";
-import { handleUpdateAccessToken } from "../controllers/userController";
+} from "../controllers/layoutController.js";
+import { isAuthenticated, authorizeRoles } from "../middleware/auth.js";
+import { handleUpdateAccessToken } from "../controllers/userController.js";
 
 const layoutRouter = express.Router();
 

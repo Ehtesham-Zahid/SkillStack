@@ -5,11 +5,11 @@ dotenv.config();
 import cloudinary from "cloudinary";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 
-import userModel, { IUser } from "../models/userModel";
-import { redis } from "../utils/redis";
-import { sendMail } from "../utils/email";
-import { sendToken, ITokenOptions } from "../utils/jwt";
-import ErrorHandler from "../utils/ErrorHandler";
+import userModel, { IUser } from "../models/userModel.js";
+import { redis } from "../utils/redis.js";
+import { sendMail } from "../utils/email.js";
+import { sendToken, ITokenOptions } from "../utils/jwt.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 const __dirname = path.resolve();
 

@@ -9,13 +9,13 @@ import CourseModel, {
   IComment,
   ISection,
   ILesson,
-} from "../models/courseModel";
-import { IUser } from "../models/userModel";
-import NotificationModel from "../models/notificationModel";
+} from "../models/courseModel.js";
+import { IUser } from "../models/userModel.js";
+import NotificationModel from "../models/notificationModel.js";
 
-import ErrorHandler from "../utils/ErrorHandler";
-import { redis } from "../utils/redis";
-import { sendMail } from "../utils/email";
+import ErrorHandler from "../utils/ErrorHandler.js";
+import { redis } from "../utils/redis.js";
+import { sendMail } from "../utils/email.js";
 
 const __dirname = path.resolve();
 

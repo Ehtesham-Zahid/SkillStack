@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const userController_js_1 = require("../controllers/userController.js");
+const auth_js_1 = require("../middleware/auth.js");
+const userRouter = express_1.default.Router();
+userRouter.post("/registration", userController_js_1.handleRegisterUser);
+userRouter.post("/activate-user", userController_js_1.handleActivateUser);
+userRouter.post("/login", userController_js_1.handleLoginUser);
+userRouter.get("/logout", auth_js_1.isAuthenticated, userController_js_1.handleLogoutUser);
+userRouter.get("/update-access-token", userController_js_1.handleUpdateAccessToken);
+userRouter.post("/social-auth", userController_js_1.handleSocialAuth);
+userRouter.get("/me", userController_js_1.handleUpdateAccessToken, auth_js_1.isAuthenticated, userController_js_1.handleGetUserInfo);
+userRouter.put("/update-user-info", userController_js_1.handleUpdateAccessToken, auth_js_1.isAuthenticated, userController_js_1.handleUpdateUserInfo);
+userRouter.put("/update-password", userController_js_1.handleUpdateAccessToken, auth_js_1.isAuthenticated, userController_js_1.handleUpdatePassword);
+userRouter.put("/update-profile-picture", userController_js_1.handleUpdateAccessToken, auth_js_1.isAuthenticated, userController_js_1.handleUpdateProfilePicture);
+userRouter.get("/get-all-users-admin", userController_js_1.handleUpdateAccessToken, auth_js_1.isAuthenticated, (0, auth_js_1.authorizeRoles)("admin"), userController_js_1.handleGetAllUsers);
+userRouter.put("/update-user-role-admin", userController_js_1.handleUpdateAccessToken, auth_js_1.isAuthenticated, (0, auth_js_1.authorizeRoles)("admin"), userController_js_1.handleUpdateUserRole);
+userRouter.delete("/delete-user-admin/:id", userController_js_1.handleUpdateAccessToken, auth_js_1.isAuthenticated, (0, auth_js_1.authorizeRoles)("admin"), userController_js_1.handleDeleteUser);
+exports.default = userRouter;

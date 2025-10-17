@@ -13,8 +13,8 @@ import {
   handleDeleteUser,
   handleUpdateProfilePicture,
   handleUpdatePassword,
-} from "../controllers/userController";
-import { isAuthenticated, authorizeRoles } from "../middleware/auth";
+} from "../controllers/userController.js";
+import { isAuthenticated, authorizeRoles } from "../middleware/auth.js";
 const userRouter = express.Router();
 
 userRouter.post("/registration", handleRegisterUser);
