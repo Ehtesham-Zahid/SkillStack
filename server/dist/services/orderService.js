@@ -1,0 +1,77 @@
+import ejs from "ejs";
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config();
+import OrderModel from "../models/orderModel";
+import CourseModel from "../models/courseModel";
+import UserModel from "../models/userModel";
+import NotificationModel from "../models/notificationModel";
+import ErrorHandler from "../utils/ErrorHandler";
+import { sendMail } from "../utils/email";
+import { redis } from "../utils/redis";
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import stripe from "stripe";
+const __dirname = path.resolve();
+export const createOrder = async (data, userId) => {
+    const user = await UserModel.findById(userId);
+    if (!user)
+        throw new ErrorHandler("User not found", 404);
+    const { courseId, payment_info = {} } = data;
+    if (payment_info && "id" in payment_info) {
+        const stripeClient = new stripe(process.env.STRIPE_SECRET_KEY);
+        const paymentIntent = await stripeClient.paymentIntents.retrieve(payment_info.id);
+        if (paymentIntent.status !== "succeeded") {
+            throw new ErrorHandler("Payment failed", 400);
+        }
+    }
+    if (user.courses.some((c) => c.courseId.toString() === courseId)) {
+        throw new ErrorHandler("You have already enrolled in this course", 400);
+    }
+    const course = await CourseModel.findById(courseId);
+    if (!course)
+        throw new ErrorHandler("Course not found", 404);
+    const order = await OrderModel.create({
+        course: { courseId: course._id, name: course.name, price: course.price },
+        user: { userId: user._id, name: user.name, email: user.email },
+        payment_info,
+    });
+    // send confirmation email
+    const mailData = {
+        order: {
+            _id: order._id.toString().slice(0, 6),
+            name: course.name,
+            price: course.price,
+            date: new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            }),
+        },
+    };
+    const html = await ejs.renderFile(path.join(__dirname, "./mails/order-confirmation.ejs"), { data: mailData });
+    await sendMail({ to: user.email, subject: "Order Confirmation", html });
+    user.courses.push({ courseId });
+    await user.save();
+    await NotificationModel.create({
+        userId: user._id,
+        title: "New Order",
+        message: `${user.name} purchased ${course.name}.`,
+    });
+    if (course.purchased !== undefined)
+        course.purchased += 1;
+    await course.save();
+    // 🔥 Invalidate caches
+    await redis.del("allCourses"); // course list
+    await redis.del(courseId); // single course cache
+    await redis.del(userId); // cached user info if applicable
+    return course;
+};
+// Get All Orders --- Admin
+export const getAllOrdersAdmin = async (page, limit, skip) => {
+    const orders = await OrderModel.find()
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+    const total = await OrderModel.countDocuments({});
+    return { orders, total };
+};
