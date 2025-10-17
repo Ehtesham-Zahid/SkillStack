@@ -5,7 +5,7 @@ import {
   getAllNotifications,
   updateNotificationStatus,
   deleteNotifications,
-} from "../services/notificationService";
+} from "../services/notificationService.js";
 import cron from "node-cron";
 
 export const handleGetAllNotifications = asyncHandler(
@@ -18,7 +18,9 @@ export const handleGetAllNotifications = asyncHandler(
 // Update Notification Status
 export const handleUpdateNotificationStatus = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const notifications = await updateNotificationStatus(req.params.id);
+    const notifications = await updateNotificationStatus(
+      req.params.id as string
+    );
     res.status(200).json({ success: true, notifications: notifications });
   }
 );
