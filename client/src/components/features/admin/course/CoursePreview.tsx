@@ -91,10 +91,15 @@ const CoursePreview = ({
             Buy Now
           </Button>
           <div className="flex gap-2 border-b dark:border-text2-dark border-text2 pb-5">
-            <Input placeholder="Coupon Code" className="flex-1" />
+            <Input
+              placeholder="Coupon Code"
+              className="flex-1"
+              disabled={true}
+            />
             <Button
               type="button"
-              className="dark:text-text1-dark text-text1 bg-transparent border dark:border-text2-dark border-text2 hover:border-primary dark:hover:border-primary cursor-pointer hover:bg-transparent"
+              className="cursor-not-allowed dark:text-text1-dark text-text1 bg-transparent border dark:border-text2-dark border-text2 hover:border-primary dark:hover:border-primary hover:bg-transparent"
+              disabled={true}
             >
               Apply
             </Button>

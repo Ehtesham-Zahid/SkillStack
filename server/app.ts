@@ -12,10 +12,18 @@ import orderRouter from "./routes/orderRoute";
 import notificationRouter from "./routes/notificationRoute";
 import analyticsRouter from "./routes/analyticsRoute";
 import layoutRouter from "./routes/layoutRoute";
+import { rateLimit } from "express-rate-limit";
 
 // body parser
 app.use(express.json({ limit: "50mb" }));
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+});
 // cookie parser
 app.use(cookieParser());
 
@@ -49,5 +57,8 @@ app.get("/test", (req: Request, res: Response, next: NextFunction) => {
 //   err.statusCode = 404;
 //   next(err);
 // });
+
+// Apply the rate limiting middleware to all requests.
+app.use(limiter);
 
 app.use(ErrorMiddleware);
