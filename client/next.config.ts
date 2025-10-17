@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       "skillstack-production.up.railway.app",
       "res.cloudinary.com",
       "lh3.googleusercontent.com",
+      "avatars.githubusercontent.com",
     ],
   },
 };

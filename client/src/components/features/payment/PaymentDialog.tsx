@@ -83,7 +83,24 @@ const PaymentDialog = ({
         {/* Payment form */}
         <div className="px-4 pb-4">
           {stripePromise && clientSecret ? (
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret,
+                appearance: {
+                  theme: "flat",
+                  variables: {
+                    colorPrimary: "#0570de",
+                    colorText: "#303030",
+                  },
+                  rules: {
+                    ".Label": {
+                      color: "oklch(44.6% 0.043 257.281)",
+                    },
+                  },
+                },
+              }}
+            >
               <CheckoutForm data={data} user={user} />
             </Elements>
           ) : (
