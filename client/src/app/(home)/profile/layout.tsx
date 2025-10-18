@@ -13,6 +13,7 @@ export default function ProfileLayout({
 }) {
   const router = useRouter();
   const { data: user, isLoading, isError } = useLoadUserQuery(undefined);
+  console.log(user);
 
   useEffect(() => {
     if (!isLoading && (!user?.user || isError)) {
