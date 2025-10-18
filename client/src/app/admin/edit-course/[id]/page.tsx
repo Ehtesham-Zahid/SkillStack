@@ -11,10 +11,10 @@ import {
   useGetSingleCourseAdminQuery,
 } from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Spinner from "@/src/components/ui/Spinner";
 
-const page = () => {
+const Page = () => {
   const { id } = useParams();
   const {
     data: course,
@@ -159,4 +159,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -5,7 +5,7 @@ import Heading from "@/src/utils/Heading";
 import { useSelector } from "react-redux";
 import ProfileInfo from "@/src/components/features/profile/ProfileInfo";
 
-const page = () => {
+const Page = () => {
   const { user } = useSelector((state: any) => state.auth);
   return (
     <div className="w-full">
@@ -19,4 +19,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

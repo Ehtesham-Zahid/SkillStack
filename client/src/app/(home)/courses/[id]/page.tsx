@@ -11,13 +11,11 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const page = () => {
+const Page = () => {
   const { id } = useParams();
-  const {
-    data: course,
-    isLoading: isCourseLoading,
-    isFetching,
-  } = useGetSingleCourseQuery(id as string);
+  const { data: course, isLoading: isCourseLoading } = useGetSingleCourseQuery(
+    id as string
+  );
   const { data: config } = useGetStripePublishableKeyQuery();
   const [createPaymentIntent, { data: paymentIntentData }] =
     useNewPaymentMutation();
@@ -56,4 +54,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -5,7 +5,7 @@ import Spinner from "@/src/components/ui/Spinner";
 import { useState } from "react";
 import InvoicesTable from "@/src/components/features/admin/invoice/InvoicesTable/InvoicesTable";
 
-const page = () => {
+const Page = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState("10");
   const { data, isLoading, isFetching } = useGetAllOrdersAdminQuery({
@@ -32,4 +32,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

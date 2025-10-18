@@ -5,7 +5,7 @@ import { useGetAllCoursesAdminQuery } from "@/src/redux/features/course/courseAp
 import Spinner from "@/src/components/ui/Spinner";
 import { useState } from "react";
 
-const page = () => {
+const Page = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState("10");
   const { data, isLoading, isFetching } = useGetAllCoursesAdminQuery({

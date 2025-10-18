@@ -5,7 +5,7 @@ import { useGetAllUsersQuery } from "@/src/redux/features/user/userApi";
 import Spinner from "@/src/components/ui/Spinner";
 import { useState } from "react";
 
-const page = () => {
+const Page = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState("10");
   const { data, isLoading, isFetching } = useGetAllUsersQuery({
@@ -33,4 +33,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

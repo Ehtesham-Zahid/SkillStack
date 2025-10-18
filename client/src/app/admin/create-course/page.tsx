@@ -8,9 +8,9 @@ import CourseContent from "@/src/components/features/admin/course/CourseContent"
 import CoursePreview from "@/src/components/features/admin/course/CoursePreview";
 import { useCreateCourseMutation } from "@/src/redux/features/course/courseApi";
 import { toast } from "react-hot-toast";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Spinner from "@/src/components/ui/Spinner";
-const page = () => {
+const Page = () => {
   const [createCourse, { isLoading, isError, isSuccess, error }] =
     useCreateCourseMutation();
   const router = useRouter();
@@ -166,4 +166,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
