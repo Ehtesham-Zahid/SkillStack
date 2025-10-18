@@ -71,10 +71,9 @@ export const createOrder = async (
     },
   };
 
-  const html = await ejs.renderFile(
-    path.join(__dirname, "./mails/order-confirmation.ejs"),
-    { data: mailData }
-  );
+  const templatePath = path.resolve("server/mails/order-confirmation.ejs");
+
+  const html = await ejs.renderFile(templatePath, { data: mailData });
   await sendMail({ to: user.email, subject: "Order Confirmation", html });
 
   user.courses.push({ courseId });

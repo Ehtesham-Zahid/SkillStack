@@ -72,10 +72,8 @@ export const registerUser = async (userData: IRegistrationBody) => {
     activationCode,
   };
 
-  const html = await ejs.renderFile(
-    path.join(__dirname, "./mails/activation-mail.ejs"),
-    mailData
-  );
+  const templatePath = path.resolve("server/mails/activation-mail.ejs");
+  const html = await ejs.renderFile(templatePath, mailData);
 
   await sendMail({
     to: email,

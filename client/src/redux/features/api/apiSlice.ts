@@ -23,7 +23,10 @@ export const apiSlice = createApi({
       providesTags: ["User"] as any,
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
+          console.log("loadUser");
+
           const result = await queryFulfilled;
+          console.log(result.data);
           dispatch(
             userLoggedIn({
               user: result.data.user,

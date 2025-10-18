@@ -284,10 +284,8 @@ export const addAnswer = async (
       replierName: user.name,
     };
 
-    const html = await ejs.renderFile(
-      path.join(__dirname, "./mails/question-reply.ejs"),
-      data
-    );
+    const templatePath = path.resolve("server/mails/question-reply.ejs");
+    const html = await ejs.renderFile(templatePath, data);
 
     await sendMail({
       to: question.user.email,
