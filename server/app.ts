@@ -30,7 +30,7 @@ app.use(cookieParser());
 // cors => cross origin resource sharing
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["https://skillstack-frontend-4.onrender.com"],
     credentials: true,
   })
 );
