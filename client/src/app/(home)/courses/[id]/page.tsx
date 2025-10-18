@@ -1,5 +1,6 @@
 "use client";
 
+import Heading from "@/src/utils/Heading";
 import SingleCourseSection from "@/src/components/features/course/SingleCourseSection";
 import Spinner from "@/src/components/ui/Spinner";
 import { useGetSingleCourseQuery } from "@/src/redux/features/course/courseApi";
@@ -43,13 +44,27 @@ const Page = () => {
     <Spinner />
   ) : (
     stripePromise && (
-      <div>
-        <SingleCourseSection
-          course={course?.course}
-          stripePromise={stripePromise}
-          clientSecret={clientSecret}
+      <>
+        <Heading
+          title={`SkillStack | ${course?.course?.name || "Course"}`}
+          description={
+            course?.course?.description ||
+            "Learn with SkillStack - Premium online courses for skill development"
+          }
+          keywords={`${
+            course?.course?.name || "Course"
+          }, Online Learning, SkillStack, ${
+            course?.course?.category || "Programming"
+          }, Education`}
         />
-      </div>
+        <div>
+          <SingleCourseSection
+            course={course?.course}
+            stripePromise={stripePromise}
+            clientSecret={clientSecret}
+          />
+        </div>
+      </>
     )
   );
 };

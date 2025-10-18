@@ -10,9 +10,9 @@ const Page = () => {
   return (
     <div className="w-full">
       <Heading
-        title={`${user?.name}'s Profile`}
-        description="SkillStack is a platform for learning and teaching skills"
-        keywords="Programming, Web Development, AI, Machine Learning, Data Science"
+        title={`SkillStack | ${user?.name}'s Profile`}
+        description="Manage your SkillStack profile, view learning progress, and access your account settings"
+        keywords="User Profile, Account Settings, Learning Progress, SkillStack Profile, User Dashboard"
       />
       <ProfileInfo />
     </div>

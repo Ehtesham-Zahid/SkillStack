@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Heading from "@/src/utils/Heading";
 import ChangePassword from "@/src/components/features/profile/ChangePassword";
 import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
 import { useRouter } from "next/navigation";
@@ -21,9 +22,16 @@ const Page = () => {
   if (!user?.user || user.user.provider !== "manual") return null; // prevents UI flash
 
   return (
-    <div className="w-full">
-      <ChangePassword />
-    </div>
+    <>
+      <Heading
+        title="SkillStack | Change Password"
+        description="Update your SkillStack account password to keep your account secure and protected"
+        keywords="Change Password, Account Security, Password Update, Account Settings, Security Settings"
+      />
+      <div className="w-full">
+        <ChangePassword />
+      </div>
+    </>
   );
 };
 

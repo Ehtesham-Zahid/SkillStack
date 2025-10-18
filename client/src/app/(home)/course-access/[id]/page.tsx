@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Heading from "@/src/utils/Heading";
 import { useLoadUserQuery } from "@/src/redux/features/api/apiSlice";
 import { useGetCourseWithContentQuery } from "@/src/redux/features/course/courseApi";
 import Spinner from "@/src/components/ui/Spinner";
@@ -54,9 +55,20 @@ const Page = () => {
   if (!isAuthorized) return null;
 
   return (
-    <div>
-      <CourseAccessSection course={course?.course} user={user?.user} />
-    </div>
+    <>
+      <Heading
+        title={`SkillStack | Learning - ${course?.course?.name || "Course"}`}
+        description={`Continue learning ${
+          course?.course?.name || "this course"
+        } with SkillStack - Access course materials, videos, and track your progress`}
+        keywords={`${
+          course?.course?.name || "Course"
+        }, Learning, Course Access, SkillStack, Online Learning, Study, Education`}
+      />
+      <div>
+        <CourseAccessSection course={course?.course} user={user?.user} />
+      </div>
+    </>
   );
 };
 
