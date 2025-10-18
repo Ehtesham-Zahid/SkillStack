@@ -9,7 +9,7 @@ import CourseModel, { ICourse } from "../models/courseModel.js";
 import UserModel, { IUser } from "../models/userModel.js";
 import NotificationModel from "../models/notificationModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
-import { sendMail } from "../utils/email.js";
+import sendMail from "../utils/email.js";
 import { redis } from "../utils/redis.js";
 import { ObjectId } from "mongoose";
 
@@ -71,10 +71,34 @@ export const createOrder = async (
     },
   };
 
-  const templatePath = path.resolve("mails/order-confirmation.ejs");
+  // const templatePath = path.resolve("mails/order-confirmation.ejs");
 
-  const html = await ejs.renderFile(templatePath, { data: mailData });
-  await sendMail({ to: user.email, subject: "Order Confirmation", html });
+  // const html = await ejs.renderFile(templatePath, { data: mailData });
+  // await sendMail({ to: user.email, subject: "Order Confirmation", html });
+
+  try {
+    if (user) {
+      await sendMail({
+        email: user.email,
+        subject: "Order Confirmation - Course Purchase Successful",
+        type: "order-confirmation",
+        data: {
+          userName: user.name,
+          courseName: course.name,
+          orderNumber: order._id?.toString().slice(0, 6),
+          amount: course.price.toFixed(2),
+          date: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+          courseId: course._id?.toString() || courseId,
+        },
+      });
+    }
+  } catch (error: any) {
+    throw new ErrorHandler("Order confirmation email failed", 500);
+  }
 
   user.courses.push({ courseId });
   await user.save();
