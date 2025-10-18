@@ -76,7 +76,9 @@ export const handleLogoutUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     res.cookie("accessToken", "", { maxAge: 1 });
     res.cookie("refreshToken", "", { maxAge: 1 });
-    redis.del(req.user?._id as string);
+    // Optional: try deleting Redis key if req.user exists
+    if (req.user?._id) redis.del(req.user._id);
+
     res
       .status(200)
       .json({ success: true, message: "User logged out successfully" });
