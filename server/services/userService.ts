@@ -72,7 +72,7 @@ export const registerUser = async (userData: IRegistrationBody) => {
     activationCode,
   };
 
-  const templatePath = path.resolve("server/mails/activation-mail.ejs");
+  const templatePath = path.resolve("mails/activation-mail.ejs");
   const html = await ejs.renderFile(templatePath, mailData);
 
   await sendMail({

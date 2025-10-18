@@ -71,7 +71,7 @@ export const createOrder = async (
     },
   };
 
-  const templatePath = path.resolve("server/mails/order-confirmation.ejs");
+  const templatePath = path.resolve("mails/order-confirmation.ejs");
 
   const html = await ejs.renderFile(templatePath, { data: mailData });
   await sendMail({ to: user.email, subject: "Order Confirmation", html });

@@ -284,7 +284,7 @@ export const addAnswer = async (
       replierName: user.name,
     };
 
-    const templatePath = path.resolve("server/mails/question-reply.ejs");
+    const templatePath = path.resolve("mails/question-reply.ejs");
     const html = await ejs.renderFile(templatePath, data);
 
     await sendMail({
