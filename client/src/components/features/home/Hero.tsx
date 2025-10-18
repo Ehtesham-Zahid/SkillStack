@@ -30,13 +30,14 @@ const Hero = () => {
               Learn from Experts
             </Badge>
 
-            <p className="text-[clamp(28px,5vw,65px)]  font-bold text-center lg:text-left  text-text1 dark:text-text1-dark">
+            <h1 className="text-[clamp(24px,4vw,48px)] sm:text-[clamp(28px,5vw,56px)] lg:text-[clamp(32px,5.5vw,65px)] font-bold text-center lg:text-left text-text1 dark:text-text1-dark leading-tight">
               {bannerData?.layout?.banner?.title}
-              <span className=" text-primary ml-4 border-b-2 border-primary border-dashed  -rotate-5 inline-block ">
+              <br className="sm:hidden" />
+              <span className="text-primary ml-2 xl:ml-4 border-b-2 border-primary border-dashed -rotate-2 sm:-rotate-3 inline-block transform transition-transform duration-300 hover:rotate-0">
                 Skill
                 <span className="text-text1 dark:text-text1-dark">Stack</span>
               </span>
-            </p>
+            </h1>
           </div>
 
           <p className="text-text1 dark:text-text1-dark text-center lg:text-left font-medium text-base sm:text-lg   mx-auto  lg:mx-0 lg:text-lg xl:text-xl  sm:w-2/3 lg:w-4/5 2xl:w-3/4">
