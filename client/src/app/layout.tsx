@@ -1,13 +1,10 @@
 "use client";
-import type { Metadata } from "next";
 import React from "react";
-// import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../utils/ThemeProvider";
 import { Provider } from "./Provider";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
-import { useLoadUserQuery } from "../redux/features/api/apiSlice";
 import AuthProvider from "../utils/AuthProvider";
 import ScrollToTop from "../hooks/ScrollToTop";
 import { useEffect } from "react";
@@ -24,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   useEffect(() => {
-    socketId.on("newNotification", (data: any) => {});
+    socketId.on("newNotification", () => {});
   }, []);
 
   return (

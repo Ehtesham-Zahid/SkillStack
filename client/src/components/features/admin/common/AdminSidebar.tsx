@@ -15,22 +15,16 @@ import {
 
 import {
   Home,
-  Database,
   Users,
   FileText,
-  Video,
   VideoIcon,
-  LayoutDashboard,
   Layers,
   HelpCircle,
   List,
-  UserCog,
   UsersRound,
   ChartBarBig,
   BarChartBig,
   PieChart,
-  MoreHorizontal,
-  Settings,
   LogOut,
 } from "lucide-react";
 import Image from "next/image";
@@ -153,14 +147,7 @@ const sidebarItems: SidebarItem[] = [
 
 const AdminSidebar = () => {
   const router = useRouter();
-  const [
-    logout,
-    {
-      isLoading: logoutLoading,
-      isSuccess: logoutSuccess,
-      isError: logoutError,
-    },
-  ] = useLogoutMutation();
+  const [logout, { isLoading: logoutLoading }] = useLogoutMutation();
 
   const logoutHandler = async () => {
     try {
@@ -168,8 +155,9 @@ const AdminSidebar = () => {
       await signOut({ redirect: false });
       await logout().unwrap(); // unwrap throws if request fails
       toast.success("Logged out successfully");
-    } catch (err) {
+    } catch (error: any) {
       toast.error("Logout failed");
+      console.log(error);
     }
   };
   return (

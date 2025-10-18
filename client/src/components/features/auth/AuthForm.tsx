@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { LuLoaderCircle } from "react-icons/lu";
 import toast from "react-hot-toast";
-import { signIn, useSession } from "next-auth/react";
-import { useDispatch, useSelector } from "react-redux";
+import { signIn } from "next-auth/react";
+import { useDispatch } from "react-redux";
 import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/src/shadcn/ui/button";
@@ -24,7 +24,6 @@ import { Input } from "@/src/shadcn/ui/input";
 
 import {
   useRegisterMutation,
-  useSocialAuthMutation,
   useLoginMutation,
 } from "../../../redux/features/auth/authApi";
 
@@ -57,7 +56,6 @@ const AuthForm = () => {
   const [
     register,
     {
-      data: registerData,
       error: registerError,
       isSuccess: registerSuccess,
       isLoading: registerLoading,
@@ -65,12 +63,7 @@ const AuthForm = () => {
   ] = useRegisterMutation();
   const [
     login,
-    {
-      data: loginData,
-      error: loginError,
-      isSuccess: loginSuccess,
-      isLoading: loginLoading,
-    },
+    { error: loginError, isSuccess: loginSuccess, isLoading: loginLoading },
   ] = useLoginMutation();
 
   const form = useForm<AuthFormValues>({
@@ -229,7 +222,7 @@ const AuthForm = () => {
       </div>
       {isLogin ? (
         <p className="text-xs text-center text-text2 dark:text-text2-dark mt-2">
-          Don't have an account?
+          Don&apos;t have an account?
           <span
             className="text-primary  cursor-pointer hover:underline ml-0.5"
             onClick={() => setIsLogin(false)}

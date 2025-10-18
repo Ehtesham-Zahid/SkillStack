@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/src/shadcn/ui/card";
 import {
   Shield,
   Database,
-  Lock,
   UserCheck,
   CheckCircle2,
   Eye,
@@ -58,7 +57,7 @@ const PolicySection = () => {
           <span className="text-text1 dark:text-text1-dark">Policy</span>
         </h1>
         <p className="mt-4 text-text2 dark:text-text2-dark text-base sm:text-lg">
-          We value your privacy. Here's how{" "}
+          We value your privacy. Here&apos;s how{" "}
           <span className="text-primary dark:text-primary-dark font-semibold">
             Skill<span className="text-text1 dark:text-text1-dark">Stack</span>
           </span>{" "}

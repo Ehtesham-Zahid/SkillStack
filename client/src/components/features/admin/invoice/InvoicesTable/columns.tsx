@@ -8,9 +8,9 @@ import { MessageCircleCodeIcon } from "lucide-react";
 // This type is used to define the shape of our data.
 export interface Order {
   _id: string;
-  course: object;
-  user: object;
-  payment_info: object;
+  course: any;
+  user: any;
+  payment_info: any;
   createdAt: Date;
 }
 
@@ -30,7 +30,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Customer Name",
     cell: ({ row }) => {
       const user: any = row.getValue("user");
-      const name: string = user.name;
+      const name: string = user?.name;
       return <div className="capitalize">{name || "N/A"}</div>;
     },
   },
@@ -38,8 +38,8 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "user",
     header: "Customer Email",
     cell: ({ row }) => {
-      const user: object = row.getValue("user");
-      const email: string = user.email;
+      const user: any = row.getValue("user");
+      const email: string = user?.email;
       return <div className="">{email || "N/A"}</div>;
     },
   },
@@ -47,8 +47,8 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "course",
     header: "Course Name",
     cell: ({ row }) => {
-      const course: object = row.getValue("course");
-      const courseName: string = course.name;
+      const course: any = row.getValue("course");
+      const courseName: string = course?.name;
       return <div className="capitalize">{courseName || "N/A"}</div>;
     },
   },
@@ -56,8 +56,8 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "course",
     header: "Price",
     cell: ({ row }) => {
-      const course: object = row.getValue("course");
-      const price: string = course.price;
+      const course: any = row.getValue("course");
+      const price: string = course?.price;
       return (
         <Badge className="bg-green-100 text-green-600 font-bold capitalize">
           ${price || "N/A"}
@@ -78,10 +78,10 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const user: object = row.getValue("user");
+      const user: any = row.getValue("user");
       return (
         <div className="flex gap-4 items-center">
-          <a href={`mailto:${user.email}`} title={`Email ${user.name}`}>
+          <a href={`mailto:${user?.email}`} title={`Email ${user?.name}`}>
             <MessageCircleCodeIcon className="w-6 h-6 rounded-md p-1 dark:text-accent-dark text-accent dark:hover:bg-accent-dark/30 hover:bg-accent-dark/30 cursor-pointer" />
           </a>
         </div>

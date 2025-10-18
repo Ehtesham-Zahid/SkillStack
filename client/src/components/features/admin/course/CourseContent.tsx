@@ -202,9 +202,9 @@ const CourseContent = ({
       <div className="flex flex-col gap-5 w-full">
         {courseContentData.map((section: any, index: number) => (
           <Accordion
+            key={index}
             type="single"
             collapsible
-            key={index}
             className="border border-gray-200 rounded-md px-4 sm:px-5 py-2 dark:border-text2-dark"
           >
             <AccordionItem value={`item-${index}`}>
@@ -232,9 +232,9 @@ const CourseContent = ({
               <AccordionContent className="mt-4 space-y-4">
                 {section.lessons.map((lesson: any, lessonIndex: number) => (
                   <Accordion
+                    key={lessonIndex}
                     type="single"
                     collapsible
-                    key={lessonIndex}
                     className="border border-gray-200 rounded-md px-5 py-2 dark:border-text2-dark"
                   >
                     <AccordionItem value={`item-${lessonIndex}`}>
@@ -333,7 +333,10 @@ const CourseContent = ({
                           <div className="flex flex-col gap-4 w-full">
                             {lesson.links.map(
                               (link: any, linkIndex: number) => (
-                                <div className="flex flex-col gap-4 w-full border border-text2-dark rounded-md p-4 sm:p-5">
+                                <div
+                                  key={linkIndex}
+                                  className="flex flex-col gap-4 w-full border border-text2-dark rounded-md p-4 sm:p-5"
+                                >
                                   <div className="text-base font-medium dark:text-accent-dark text-accent  flex items-center justify-between">
                                     Link {linkIndex + 1}
                                     {lesson.links.length > 1 && (

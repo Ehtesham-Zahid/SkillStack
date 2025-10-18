@@ -38,8 +38,7 @@ const OtpForm = () => {
   const [resendOtp, setResendOtp] = useState(false);
   const { token } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
-  const [activate, { data, error, isSuccess, isLoading, isError }] =
-    useActivationMutation();
+  const [activate, { error, isSuccess, isLoading }] = useActivationMutation();
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -122,7 +121,7 @@ const OtpForm = () => {
           resendOtp ? "hidden" : ""
         }`}
       >
-        Didn't receive an OTP?{" "}
+        Didn&apos;t receive an OTP?{" "}
         <span
           className="text-primary  cursor-pointer hover:underline"
           onClick={() => setResendOtp(true)}

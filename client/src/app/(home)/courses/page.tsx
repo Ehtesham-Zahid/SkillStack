@@ -1,11 +1,11 @@
+import { Suspense } from "react";
 import CoursesSection from "@/src/components/features/course/CoursesSection";
+import Spinner from "@/src/components/ui/Spinner";
 
-const page = () => {
+export default function Page() {
   return (
-    <div>
+    <Suspense fallback={<Spinner />}>
       <CoursesSection />
-    </div>
+    </Suspense>
   );
-};
-
-export default page;
+}

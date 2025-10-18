@@ -31,7 +31,7 @@ const Page = () => {
       const amount = Math.round(course.course.price * 100);
       createPaymentIntent({ amount });
     }
-  }, [config, course]);
+  }, [config, course, createPaymentIntent]);
 
   useEffect(() => {
     if (paymentIntentData) {

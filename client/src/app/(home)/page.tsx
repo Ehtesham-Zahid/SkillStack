@@ -6,9 +6,7 @@ import HomeCoursesSection from "@/src/components/features/home/HomeCoursesSectio
 import TestimonialsSection from "@/src/components/features/home/TestimonialsSection";
 import FaqsSection from "@/src/components/shared/FaqsSection";
 
-interface Props {}
-
-const Page = (props: Props) => {
+const Page = () => {
   return (
     <>
       <Heading

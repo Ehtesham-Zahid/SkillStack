@@ -1,6 +1,4 @@
-import { Link } from "lucide-react";
 import ThemeToggle from "@/src/components/ui/ThemeToggle";
-import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { IoNotifications } from "react-icons/io5";
 import {

@@ -124,7 +124,7 @@ const CustomTable = <TData, TValue>({
                   <PaginationPrevious
                     href="#"
                     onClick={() => {
-                      let newPage: number = Math.max(page - 1, 1);
+                      const newPage: number = Math.max(page - 1, 1);
                       setPage(newPage as number);
                     }}
                     className={`${
@@ -156,7 +156,7 @@ const CustomTable = <TData, TValue>({
                   <PaginationNext
                     href="#"
                     onClick={() => {
-                      let newPage: number = Math.min(
+                      const newPage: number = Math.min(
                         page + 1,
                         totalPages as number
                       );

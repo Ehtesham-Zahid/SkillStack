@@ -168,7 +168,7 @@ const CoursePreview = ({
 
         <div className="flex flex-col gap-4">
           <p className="text-2xl font-semibold dark:text-text1-dark text-text1">
-            What you'll learn
+            What you&apos;ll learn
           </p>
           <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
             {(courseData?.benefits?.length

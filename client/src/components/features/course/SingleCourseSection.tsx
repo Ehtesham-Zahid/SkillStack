@@ -101,7 +101,7 @@ const SingleCourseSection = ({
             <Card className="bg-surface dark:bg-surface-dark border-text2 dark:border-text2-dark shadow-sm">
               <CardContent className="px-8 py-4">
                 <h3 className="text-2xl font-bold text-text1 dark:text-text1-dark mb-6">
-                  What you'll learn
+                  What you&apos;ll learn
                 </h3>
                 <div className="space-y-4">
                   {course?.benefits?.map((objective: any, index: number) => (
@@ -234,7 +234,7 @@ const SingleCourseSection = ({
 
                   <div className="space-y-4">
                     <h4 className="font-semibold text-text1 dark:text-text1-dark text-lg">
-                      What you'll learn:
+                      What you&apos;ll learn:
                     </h4>
                     <div className="space-y-3">
                       {course?.benefits?.map((detail: any, index: number) => (
@@ -260,10 +260,10 @@ const SingleCourseSection = ({
                   </div>
 
                   <p>
-                    You won't just know HTML — you'll be writing
+                    You won&apos;t just know HTML — you&apos;ll be writing
                     production-level code, ready for CSS, JavaScript, and any
-                    modern frontend stack. It's your first real step into the
-                    world of web development.
+                    modern frontend stack. It&apos;s your first real step into
+                    the world of web development.
                   </p>
                 </div>
               </CardContent>

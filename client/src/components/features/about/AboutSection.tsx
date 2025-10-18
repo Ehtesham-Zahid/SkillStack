@@ -78,8 +78,8 @@ const AboutSection = () => {
             Skill<span className="text-text1 dark:text-text1-dark">Stack</span>
           </span>
           , our mission is to make programming accessible and enjoyable for
-          everyone. Whether you're just starting out or advancing your skills,
-          we're here to support your growth every step of the way.
+          everyone. Whether you&apos;re just starting out or advancing your
+          skills, we&apos;re here to support your growth every step of the way.
         </p>
       </div>
     </section>

@@ -39,7 +39,6 @@ import {
 import { toast } from "react-hot-toast";
 import { formatDate } from "@/src/utils/formatDate";
 import socketIO from "socket.io-client";
-import { useSelector } from "react-redux";
 const ENDPOINT =
   process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || "http://localhost:5000";
 const socketId = socketIO(ENDPOINT, {
@@ -145,7 +144,7 @@ const CourseAccessSection = ({ course, user }: { course: any; user: any }) => {
 
       toast.success("Question added successfully");
 
-      let lesson = AddQuestionCourseData?.course?.sections
+      const lesson = AddQuestionCourseData?.course?.sections
         .find((section: any) => section._id === currentSection._id)
         ?.lessons.find((lesson: any) => lesson._id === currentLesson._id);
 

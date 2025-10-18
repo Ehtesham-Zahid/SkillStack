@@ -25,7 +25,7 @@ const Page = () => {
         toast.error(errorMessage.data.message);
       }
     }
-  }, [isLoading, isSuccess, error]);
+  }, [isLoading, isSuccess, error, router]);
 
   const [courseInfo, setCourseInfo] = useState({
     name: "",

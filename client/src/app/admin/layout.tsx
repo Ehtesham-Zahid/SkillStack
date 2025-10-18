@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AdminHeader from "@/src/components/features/admin/common/AdminHeader";
 import AdminSidebar from "@/src/components/features/admin/common/AdminSidebar";
 import HeaderActions from "@/src/components/features/admin/common/HeaderActions";
 import { SidebarProvider, SidebarTrigger } from "@/src/shadcn/ui/sidebar";
