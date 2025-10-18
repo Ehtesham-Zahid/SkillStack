@@ -65,7 +65,7 @@ const CourseCard = ({
   return (
     <Link
       href={enrolled ? `/course-access/${id}` : `/courses/${id}`}
-      className="group w-full bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700"
+      className="group w-full bg-surface dark:bg-surface-dark rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700"
     >
       {/* Image Section */}
       <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
@@ -100,7 +100,7 @@ const CourseCard = ({
 
         {/* Price Badge */}
         <div className="absolute top-3 right-3">
-          <div className="bg-white/90 dark:bg-gray-900/90 text-gray-900 dark:text-white text-sm font-semibold px-2 py-1 rounded shadow-sm">
+          <div className="bg-surface/90 dark:bg-surface-dark/90 text-gray-900 dark:text-white text-sm font-semibold px-2 py-1 rounded shadow-sm">
             ${hasDiscount ? discountedPrice : price}
           </div>
         </div>
