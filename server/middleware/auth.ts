@@ -8,6 +8,9 @@ import UserModel, { IUser } from "../models/userModel.js";
 // authenticate user
 export const isAuthenticated = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (req.user) {
+      return next();
+    }
     const accessToken = req.cookies.accessToken as string;
     if (!accessToken) {
       return next(

@@ -20,7 +20,7 @@ const userRouter = express.Router();
 userRouter.post("/registration", handleRegisterUser);
 userRouter.post("/activate-user", handleActivateUser);
 userRouter.post("/login", handleLoginUser);
-userRouter.get("/logout", handleLogoutUser);
+userRouter.get("/logout", isAuthenticated, handleLogoutUser);
 userRouter.get("/update-access-token", handleUpdateAccessToken);
 userRouter.post("/social-auth", handleSocialAuth);
 userRouter.get(

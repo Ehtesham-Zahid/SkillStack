@@ -19,6 +19,7 @@ import {
   updateUserRole,
   deleteUser,
 } from "../services/userService.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 // Register User
 export const handleRegisterUser = asyncHandler(
@@ -72,16 +73,37 @@ export const handleLoginUser = asyncHandler(
 );
 
 // logout user
+export interface ICookieOptions {
+  httpOnly: boolean;
+  sameSite: "none" | "lax" | "strict";
+  secure: boolean;
+}
 export const handleLogoutUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.cookie("accessToken", "", { maxAge: 1 });
-    res.cookie("refreshToken", "", { maxAge: 1 });
-    // Optional: try deleting Redis key if req.user exists
-    if (req.user?._id) redis.del(req.user._id);
+    // Clear cookies with proper options for production
+    const clearCookieOptions: ICookieOptions = {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    };
 
-    res
-      .status(200)
-      .json({ success: true, message: "User logged out successfully" });
+    res.clearCookie("accessToken", clearCookieOptions);
+    res.clearCookie("refreshToken", clearCookieOptions);
+
+    // Also try clearing with empty values as fallback
+    res.cookie("accessToken", "", { maxAge: 1, ...clearCookieOptions });
+    res.cookie("refreshToken", "", { maxAge: 1, ...clearCookieOptions });
+
+    const userId = req.user?._id as string;
+    if (userId) {
+      await redis.del(userId);
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        "You have been successfully signed out. Thank you for using Learneazy!",
+    });
   }
 );
 
@@ -89,6 +111,11 @@ export const handleLogoutUser = asyncHandler(
 export const handleUpdateAccessToken = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const refreshTokenIncoming = req.cookies.refreshToken as string;
+    if (!refreshTokenIncoming) {
+      return next(
+        new ErrorHandler("Please login to access this resource", 401)
+      );
+    }
 
     const {
       accessToken,
@@ -105,7 +132,12 @@ export const handleUpdateAccessToken = asyncHandler(
     req.cookies.accessToken = accessToken;
     req.cookies.refreshToken = refreshToken;
 
-    redis.set(user._id as string, JSON.stringify(user) as any, "EX", 604800); // 7days
+    await redis.set(
+      user._id as string,
+      JSON.stringify(user) as any,
+      "EX",
+      604800
+    ); // 7days
 
     next();
   }
