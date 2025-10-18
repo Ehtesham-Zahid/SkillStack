@@ -7,7 +7,7 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 
 import userModel, { IUser } from "../models/userModel.js";
 import { redis } from "../utils/redis.js";
-import sendMail from "../utils/email.js";
+import { sendMail } from "../utils/email.js";
 import { sendToken, ITokenOptions } from "../utils/jwt.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 
@@ -64,15 +64,21 @@ export const registerUser = async (userData: IRegistrationBody) => {
 
   const activationCode = activationToken.activationCode;
 
-  await sendMail({
-    name,
-    email,
-    subject: "Activate Your SkillStack Account",
-    activationCode,
-    data: {
-      user: { name },
-      activationCode,
+  const mailData = {
+    user: {
+      name,
+      email,
     },
+    activationCode,
+  };
+
+  const templatePath = path.resolve("mails/activation-mail.ejs");
+  const html = await ejs.renderFile(templatePath, mailData);
+
+  await sendMail({
+    to: email,
+    subject: "Account Activation",
+    html,
   });
 
   return {

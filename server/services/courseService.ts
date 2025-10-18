@@ -15,7 +15,7 @@ import NotificationModel from "../models/notificationModel.js";
 
 import ErrorHandler from "../utils/ErrorHandler.js";
 import { redis } from "../utils/redis.js";
-import sendMail from "../utils/email.js";
+import { sendMail } from "../utils/email.js";
 
 const __dirname = path.resolve();
 
@@ -271,39 +271,27 @@ export const addAnswer = async (
   // }
 
   if (user?._id !== question.user._id) {
-    // const data = {
-    //   name: question.user.name,
-    //   title: section?.title,
-    //   courseId: courseId,
-    //   sectionId: sectionId,
-    //   lessonId: lessonId,
-    //   questionId: questionId,
-    //   viewLink: `localhost:5173/course/${courseId}`,
-    //   questionText: question.question,
-    //   answerText: answer,
-    //   replierName: user.name,
-    // };
+    const data = {
+      name: question.user.name,
+      title: section?.title,
+      courseId: courseId,
+      sectionId: sectionId,
+      lessonId: lessonId,
+      questionId: questionId,
+      viewLink: `localhost:5173/course/${courseId}`,
+      questionText: question.question,
+      answerText: answer,
+      replierName: user.name,
+    };
 
-    // const templatePath = path.resolve("mails/question-reply.ejs");
-    // const html = await ejs.renderFile(templatePath, data);
+    const templatePath = path.resolve("mails/question-reply.ejs");
+    const html = await ejs.renderFile(templatePath, data);
 
-    try {
-      await sendMail({
-        email: question.user.email,
-        subject: "Your Question Has Been Answered - Learneazy LMS",
-        type: "question-reply",
-        data: {
-          name: question.user.name,
-          title: section?.title,
-          answer: answer,
-          questionText: question.question,
-          instructorName: user.name,
-          courseId: courseId,
-        },
-      });
-    } catch (error: any) {
-      throw new ErrorHandler("Failed to add answer. Please try again.", 500);
-    }
+    await sendMail({
+      to: question.user.email,
+      subject: "Your Question Has Been Answered - Learneazy LMS",
+      html,
+    });
   }
   return course;
 };
