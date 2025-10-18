@@ -30,8 +30,8 @@ export const sendToken = async (user: IUser) => {
     expires: new Date(Date.now() + ms(process.env.ACCESS_TOKEN_EXPIRE! as any)),
     maxAge: ms(process.env.ACCESS_TOKEN_EXPIRE! as any) as any,
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    secure: true,
   };
 
   const refreshTokenOptions: ITokenOptions = {
@@ -40,8 +40,8 @@ export const sendToken = async (user: IUser) => {
     ),
     maxAge: ms(process.env.REFRESH_TOKEN_EXPIRE! as any) as any,
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    secure: true,
   };
 
   return {
