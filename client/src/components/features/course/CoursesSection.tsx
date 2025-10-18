@@ -152,6 +152,7 @@ const CoursesSection = () => {
                   rating={course.ratings}
                   accent={"primary"}
                   thumbnailSrc={course.thumbnail.url}
+                  discountedPrice={course?.discountedPrice}
                 />
               ))
             ) : (

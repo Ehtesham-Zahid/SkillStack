@@ -48,6 +48,7 @@ const HomeCoursesSection = () => {
             thumbnailSrc={course.thumbnail.url}
             // authorAvatarSrc={course.instructor.avatar}
             enrolled={false}
+            discountedPrice={course?.discountedPrice}
           />
         ))}
       </div>

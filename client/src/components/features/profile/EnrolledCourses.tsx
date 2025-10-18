@@ -44,6 +44,7 @@ const EnrolledCourses = () => {
               accent={"primary"}
               thumbnailSrc={course?.thumbnail?.url}
               enrolled={true}
+              discountedPrice={course?.discountedPrice}
             />
           ))}
         </div>
