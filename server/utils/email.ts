@@ -9,14 +9,24 @@ interface EmailOptions {
 }
 
 const transporter: Transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST as string,
+  host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
-  secure: false,
+  secure: Number(process.env.SMTP_PORT) === 465, // SSL if 465
   auth: {
-    user: process.env.SMTP_USER as string,
-    pass: process.env.SMTP_PASS as string,
+    user: process.env.SMTP_USER, // "apikey"
+    pass: process.env.SMTP_PASS, // actual SendGrid API key
   },
 });
+
+// const transporter: Transporter = nodemailer.createTransport({
+//   host: process.env.SMTP_HOST as string,
+//   port: Number(process.env.SMTP_PORT),
+//   secure: false,
+//   auth: {
+//     user: process.env.SMTP_USER as string,
+//     pass: process.env.SMTP_PASS as string,
+//   },
+// });
 
 export const sendMail = async (options: EmailOptions) => {
   try {
