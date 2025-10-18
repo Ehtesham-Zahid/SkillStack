@@ -52,8 +52,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-// const Custom = ({ children }: { children: React.ReactNode }) => {
-//   const { isLoading } = useLoadUserQuery({});
-//   return <>{isLoading ? <Spinner /> : children}</>;
-// };
