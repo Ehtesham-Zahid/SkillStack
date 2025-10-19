@@ -29,10 +29,13 @@ const ProfileSidebarItem = ({ item }: ProfileSidebarItemProps) => {
   const logoutHandler = async () => {
     try {
       router.push("/");
+      toast.loading("Logging out...");
       await signOut({ redirect: false });
       await logout().unwrap(); // unwrap throws if request fails
+      toast.dismiss();
       toast.success("Logged out successfully");
     } catch (err) {
+      toast.dismiss();
       toast.error("Logout failed");
     }
   };

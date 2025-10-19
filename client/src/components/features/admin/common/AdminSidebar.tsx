@@ -165,9 +165,11 @@ const AdminSidebar = () => {
       <SidebarContent className="dark:bg-surface-dark bg-surface dark:text-text1-dark text-text1  border-0  ">
         <SidebarGroup>
           <SidebarGroupLabel className="mb-8 mt-2">
-            <p className="text-3xl sm:text-4xl lg:text-3xl font-black text-primary ">
-              Skill<span className="text-black dark:text-white">Stack</span>
-            </p>
+            <Link href="/">
+              <p className="text-3xl sm:text-4xl lg:text-3xl font-black text-primary ">
+                Skill<span className="text-black dark:text-white">Stack</span>
+              </p>
+            </Link>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
