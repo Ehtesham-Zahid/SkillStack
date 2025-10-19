@@ -243,16 +243,20 @@ const AdminSidebar = () => {
         <SidebarMenu className="w-full dark:hover:bg-gray-700 rounded-lg p-0.5">
           <SidebarMenuItem>
             <SidebarMenuButton className=" flex flex-row items-center gap-2  hover:bg-transparent dark:hover:bg-transparent h-10">
-              <Image
-                src={user?.avatar?.url || "/images/user.webp"}
-                alt={user?.name || "user"}
-                width={36}
-                height={36}
-                className="rounded-full w-9 h-9 cursor-pointer border-2 border-primary"
-              />
-              <p className="text-sm font-semibold   text-text1 dark:text-text1-dark">
-                {user?.name}
-              </p>
+              <Link href="/profile">
+                <div className="flex flex-row items-center gap-2 cursor-pointer">
+                  <Image
+                    src={user?.avatar?.url || "/images/user.webp"}
+                    alt={user?.name || "user"}
+                    width={36}
+                    height={36}
+                    className="rounded-full w-9 h-9 cursor-pointer border-2 border-primary"
+                  />
+                  <p className="text-sm font-semibold   text-text1 dark:text-text1-dark">
+                    {user?.name}
+                  </p>
+                </div>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
