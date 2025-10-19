@@ -151,6 +151,10 @@ export const loginUser = async (
     throw new ErrorHandler("Invalid credentials", 400);
   }
 
+  if (user.provider !== "manual") {
+    throw new ErrorHandler("Invalid credentials", 400);
+  }
+
   const isPasswordCorrect = (await user.comparePassword(password)) as boolean;
 
   if (!isPasswordCorrect) {

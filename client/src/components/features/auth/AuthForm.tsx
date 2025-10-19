@@ -91,6 +91,7 @@ const AuthForm = () => {
       }
       if (loginError && "data" in loginError) {
         const errorData = loginError as any;
+        console.log(errorData);
         toast.error(
           (errorData?.data?.message as string) || "Something went wrong"
         );
