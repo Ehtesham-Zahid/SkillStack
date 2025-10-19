@@ -207,7 +207,7 @@ const CourseContent = ({
             collapsible
             className="border border-gray-200 rounded-md px-4 sm:px-5 py-2 dark:border-text2-dark"
           >
-            <AccordionItem value={`item-${index}`}>
+            <AccordionItem value={`item-${index}`} admin={true}>
               <AccordionTrigger className="  dark:text-text1-dark flex items-center justify-between hover:no-underline">
                 <input
                   placeholder={`Section Title`}
@@ -237,7 +237,7 @@ const CourseContent = ({
                     collapsible
                     className="border border-gray-200 rounded-md px-5 py-2 dark:border-text2-dark"
                   >
-                    <AccordionItem value={`item-${lessonIndex}`}>
+                    <AccordionItem value={`item-${lessonIndex}`} admin={true}>
                       <AccordionTrigger className="text-base font-bold dark:text-text2-dark text-text2 flex items-center justify-between hover:no-underline">
                         <p>{lesson.title}</p>
                         {section.lessons.length > 1 && (
