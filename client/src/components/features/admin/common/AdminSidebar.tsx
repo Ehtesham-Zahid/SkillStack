@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useLogoutMutation } from "@/src/redux/features/auth/authApi";
 import { toast } from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 // Sidebar items config
 interface SidebarSubItem {
@@ -148,6 +149,7 @@ const sidebarItems: SidebarItem[] = [
 const AdminSidebar = () => {
   const router = useRouter();
   const [logout, { isLoading: logoutLoading }] = useLogoutMutation();
+  const { user } = useSelector((state: any) => state.auth);
 
   const logoutHandler = async () => {
     try {
@@ -242,14 +244,14 @@ const AdminSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton className=" flex flex-row items-center gap-2  hover:bg-transparent dark:hover:bg-transparent h-10">
               <Image
-                src={"/images/client1.webp"}
-                alt="user"
+                src={user?.avatar?.url || "/images/user.webp"}
+                alt={user?.name || "user"}
                 width={36}
                 height={36}
                 className="rounded-full w-9 h-9 cursor-pointer border-2 border-primary"
               />
               <p className="text-sm font-semibold   text-text1 dark:text-text1-dark">
-                Ehtesham Zahid
+                {user?.name}
               </p>
             </SidebarMenuButton>
           </SidebarMenuItem>
