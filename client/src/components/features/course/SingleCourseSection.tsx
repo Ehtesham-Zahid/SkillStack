@@ -249,21 +249,22 @@ const SingleCourseSection = ({
                   <div className="flex items-start gap-3">
                     <UserCheck className="h-5 w-5 text-primary dark:text-primary-dark mt-1 flex-shrink-0" />
                     <p>
-                      Mini projects and coding challenges to reinforce every
-                      concept
+                      Hands-on projects and practical exercises to reinforce
+                      your learning
                     </p>
                   </div>
 
                   <div className="flex items-start gap-3">
                     <UserCheck className="h-5 w-5 text-primary dark:text-primary-dark mt-1 flex-shrink-0" />
-                    <p>By the end...</p>
+                    <p>By the end of this course...</p>
                   </div>
 
                   <p>
-                    You won&apos;t just know HTML — you&apos;ll be writing
-                    production-level code, ready for CSS, JavaScript, and any
-                    modern frontend stack. It&apos;s your first real step into
-                    the world of web development.
+                    You&apos;ll have mastered the core concepts and gained
+                    practical skills that you can immediately apply in
+                    real-world projects. This comprehensive course will give you
+                    the confidence and knowledge to take your skills to the next
+                    level.
                   </p>
                 </div>
               </CardContent>
