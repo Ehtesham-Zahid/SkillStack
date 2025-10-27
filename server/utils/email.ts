@@ -34,6 +34,22 @@ export const sendMail = async (options: EmailOptions) => {
 
     await transporter.sendMail(mailOptions);
   } catch (error: any) {
+    // 5. Detailed Error Log
+    console.error("--- FINAL EMAIL FAILURE ---");
+    console.error("Error Type:", error.code || "UNKNOWN");
+    console.error("Error Message:", error.message);
+
+    // Log the full error object for deep troubleshooting
+    if (error.stack) {
+      console.error("Error Stack Trace:", error.stack);
+    }
+
+    // The ETIMEDOUT error code is usually 'ESOCKET' or 'ETIMEDOUT'
+    if (error.code === "ETIMEDOUT" || error.code === "ESOCKET") {
+      console.error(
+        "Diagnosis: The most likely cause is a **firewall** or **network block** on the outbound SMTP port (587 or 465)."
+      );
+    }
     throw new ErrorHandler(error.message, 500);
   }
 };
