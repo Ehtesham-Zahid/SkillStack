@@ -13,8 +13,6 @@ interface EmailOptions {
 export const sendMail = async (options: EmailOptions) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
       service: process.env.SMTP_SERVICE,
       secure: false,
       auth: {
