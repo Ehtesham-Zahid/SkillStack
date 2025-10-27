@@ -13,20 +13,20 @@ interface EmailOptions {
 export const sendMail = async (options: EmailOptions) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      service: "gmail",
-      secure: true,
+      service: process.env.SMTP_SERVICE,
       auth: {
-        user: "ehteshamzahid313@gmail.com",
-        pass: process.env.SMTP_PASS,
+        type: "OAuth2",
+        user: process.env.SMTP_MAIL,
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
       },
     });
 
     const { to, subject, html } = options;
 
     const mailOptions = {
-      from: `"SkillStack" <ehteshamzahid313@gmail.com>`,
+      from: `"SkillStack" <${process.env.SMTP_MAIL}>`,
       to,
       subject,
       html,
