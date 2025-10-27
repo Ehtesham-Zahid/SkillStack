@@ -13,10 +13,12 @@ interface EmailOptions {
 export const sendMail = async (options: EmailOptions) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: process.env.SMTP_SERVICE,
+      host: "smtp.gmail.com",
+      port: 587,
+      service: "gmail",
       secure: false,
       auth: {
-        user: process.env.SMTP_MAIL,
+        user: "ehteshamzahid313@gmail.com",
         pass: process.env.SMTP_PASS,
       },
     });
@@ -24,7 +26,7 @@ export const sendMail = async (options: EmailOptions) => {
     const { to, subject, html } = options;
 
     const mailOptions = {
-      from: `"SkillStack" <${process.env.SMTP_MAIL}>`,
+      from: `"SkillStack" <ehteshamzahid313@gmail.com>`,
       to,
       subject,
       html,
