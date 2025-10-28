@@ -56,9 +56,20 @@
 
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { google } from "googleapis";
 dotenv.config();
 
 import ErrorHandler from "./ErrorHandler.js";
+
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID as string,
+  process.env.GOOGLE_CLIENT_SECRET as string,
+  process.env.GOOGLE_REDIRECT_URI as string
+);
+
+oAuth2Client.setCredentials({
+  refresh_token: process.env.GOOGLE_REFRESH_TOKEN as string,
+});
 
 interface EmailOptions {
   to: string;
@@ -69,48 +80,29 @@ interface EmailOptions {
 
 export const sendMail = async (options: EmailOptions) => {
   // 1. Initial Configuration Check Log
-  console.log("--- Starting Brevo Email Send Attempt ---");
+  const accessToken = await oAuth2Client.getAccessToken();
 
-  // Check for necessary Brevo variables
-  if (
-    !process.env.SMTP_HOST ||
-    !process.env.SMTP_PASS ||
-    !process.env.SMTP_MAIL
-  ) {
-    const message =
-      "Missing required Brevo/SMTP environment variables (HOST, PASS, or MAIL).";
-    console.error("Configuration Error:", message);
-    throw new ErrorHandler(message, 500);
-  }
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      type: "OAuth2",
+      user: process.env.SMTP_MAIL as string,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      refreshToken: process.env.GOOGLE_REFRESH_TOKEN as string,
+      accessToken: accessToken as string,
+    },
+  });
 
   try {
-    // --- BREVO TRANSPORTER CONFIGURATION ---
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: false, // false for port 587 (uses STARTTLS)
-      logger: true,
-      debug: true,
-      auth: {
-        // Use standard LOGIN type for Brevo API Key
-        user: process.env.SMTP_MAIL,
-        pass: process.env.SMTP_PASS, // This is your Brevo SMTP Key
-      },
-    });
-    // ---------------------------------------
-
     const { to, subject, html } = options;
 
     const mailOptions = {
-      // Ensure this 'from' email is verified in your Brevo account!
       from: `"SkillStack" <${process.env.SMTP_MAIL}>`,
       to,
       subject,
       html,
-      // You may want to add 'text' here as a fallback
     };
-
-    console.log(`Attempting to send mail to ${to} via Brevo...`);
 
     await transporter.sendMail(mailOptions);
 
