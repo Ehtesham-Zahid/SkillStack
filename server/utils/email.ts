@@ -156,7 +156,7 @@ export const sendMail = async (options: EmailOptions) => {
       service: process.env.SMTP_SERVICE,
       auth: {
         user: process.env.SMTP_MAIL,
-        pass: process.env.SMTP_PASSWORD,
+        pass: process.env.SMTP_PASS,
       },
     });
     const { to, subject, html } = options;
