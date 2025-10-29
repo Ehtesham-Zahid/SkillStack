@@ -7,13 +7,28 @@ const maxRetries = 5;
 
 const connectionUri: string = process.env.DB_URL || process.env.MONGO_URI || "";
 
+// Increase Mongoose's query buffering timeout (default is 10000ms)
+mongoose.set("bufferTimeoutMS", 60000);
+// Optional: use IPv4 DNS resolution in some environments
+// (helps avoid long IPv6 DNS resolution delays)
+// @ts-ignore - option is forwarded to the driver
+// mongoose.set('family', 4);
+
 const connectDB = async (): Promise<void> => {
+  if (!connectionUri) {
+    console.error(
+      "MongoDB connection URI is missing. Set DB_URL or MONGO_URI."
+    );
+    process.exit(1);
+  }
   try {
     const data = await mongoose.connect(connectionUri, {
       serverSelectionTimeoutMS: 30000,
       socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000,
       retryWrites: true,
       maxPoolSize: 10,
+      family: 4,
     } as any);
 
     console.log(`MongoDB connected with server: ${data.connection.host}`);
