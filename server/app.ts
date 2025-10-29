@@ -31,7 +31,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "https://skillstack-frontend-4.onrender.com",
+      "https://skillstack-frontend-one.vercel.app",
       "http://localhost:3000",
     ],
     credentials: true,
