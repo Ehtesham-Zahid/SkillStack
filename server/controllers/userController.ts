@@ -125,8 +125,8 @@ export const handleUpdateAccessToken = asyncHandler(
       refreshTokenOptions,
     } = await updateAccessToken(refreshTokenIncoming);
 
-    res.cookie("accessToken", accessToken, accessTokenOptions);
-    res.cookie("refreshToken", refreshToken, refreshTokenOptions);
+    // res.cookie("accessToken", accessToken, accessTokenOptions);
+    // res.cookie("refreshToken", refreshToken, refreshTokenOptions);
     req.user = user as IUser;
 
     req.cookies.accessToken = accessToken;
