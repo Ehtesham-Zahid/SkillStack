@@ -93,7 +93,7 @@ export const courseApi = apiSlice.injectEndpoints({
         body: data,
         credentials: "include",
       }),
-      invalidatesTags: ["Course"] as any,
+      invalidatesTags: ["Course", "Courses"] as any,
     }),
     addReplyToReview: builder.mutation({
       query: (data) => ({
