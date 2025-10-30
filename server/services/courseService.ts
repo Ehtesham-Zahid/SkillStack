@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import cloudinary from "cloudinary";
 import path from "path";
+import { fileURLToPath } from "url";
 import ejs from "ejs";
 import axios from "axios";
 
@@ -14,10 +15,12 @@ import { IUser } from "../models/userModel.js";
 import NotificationModel from "../models/notificationModel.js";
 
 import ErrorHandler from "../utils/ErrorHandler.js";
+
+// Get current directory for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { redis } from "../utils/redis.js";
 import { sendMail } from "../utils/email.js";
-
-const __dirname = path.resolve();
 
 // Create Course
 export const createCourse = async (data: any): Promise<ICourse> => {
@@ -284,7 +287,7 @@ export const addAnswer = async (
       replierName: user.name,
     };
 
-    const templatePath = path.resolve("mails/question-reply.ejs");
+    const templatePath = path.join(__dirname, "../mails/question-reply.ejs");
     const html = await ejs.renderFile(templatePath, data);
 
     await sendMail({

@@ -1,5 +1,6 @@
 import ejs from "ejs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -9,14 +10,16 @@ import CourseModel, { ICourse } from "../models/courseModel.js";
 import UserModel, { IUser } from "../models/userModel.js";
 import NotificationModel from "../models/notificationModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
+
+// Get current directory for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import { sendMail } from "../utils/email.js";
 import { redis } from "../utils/redis.js";
 import { ObjectId } from "mongoose";
 
 // const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 import stripe from "stripe";
-
-const __dirname = path.resolve();
 
 // Create Order
 interface ICreateOrderData {
@@ -71,7 +74,7 @@ export const createOrder = async (
     },
   };
 
-  const templatePath = path.resolve("mails/order-confirmation.ejs");
+  const templatePath = path.join(__dirname, "../mails/order-confirmation.ejs");
 
   const html = await ejs.renderFile(templatePath, { data: mailData });
   await sendMail({ to: user.email, subject: "Order Confirmation", html });

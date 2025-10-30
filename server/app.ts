@@ -1,22 +1,49 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express, { Request, Response, NextFunction } from "express";
-export const app = express();
+import express, {
+  type Request,
+  type Response,
+  type NextFunction,
+} from "express";
 import cors from "cors";
+import connectDB from "./utils/db.js";
 import cookieParser from "cookie-parser";
-import { ErrorMiddleware } from "./middleware/error.js";
 import userRouter from "./routes/userRoute.js";
-import courseRouter from "./routes/courseRoute.js";
 import orderRouter from "./routes/orderRoute.js";
-import notificationRouter from "./routes/notificationRoute.js";
-import analyticsRouter from "./routes/analyticsRoute.js";
+import courseRouter from "./routes/courseRoute.js";
 import layoutRouter from "./routes/layoutRoute.js";
+import analyticsRouter from "./routes/analyticsRoute.js";
+import notificationRouter from "./routes/notificationRoute.js";
+
+import { v2 as cloudinary } from "cloudinary";
 import { rateLimit } from "express-rate-limit";
+import { ErrorMiddleware } from "./middleware/error.js";
 
-// body parser
+// Connect DB and configure cloudinary
+connectDB();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET_KEY,
+});
+
+// Create Express app
+export const app = express();
+
+app.use(
+  cors({
+    origin: [process.env.FRONTEND_URL as string],
+    credentials: true,
+  })
+);
+
+// Other middleware
 app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
+// Rate limiting middleware
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
@@ -24,44 +51,24 @@ const limiter = rateLimit({
   legacyHeaders: false,
   ipv6Subnet: 56,
 });
-// cookie parser
-app.use(cookieParser());
 
-// cors => cross origin resource sharing
-app.use(
-  cors({
-    origin: [
-      "https://skillstack-frontend-one.vercel.app",
-      "http://localhost:3000",
-    ],
-    credentials: true,
-  })
-);
+// Apply rate limiting to all routes
+app.use(limiter);
 
-// routes
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/courses", courseRouter);
-app.use("/api/v1/orders", orderRouter);
-app.use("/api/v1/notifications", notificationRouter);
-app.use("/api/v1/analytics", analyticsRouter);
-app.use("/api/v1/layouts", layoutRouter);
-
-// testing api
-app.get("/test", (req: Request, res: Response, next: NextFunction) => {
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
     success: true,
     message: "API is running",
   });
 });
 
-// unknown route
-// app.all("/*", (req: Request, res: Response, next: NextFunction) => {
-//   const err = new Error(`Route ${req.originalUrl} not found`) as any;
-//   err.statusCode = 404;
-//   next(err);
-// });
+// Routes
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/courses", courseRouter);
+app.use("/api/v1/layouts", layoutRouter);
+app.use("/api/v1/analytics", analyticsRouter);
+app.use("/api/v1/notifications", notificationRouter);
 
-// Apply the rate limiting middleware to all requests.
-app.use(limiter);
-
+// Global error handling middleware (must be last)
 app.use(ErrorMiddleware);

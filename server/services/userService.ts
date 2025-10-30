@@ -1,5 +1,6 @@
 import ejs from "ejs";
 import path from "path";
+import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 dotenv.config();
 import cloudinary from "cloudinary";
@@ -9,9 +10,11 @@ import userModel, { IUser } from "../models/userModel.js";
 import { redis } from "../utils/redis.js";
 import { sendMail } from "../utils/email.js";
 import { sendToken, ITokenOptions } from "../utils/jwt.js";
-import ErrorHandler from "../utils/ErrorHandler.js";
 
-const __dirname = path.resolve();
+// Get current directory for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 // Register User
 // create activation token
@@ -72,7 +75,7 @@ export const registerUser = async (userData: IRegistrationBody) => {
     activationCode,
   };
 
-  const templatePath = path.resolve("mails/activation-mail.ejs");
+  const templatePath = path.join(__dirname, "../mails/activation-mail.ejs");
   const html = await ejs.renderFile(templatePath, mailData);
 
   await sendMail({
