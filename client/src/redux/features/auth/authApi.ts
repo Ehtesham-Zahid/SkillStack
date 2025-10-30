@@ -97,6 +97,7 @@ export const authApi = apiSlice.injectEndpoints({
         try {
           await queryFulfilled;
           dispatch(userLoggedOut());
+          dispatch(apiSlice.util.resetApiState());
           localStorage.removeItem("socialSynced");
         } catch (error) {
           console.log(error);
