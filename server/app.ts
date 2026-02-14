@@ -31,6 +31,7 @@ cloudinary.config({
 // Create Express app
 export const app = express();
 app.set("trust proxy", 1);
+console.log(process.env.REDIS_URL);
 
 app.use(
   cors({
