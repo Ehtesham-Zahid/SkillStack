@@ -30,7 +30,7 @@ cloudinary.config({
 
 // Create Express app
 export const app = express();
-app.set("trust proxy", 1);
+// app.set("trust proxy", 1);
 
 app.use(
   cors({
@@ -45,16 +45,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Rate limiting middleware
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 100,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-  ipv6Subnet: 56,
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   limit: 100,
+//   standardHeaders: "draft-8",
+//   legacyHeaders: false,
+//   ipv6Subnet: 56,
+// });
 
-// Apply rate limiting to all routes
-app.use(limiter);
+// // Apply rate limiting to all routes
+// app.use(limiter);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
