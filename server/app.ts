@@ -30,12 +30,13 @@ cloudinary.config({
 
 // Create Express app
 export const app = express();
+app.set("trust proxy", 1);
 
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL as string],
     credentials: true,
-  })
+  }),
 );
 
 // Other middleware
