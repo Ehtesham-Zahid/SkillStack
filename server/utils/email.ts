@@ -13,23 +13,23 @@ interface EmailOptions {
 export const sendMail = async (options: EmailOptions) => {
   try {
     const transporter: Transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "465"),
-      secure: true,
-      service: process.env.SMTP_SERVICE,
+      service: "gmail",
       auth: {
-        user: process.env.SMTP_MAIL,
-        pass: process.env.SMTP_PASS,
+        user: process.env.EMAIL_USER!,
+        pass: process.env.EMAIL_PASS!,
       },
     });
     const { to, subject, html } = options;
 
     const mailOptions = {
-      from: `"SkillStack" <${process.env.SMTP_MAIL}>`,
+      from: `"SkillStack" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html,
     };
+
+    await transporter.verify();
+    console.log("✅ Gmail SMTP connection verified.");
 
     await transporter.sendMail(mailOptions);
 
