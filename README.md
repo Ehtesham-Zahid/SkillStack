@@ -352,28 +352,10 @@ SkillStack/
 
 ---
 
-## 🖼️ Screenshots
-
-> *Placeholder sections for platform screenshots.*
-
-| View | Screenshot Placeholder |
-| :--- | :--- |
-| **Landing Page** | ![Landing Page Banner](https://via.placeholder.com/800x450?text=SkillStack+Landing+Page) |
-| **Course Catalogue** | ![Course Catalogue](https://via.placeholder.com/800x450?text=Course+Catalog+View) |
-| **Course Player Workspace** | ![Course Player Workspace](https://via.placeholder.com/800x450?text=DRM+Video+Player+%26+Q%26A) |
-| **Student Dashboard** | ![Student Dashboard](https://via.placeholder.com/800x450?text=Student+Enrolled+Courses) |
-| **Admin Dashboard** | ![Admin Dashboard](https://via.placeholder.com/800x450?text=Admin+Control+Panel) |
-| **Analytics Dashboard** | ![Analytics Dashboard](https://via.placeholder.com/800x450?text=12-Month+Analytics+Charts) |
-| **Stripe Checkout Modal** | ![Checkout](https://via.placeholder.com/800x450?text=Secure+Stripe+Checkout) |
-| **Auth & OTP Modal** | ![Auth Modal](https://via.placeholder.com/800x450?text=Authentication+%26+OTP+Modal) |
-| **Mobile Responsive View** | ![Mobile View](https://via.placeholder.com/400x700?text=Mobile+Responsive+Layout) |
-
----
-
 ## 🎥 Demo
 
-- 🌐 **Live Application Demo:** [https://skillstack.example.com](https://skillstack.example.com) *(Demo Link Placeholder)*
-- 📹 **Walkthrough Video:** [YouTube Demo Link](https://youtube.com/example) *(Video Link Placeholder)*
+- 🌐 **Live Application Demo:** [https://skillstack.com](https://skillstack-frontend-one.vercel.app)
+- 📹 **Walkthrough Video:** [YouTube Demo Link](https://youtu.be/HcY1_XlG02s?si=LBEhtqfyG9Tk-pR3)
 
 ---
 
